@@ -1,5 +1,7 @@
 package com.cgi.nikoniko.models;
 
-public class Team_Has_User {
+import com.cgi.nikoniko.models.modelbase.DatabaseItem;
+
+public class Team_Has_User extends DatabaseItem {
 
 }

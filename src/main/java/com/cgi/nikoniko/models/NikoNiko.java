@@ -1,5 +1,7 @@
 package com.cgi.nikoniko.models;
 
-public class NikoNiko {
+import com.cgi.nikoniko.models.modelbase.DatabaseItem;
+
+public class NikoNiko extends DatabaseItem {
 
 }

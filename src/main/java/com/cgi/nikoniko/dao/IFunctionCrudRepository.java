@@ -1,8 +1,8 @@
 package com.cgi.nikoniko.dao;
 
 import com.cgi.nikoniko.dao.base.IBaseCrudRepository;
-import com.cgi.nikoniko.models.Function;
+import com.cgi.nikoniko.models.FunctionCGI;
 
-public interface IFunctionCrudRepository extends IBaseCrudRepository<Function> {
+public interface IFunctionCrudRepository extends IBaseCrudRepository<FunctionCGI> {
 
 }
