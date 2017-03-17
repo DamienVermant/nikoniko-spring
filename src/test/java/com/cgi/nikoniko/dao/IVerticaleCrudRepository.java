@@ -1,5 +1,8 @@
 package com.cgi.nikoniko.dao;
 
-public interface IVerticaleCrudRepository {
+import com.cgi.nikoniko.dao.base.IBaseCrudRepository;
+import com.cgi.nikoniko.models.Verticale;
+
+public interface IVerticaleCrudRepository extends IBaseCrudRepository<Verticale>{
 
 }

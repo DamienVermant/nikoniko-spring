@@ -1,5 +1,8 @@
 package com.cgi.nikoniko.dao;
 
-public interface IRoleCrudRepository {
+import com.cgi.nikoniko.dao.base.IBaseCrudRepository;
+import com.cgi.nikoniko.models.Role;
+
+public interface IRoleCrudRepository extends IBaseCrudRepository<Role>{
 
 }
