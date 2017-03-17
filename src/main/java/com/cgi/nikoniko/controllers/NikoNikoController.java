@@ -1,5 +1,5 @@
 package com.cgi.nikoniko.controllers;
 
-public class FunctionControllers {
+public class NikoNikoController {
 
 }
