@@ -8,7 +8,7 @@ import javax.persistence.Transient;
 
 import com.cgi.nikoniko.models.modelbase.DatabaseItem;
 
-public class Role extends DatabaseItem{
+public class RoleCGI extends DatabaseItem{
 
 	@Transient
 	public static final String TABLE = "role";
@@ -49,12 +49,12 @@ public class Role extends DatabaseItem{
 	}
 
 
-	public Role(){
-		super(Role.TABLE, Role.FIELDS);
+	public RoleCGI(){
+		super(RoleCGI.TABLE, RoleCGI.FIELDS);
 	}
 
-	public Role(String name){
-		super(Role.TABLE, Role.FIELDS);
+	public RoleCGI(String name){
+		super(RoleCGI.TABLE, RoleCGI.FIELDS);
 		this.name = name;
 	}
 }

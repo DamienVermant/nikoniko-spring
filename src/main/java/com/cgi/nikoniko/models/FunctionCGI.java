@@ -18,8 +18,8 @@ public class FunctionCGI extends DatabaseItem{
 	@Column(name = "functionCGI_name", nullable = false)
 	private String name;
 
-	@ManyToMany(targetEntity = Role.class)
-	private Set<Role> role;
+	@ManyToMany(targetEntity = RoleCGI.class)
+	private Set<RoleCGI> role;
 
 	public String getName() {
 		return name;
@@ -29,11 +29,11 @@ public class FunctionCGI extends DatabaseItem{
 		this.name = name;
 	}
 
-	public Set<Role> getRole() {
+	public Set<RoleCGI> getRole() {
 		return role;
 	}
 
-	public void setRole(Set<Role> role) {
+	public void setRole(Set<RoleCGI> role) {
 		this.role = role;
 	}
 
