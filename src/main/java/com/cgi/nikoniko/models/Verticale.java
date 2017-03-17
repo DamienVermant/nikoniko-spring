@@ -1,5 +1,6 @@
 package com.cgi.nikoniko.models;
 
+
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -63,5 +64,4 @@ public class Verticale extends DatabaseItem{
 		this.agency = agency;
 		this.name = name;
 	}
-
 }

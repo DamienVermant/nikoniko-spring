@@ -1,5 +1,6 @@
 package com.cgi.nikoniko.models;
 
+
 import java.util.Date;
 import java.util.Set;
 
