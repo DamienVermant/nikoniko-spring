@@ -4,7 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
-import com.cgi.nikoniko.models.TeamHasUser;
+import com.cgi.nikoniko.models.UserHasTeam;
 
 @Controller
 @RequestMapping(TeamHasUserController.BASE_URL)

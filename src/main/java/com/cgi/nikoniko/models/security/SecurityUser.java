@@ -10,9 +10,10 @@ import com.cgi.nikoniko.models.modelbase.DatabaseItem;
 @Inheritance
 public abstract class SecurityUser extends DatabaseItem {
 
-	@Column(name = "login", nullable = false)
+	@Column(name = "user_login", nullable = false)
 	private String login;
-	@Column(name = "password", nullable = false)
+
+	@Column(name = "user_password", nullable = false)
 	private String password;
 
 	/**

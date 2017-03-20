@@ -47,23 +47,23 @@ public class Team extends DatabaseItem{
 	@Column(name = "team_end_date", nullable = true)
 	private Date end_date;
 
-	@Column(name = "team_niko_sticker_color", nullable = false)
+	@Column(name = "team_sticker_color", nullable = false)
 	private String niko_sticker_color;
 
-	@Column(name = "team_niko_sticker_number", nullable = false)
+	@Column(name = "team_sticker_number", nullable = false)
 	private int niko_sticker_number;
 
-	@Column(name = "team_niko_visibility", nullable = false)
+	@Column(name = "team_visibility", nullable = false)
 	private int niko_visibility;
 
-	@Column(name = "team_niko_privacy", nullable = false)
+	@Column(name = "team_privacy", nullable = false)
 	private Boolean niko_privacy;
 
 	@ManyToOne
 	private Verticale verticale;
 
 	@OneToMany
-	private Set<TeamHasUser> teamHasUsers;
+	private Set<UserHasTeam> teamHasUsers;
 
 	/**
 	 * @return the name
@@ -210,7 +210,7 @@ public class Team extends DatabaseItem{
 	 *
 	 * @return teamHasUsers
 	 */
-	public Set<TeamHasUser> getTeamHasUsers() {
+	public Set<UserHasTeam> getTeamHasUsers() {
 		return teamHasUsers;
 	}
 
@@ -218,7 +218,7 @@ public class Team extends DatabaseItem{
 	 *
 	 * @param teamHasUsers
 	 */
-	public void setTeamHasUsers(Set<TeamHasUser> teamHasUsers) {
+	public void setTeamHasUsers(Set<UserHasTeam> teamHasUsers) {
 		this.teamHasUsers = teamHasUsers;
 	}
 

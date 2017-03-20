@@ -19,7 +19,7 @@ public class FunctionCGI extends DatabaseItem{
 	@Transient
 	public static final String[] FIELDS = { "id", "name" };
 
-	@Column(name = "functionCGI_name", nullable = false)
+	@Column(name = "function_name", nullable = false)
 	private String name;
 
 	@ManyToMany(targetEntity = RoleCGI.class)

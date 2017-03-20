@@ -31,16 +31,16 @@ public class User extends SecurityUser {
 	public static final String[] FIELDS = { "id", "lastname", "firstname", "sex", "registration_cgi",
 											"login", "password","verticale_id"};
 
-	@Column(nullable = false)
+	@Column(name = "user_lastname", nullable = false)
 	private String lastname;
 
-	@Column(nullable = false)
+	@Column(name = "user_firstname", nullable = false)
 	private String firstname;
 
-	@Column(nullable = false)
+	@Column(name = "user_sex", nullable = false)
 	private char sex;
 
-	@Column(nullable = false)
+	@Column(name = "user_registration", nullable = false)
 	private String registration_cgi;
 
 	@OneToMany
@@ -50,7 +50,7 @@ public class User extends SecurityUser {
 	private Set<RoleCGI> roles;
 
 	@OneToMany
-	private Set<TeamHasUser> teamsHasUsers;
+	private Set<UserHasTeam> teamsHasUsers;
 
 	@ManyToOne
 	private Verticale verticale;
@@ -140,15 +140,15 @@ public class User extends SecurityUser {
 	/**
 	 * @return the teamsHasUsers
 	 */
-	public ArrayList<TeamHasUser> getTeamsHasUsers() {
-		return (ArrayList<TeamHasUser>)teamsHasUsers;
+	public ArrayList<UserHasTeam> getTeamsHasUsers() {
+		return (ArrayList<UserHasTeam>)teamsHasUsers;
 	}
 
 	/**
 	 * @param teamsHasUsers the teamsHasUsers to set
 	 */
-	public void setTeamsHasUsers(ArrayList<TeamHasUser> teamsHasUsers) {
-		this.teamsHasUsers = (Set<TeamHasUser>)teamsHasUsers;
+	public void setTeamsHasUsers(ArrayList<UserHasTeam> teamsHasUsers) {
+		this.teamsHasUsers = (Set<UserHasTeam>)teamsHasUsers;
 	}
 
 	/**
@@ -211,25 +211,5 @@ public class User extends SecurityUser {
 		this(verticale, registration_cgi, login, password, lastname, firstname);
 		this.sex = sex;
 	}
-
-	//additionnal constructors?? :
-
-	public User(String login, String password, String lastname, String firstname, String registration_cgi) {
-		this(new Verticale(), registration_cgi, login, password);
-		this.lastname = lastname;
-		this.firstname = firstname;
-	}
-
-	public User(String firstname, String lastname, char sex) {
-		super(User.TABLE, User.FIELDS);
-		this.lastname = lastname;
-		this.firstname = firstname;
-		this.sex = sex;
-	}
-
-	public User(String firstname, String lastname) {
-		this(firstname, lastname, 'U');
-	}
-
 
 }

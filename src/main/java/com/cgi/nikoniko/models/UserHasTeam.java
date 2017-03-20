@@ -12,16 +12,20 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import ch.qos.logback.core.joran.conditional.IfAction;
+
+import com.cgi.nikoniko.models.modelbase.AssociationItem;
+
 @Entity
-@Table(name = "team_has_user")
-@IdClass(TeamHasUserId.class)
-public class TeamHasUser implements Serializable {
+@Table(name = "user_has_team")
+public class UserHasTeam extends AssociationItem {
 
-	@Transient
-	public static final String TABLE = "teamhasuser";
+	@Transient //nom de table toujours tableDeGauche_has_tableDeDroite
+	public static final String TABLE = "user_has_team";//ou creer TABLE_LEFT et TABLE_RIGHT
 
-	@Transient
-	public static final String[] FIELDS = { "id", "idUser", "idTeam", "arrivalDate", "leavingDate"};
+	@Transient //convention {idLeft,idRight, Other attributes...}
+	public static final String[] FIELDS = {"idLeft", "idRight", "arrivalDate", "leavingDate"};
+	//TODO : fonction generation des noms des idLeft et IdRight pour le viewer
 
 	@Column(nullable = false, name = "arrival_date")
 	private Date arrivalDate;
@@ -36,12 +40,6 @@ public class TeamHasUser implements Serializable {
 	@Transient
 	@ManyToOne
 	private Team team;
-
-	@Id
-	private Long idUser;
-
-	@Id
-	private Long idTeam;
 
 
 	/**
@@ -86,37 +84,22 @@ public class TeamHasUser implements Serializable {
 		return team;
 	}
 
-	/**
-	 * @return the idUser
-	 */
-	public Long getIdUser() {
-		return idUser;
-	}
-
-	/**
-	 * @return the idTeam
-	 */
-	public Long getIdTeam() {
-		return idTeam;
-	}
-
 	//No empty constructor!!!
-	public TeamHasUser (User user, Team team) {
+	public UserHasTeam (User user, Team team) {
+		super(UserHasTeam.TABLE,UserHasTeam.FIELDS, user, team);
 		this.user = user;
 		this.user.getTeamsHasUsers().add(this);
-		this.idUser = this.user.getId();
 		this.team = team;
 		this.team.getTeamHasUsers().add(this);
-		this.idTeam = this.team.getId();
 		this.arrivalDate = new Date();
 	}
 
-	public TeamHasUser (User user, Team team, Date arrivaleDate) {
+	public UserHasTeam (User user, Team team, Date arrivaleDate) {
 		this(user,team);
 		this.arrivalDate = arrivaleDate;
 	}
 
-	public TeamHasUser (User user, Team team, Date arrivaleDate, Date leavingDate) {
+	public UserHasTeam (User user, Team team, Date arrivaleDate, Date leavingDate) {
 		this(user,team,arrivaleDate);
 		this.leavingDate = leavingDate;
 	}

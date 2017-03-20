@@ -22,10 +22,10 @@ public class NikoNiko extends DatabaseItem {
 	@Transient
 	public static final String[] FIELDS = { "id", "entry_date", "mood", "comment", "id_user"};
 
-	@Column(name = "mood", nullable = false)
+	@Column(name = "nikoniko_mood", nullable = false)
 	private int mood;
 
-	@Column(name = "entry_date", nullable = false)
+	@Column(name = "nikoniko_entry_date", nullable = false)
 	private Date entry_date;
 
 	@Column(name = "nikoniko_comment", nullable = true)

@@ -20,7 +20,7 @@ public class ChangeDates extends DatabaseItem {
 		@Transient
 		public static final String[] FIELDS = { "id", "changeDate", "id_nikoniko"};
 
-		@Column(name = "changeDate", nullable = true)
+		@Column(name = "change_date", nullable = true)
 		private Date changeDate;
 
 		@ManyToOne
