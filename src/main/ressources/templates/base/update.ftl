@@ -9,7 +9,7 @@
 	<table class="table table-bordered table-hover">
 	<form action = "" method = "POST">
 		<#list sortedFields as field>
-			<#if field != "id">
+			<#if field != "id" && field !="idLeft" && field !="idRight">
 				<#list items?keys as key>
 					<#if key == field>
 						<tr>
@@ -25,9 +25,13 @@
 							</#if>
 						</tr>
 					</#if>
+					<input type="hidden" name = "idl" value = "${items["idLeft"]}">
+					<input type="hidden" name = "idr" value = "${items["idRight"]}">
+
 				</#list>
 			</#if>
 		</#list>
+
 	</table>
 		<input type="submit" value="Update">
 	</form><br>

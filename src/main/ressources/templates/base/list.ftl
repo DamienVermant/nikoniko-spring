@@ -36,13 +36,28 @@
 						</#list>
 					</#list>
 					<td>
-						<a href="${item["id"]}/${go_show}">Select</a>
+						<#if item["id"]??>
+							<a href="${item["id"]}/${go_show}">Select</a>
+
+						<#else>
+							<a href="${item["idLeft"]}/${item["idRight"]}/${go_show}">Select</a>
+						</#if>
 					</td>
 					<td>
-						<form action = "${item["id"]}/${go_delete}" method = "POST">
-							<input type="hidden" name = "id" value = "${item["id"]}">
-							<input type="submit" value="Delete">
-						</form>
+						<#if item["id"]??>
+							<form action = "${item["id"]}/${go_delete}" method = "POST">
+								<input type="hidden" name = "id" value = "${item["id"]}">
+								<input type="submit" value="Delete">
+							</form>
+
+						<#else>
+							<form action = "${item["idLeft"]}/${item["idRight"]}/${go_delete}" method = "POST">
+								<input type="hidden" name = "idl" value = "${item["idLeft"]}">
+								<input type="hidden" name = "idr" value = "${item["idRight"]}">
+								<input type="submit" value="Delete">
+							</form>
+						</#if>
+
 					</td>
 				</tr>
 			</#list>
