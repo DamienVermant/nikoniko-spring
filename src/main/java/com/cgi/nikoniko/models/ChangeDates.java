@@ -1,6 +1,5 @@
 package com.cgi.nikoniko.models;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -14,47 +13,66 @@ import com.cgi.nikoniko.models.modelbase.DatabaseItem;
 @Entity
 @Table(name = "change_dates")
 public class ChangeDates extends DatabaseItem {
-	
-		// Nom de la table
+
 		@Transient
 		public static final String TABLE = "change_date";
 
-		// Champs dans la table nikoniko
 		@Transient
-		public static final String[] FIELDS = { "id", "change_date", "id_nikoniko"};
-		
-		// Définitions des atrributs
-		
+		public static final String[] FIELDS = { "id", "changeDate", "id_nikoniko"};
+
 		@Column(name = "changeDate", nullable = true)
 		private Date changeDate;
 
 		@ManyToOne
 		private NikoNiko nikoniko;
 
-		// Génération des getters et des setters 
-		
+		/**
+		 *
+		 * @return changeDate
+		 */
 		public Date getChangeDate() {
 			return changeDate;
 		}
 
+		/**
+		 *
+		 * @param changeDate
+		 */
 		public void setChangeDate(Date changeDate) {
 			this.changeDate = changeDate;
 		}
 
+		/**
+		 *
+		 * @return nikoniko
+		 */
 		public NikoNiko getNikoniko() {
 			return nikoniko;
 		}
 
+		/**
+		 *
+		 * @param nikoniko
+		 */
 		public void setNikoniko(NikoNiko nikoniko) {
 			this.nikoniko = nikoniko;
 		}
-		
-		// Génération des constructeurs
 
-		public ChangeDates(Date changeDate,
-				NikoNiko nikoniko) {
+		public ChangeDates(){
 			super(ChangeDates.TABLE, ChangeDates.FIELDS);
-			this.changeDate = changeDate;
+		}
+
+		public ChangeDates(NikoNiko nikoniko) {
+			this();
+			this.changeDate = new Date();
 			this.nikoniko = nikoniko;
+			this.nikoniko.getChangeDates().add(this);
+		}
+
+		public ChangeDates(Date changeDate, NikoNiko nikoniko) {
+			this(nikoniko);
+			this.changeDate = changeDate;
+//			this.nikoniko = nikoniko;
+//			this.nikoniko.getChangeDates().add(this);
 		}
 }

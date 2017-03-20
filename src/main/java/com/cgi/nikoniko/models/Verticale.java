@@ -17,50 +17,92 @@ public class Verticale extends DatabaseItem{
 
 	@Transient
 	public static final String TABLE = "verticale";
+
 	@Transient
 	public static final String[] FIELDS = { "id", "agency", "name" };
 
 	@Column(name = "verticale_agency", nullable = false)
 	private String agency;
+
 	@Column(name = "verticale_name", nullable = false)
 	private String name;
 
-	@OneToMany(targetEntity = Team.class)
-	private Set<Team> team;
-	@OneToMany(targetEntity = User.class)
+	@OneToMany
+	private Set<Team> teams;
+
+	@OneToMany
 	private Set<User> users;
 
+	/**
+	 *
+	 * @return agency
+	 */
 	public String getAgency() {
 		return agency;
 	}
+
+	/**
+	 *
+	 * @param agency
+	 */
 	public void setAgency(String agency) {
 		this.agency = agency;
 	}
+
+	/**
+	 *
+	 * @return name
+	 */
 	public String getName() {
 		return name;
 	}
+
+	/**
+	 *
+	 * @param name
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
-	public Set<Team> getTeam() {
-		return team;
+	/**
+	 *
+	 * @return team
+	 */
+	public Set<Team> getTeams() {
+		return teams;
 	}
-	public void setTeam(Set<Team> team) {
-		this.team = team;
+
+	/**
+	 *
+	 * @param team
+	 */
+	public void setTeams(Set<Team> teams) {
+		this.teams = teams;
 	}
+
+	/**
+	 *
+	 * @return users
+	 */
 	public Set<User> getUsers() {
 		return users;
 	}
+
+	/**
+	 *
+	 * @param users
+	 */
 	public void setUsers(Set<User> users) {
 		this.users = users;
 	}
+
 	public Verticale(){
 		super(Verticale.TABLE, Verticale.FIELDS);
 	}
 
 	public Verticale(String agency, String name){
-		super(Verticale.TABLE, Verticale.FIELDS);
+		this();
 		this.agency = agency;
 		this.name = name;
 	}

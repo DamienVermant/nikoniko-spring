@@ -29,7 +29,7 @@ public class User extends SecurityUser {
 
 	@Transient
 	public static final String[] FIELDS = { "id", "lastname", "firstname", "sex", "registration_cgi",
-											"login", "password"};
+											"login", "password","verticale_id"};
 
 	@Column(nullable = false)
 	private String lastname;
@@ -46,13 +46,13 @@ public class User extends SecurityUser {
 	@OneToMany
 	private Set<NikoNiko> nikoNikos;
 
-	@OneToMany
+	@ManyToMany
 	private Set<RoleCGI> roles;
 
 	@OneToMany
 	private Set<TeamHasUser> teamsHasUsers;
 
-	@ManyToMany
+	@ManyToOne
 	private Verticale verticale;
 
 	/**
@@ -187,19 +187,37 @@ public class User extends SecurityUser {
 		this.nikoNikos = (Set<NikoNiko>)nikoNikos;
 	}
 
-	public User(String login, String password, String lastname, String firstname, String registration_cgi) {
-		super(User.TABLE, User.FIELDS, login, password);
-		this.lastname = lastname;
-		this.firstname = firstname;
-		this.registration_cgi = registration_cgi;
-	}
-
 	public User() {
 		super(User.TABLE, User.FIELDS);
 	}
 
-	public User(String firstname, String lastname) {
-		this(firstname, lastname, 'I');
+	public User (Verticale  verticale, String registration_cgi, String login, String password) {
+		super(User.TABLE, User.FIELDS, login, password);
+		this.registration_cgi = registration_cgi;//TODO : implement verification of unicity of this attribute
+		this.verticale = verticale;
+		this.verticale.getUsers().add(this);
+	}
+
+	public User(Verticale  verticale, String registration_cgi, String login, String password,
+				String lastname, String firstname) {
+		this(verticale, registration_cgi, login, password);
+		this.lastname = lastname;
+		this.firstname = firstname;
+		this.sex = 'U';
+	}
+
+	public User(Verticale  verticale, String registration_cgi, String login, String password,
+			String lastname, String firstname, char sex) {
+		this(verticale, registration_cgi, login, password, lastname, firstname);
+		this.sex = sex;
+	}
+
+	//additionnal constructors?? :
+
+	public User(String login, String password, String lastname, String firstname, String registration_cgi) {
+		this(new Verticale(), registration_cgi, login, password);
+		this.lastname = lastname;
+		this.firstname = firstname;
 	}
 
 	public User(String firstname, String lastname, char sex) {
@@ -208,4 +226,10 @@ public class User extends SecurityUser {
 		this.firstname = firstname;
 		this.sex = sex;
 	}
+
+	public User(String firstname, String lastname) {
+		this(firstname, lastname, 'U');
+	}
+
+
 }

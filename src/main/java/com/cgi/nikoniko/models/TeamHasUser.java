@@ -1,14 +1,21 @@
 package com.cgi.nikoniko.models;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
-public class TeamHasUser {
-	//faire un test avec @IdClass (nomclasse association) pour limiter les classes d'asso crees par jpa
+@Entity
+@Table(name = "team_has_user")
+@IdClass(TeamHasUserId.class)
+public class TeamHasUser implements Serializable {
 
 	@Transient
 	public static final String TABLE = "teamhasuser";
@@ -35,6 +42,7 @@ public class TeamHasUser {
 
 	@Id
 	private Long idTeam;
+
 
 	/**
 	 * @return the arrivalDate
@@ -92,29 +100,25 @@ public class TeamHasUser {
 		return idTeam;
 	}
 
+	//No empty constructor!!!
 	public TeamHasUser (User user, Team team) {
 		this.user = user;
+		this.user.getTeamsHasUsers().add(this);
+		this.idUser = this.user.getId();
 		this.team = team;
+		this.team.getTeamHasUsers().add(this);
+		this.idTeam = this.team.getId();
 		this.arrivalDate = new Date();
-		this.idUser = user.getId();
-		this.idTeam = team.getId();
 	}
 
 	public TeamHasUser (User user, Team team, Date arrivaleDate) {
-		this.user = user;
-		this.team = team;
+		this(user,team);
 		this.arrivalDate = arrivaleDate;
-		this.idUser = user.getId();
-		this.idTeam = team.getId();
 	}
 
 	public TeamHasUser (User user, Team team, Date arrivaleDate, Date leavingDate) {
-		this.user = user;
-		this.team = team;
-		this.arrivalDate = arrivaleDate;
+		this(user,team,arrivaleDate);
 		this.leavingDate = leavingDate;
-		this.idUser = user.getId();
-		this.idTeam = team.getId();
 	}
 
 }
