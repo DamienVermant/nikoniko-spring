@@ -84,7 +84,10 @@ public class UserHasTeam extends AssociationItem {
 		return team;
 	}
 
-	//No empty constructor!!!
+	public UserHasTeam () {
+		super(UserHasTeam.TABLE,UserHasTeam.FIELDS);
+	}
+
 	public UserHasTeam (User user, Team team) {
 		super(UserHasTeam.TABLE,UserHasTeam.FIELDS, user, team);
 		this.user = user;

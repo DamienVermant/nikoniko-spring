@@ -15,14 +15,14 @@ import com.cgi.nikoniko.models.modelbase.DatabaseItem;
 public class FunctionCGI extends DatabaseItem{
 
 	@Transient
-	public static final String TABLE = "role";
+	public static final String TABLE = "function_cgi";
 	@Transient
 	public static final String[] FIELDS = { "id", "name" };
 
 	@Column(name = "function_name", nullable = false)
 	private String name;
 
-	@ManyToMany(targetEntity = RoleCGI.class)
+	@ManyToMany
 	private Set<RoleCGI> role;
 
 	/**

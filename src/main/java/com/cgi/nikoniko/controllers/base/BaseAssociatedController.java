@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.cgi.nikoniko.dao.base.IBaseAssociatedCrudRepository;
+import com.cgi.nikoniko.models.AssociationItemId;
 import com.cgi.nikoniko.models.modelbase.AssociationItem;
+import com.cgi.nikoniko.models.modelbase.DatabaseItem;
 
 public abstract class BaseAssociatedController <T extends AssociationItem> {
 
@@ -26,12 +28,10 @@ public abstract class BaseAssociatedController <T extends AssociationItem> {
 	public final static String PATH_SHOW_FILE = PATH + SHOW_ACTION ;
 
 	public final static String ROUTE_LIST = LIST_ACTION;
-	public final static String ROUTE_UPDATE = "{id}/"+ UPDATE_ACTION;
-	public final static String ROUTE_DELETE = "{id}/"+ DELETE_ACTION;
+	public final static String ROUTE_UPDATE = "{idl}/{idr}/"+ UPDATE_ACTION;
+	public final static String ROUTE_DELETE = "{idl}/{idr}/"+ DELETE_ACTION;
 	public final static String ROUTE_CREATE = CREATE_ACTION;
-	public final static String ROUTE_SHOW = "{id}/"+ SHOW_ACTION;
-
-
+	public final static String ROUTE_SHOW = "{idl}/{idr}/"+ SHOW_ACTION;
 
 
 	@Autowired
@@ -75,11 +75,17 @@ public abstract class BaseAssociatedController <T extends AssociationItem> {
 		return "Update : SUCCESS";
 	}
 
-	public T getItem (Long id) {
+//	public T getItem (DatabaseItem itemLeft, DatabaseItem itemRight) {
+//		T item = null;
+//		item = baseAssociatedCrud.findOne(new AssociationItemId(itemLeft.getId(),itemRight.getId()));
+//		return item;
+//	}//TODO : a test is necessary to validate this part
+
+	public T getItem (Long idLeft, Long idRigt) {
 		T item = null;
-		item = baseAssociatedCrud.findOne(id);
+		item = baseAssociatedCrud.findOne(new AssociationItemId(idLeft,idRigt));
 		return item;
-	}
+	}//TODO : a test is necessary to validate this part
 
 	public ArrayList<T> getItems() {
 

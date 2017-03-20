@@ -48,4 +48,9 @@ public abstract class AssociationItem implements Serializable{
 
 	public AssociationItem() {
 	}
+
+	public AssociationItem(String table, String[] fields) {
+		this.table = table;
+		this.fields = fields;
+	}
 }
