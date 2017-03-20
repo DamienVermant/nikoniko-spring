@@ -6,7 +6,6 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -52,7 +51,7 @@ public class User extends SecurityUser {
 	@OneToMany
 	private Set<TeamHasUser> teamsHasUsers;
 
-	@ManyToMany
+	@ManyToOne
 	private Verticale verticale;
 
 	/**

@@ -5,13 +5,17 @@ import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.cgi.nikoniko.models.modelbase.DatabaseItem;
 
+@Entity
+@Table(name = "team")
 public class Team extends DatabaseItem{
 
 	@Transient
@@ -20,28 +24,38 @@ public class Team extends DatabaseItem{
 	public static final String[] FIELDS = { "id", "name", "serial", "start_date", "end_date",
 		"niko_sticker_color", "niko_sticker_number", "niko_visibility", "niko_privacy" };
 
+
 	@Column(name = "team_name", nullable = false)
 	private String name;
+
 	@Column(name = "team_serial", nullable = false)
 	private String serial;
+
 	@Column(name = "team_start_date", nullable = false)
 	private Date start_date;
+
 	@Column(name = "team_end_date", nullable = true)
 	private Date end_date;
+
 	@Column(name = "team_niko_sticker_color", nullable = false)
 	private String niko_sticker_color;
+
 	@Column(name = "team_niko_sticker_number", nullable = false)
 	private int niko_sticker_number;
+
 	@Column(name = "team_niko_visibility", nullable = false)
 	private int niko_visibility;
+
 	@Column(name = "team_niko_privacy", nullable = false)
 	private Boolean niko_privacy;
 
-	@ManyToOne(targetEntity = Verticale.class)
+
+	@ManyToOne
 	private Verticale verticale;
 
-	@OneToMany(targetEntity = TeamHasUser.class)
+	@OneToMany
 	private Set<TeamHasUser> teamHasUsers;
+
 
 	/**
 	 * @return the name

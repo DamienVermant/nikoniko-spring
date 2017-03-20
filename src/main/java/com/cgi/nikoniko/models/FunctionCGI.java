@@ -3,11 +3,15 @@ package com.cgi.nikoniko.models;
 import java.util.Set;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.cgi.nikoniko.models.modelbase.DatabaseItem;
 
+@Entity
+@Table(name = "function_cgi")
 public class FunctionCGI extends DatabaseItem{
 
 	@Transient
@@ -18,7 +22,7 @@ public class FunctionCGI extends DatabaseItem{
 	@Column(name = "functionCGI_name", nullable = false)
 	private String name;
 
-	@ManyToMany(targetEntity = RoleCGI.class)
+	@ManyToMany
 	private Set<RoleCGI> role;
 
 	public String getName() {

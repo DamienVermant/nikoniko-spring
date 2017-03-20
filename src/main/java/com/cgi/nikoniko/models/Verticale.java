@@ -20,15 +20,20 @@ public class Verticale extends DatabaseItem{
 	@Transient
 	public static final String[] FIELDS = { "id", "agency", "name" };
 
+
 	@Column(name = "verticale_agency", nullable = false)
 	private String agency;
+
 	@Column(name = "verticale_name", nullable = false)
 	private String name;
 
-	@OneToMany(targetEntity = Team.class)
+
+	@OneToMany
 	private Set<Team> team;
-	@OneToMany(targetEntity = User.class)
+
+	@OneToMany
 	private Set<User> users;
+
 
 	public String getAgency() {
 		return agency;

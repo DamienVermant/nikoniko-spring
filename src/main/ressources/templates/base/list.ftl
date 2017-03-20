@@ -7,6 +7,7 @@
 <body>
 	<h1>${page}</h1>
 	<a href="${go_create}">Create new</a>
+	<a href="${go_mood}">Mood</a>
 		<table class="table table-bordered table-hover">
 			<tr>
 				<#list items as item>
