@@ -20,6 +20,9 @@
 		</table>
 		<input type="submit" value="create"><br>
 	</form>
-	<a href="${go_index}">Back</a><br>
-
+	<#if item["id"]??>
+		<a href="${go_index}">Back</a><br>
+	<#else>
+		<a href="${go_index}">Back</a><br>
+	</#if>
 </body>

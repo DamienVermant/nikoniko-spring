@@ -8,7 +8,6 @@
 	<h1>${page}</h1>
 	<form action = "" method = "POST">
 	<table class="table table-bordered table-hover">
-
 		<#list sortedFields as field>
 			<#if field != "id">
 				<#list items?keys as key>
@@ -33,9 +32,12 @@
 				</#list>
 			</#if>
 		</#list>
-
 	</table>
 		<input type="submit" value="Update">
 	</form>
-	<a href="../..">Back</a>
+	<#if items["id"]??>
+		<a href="../">Back</a>
+	<#else>
+		<a href="../..">Back</a>
+	</#if>
 </body>

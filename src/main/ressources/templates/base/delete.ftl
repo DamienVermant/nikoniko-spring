@@ -27,8 +27,18 @@
 		</#list>
 	</table>
 	<form action = "${go_delete}" method = "POST">
-		<input type="hidden" name = "id" value = "${item["id"]}">
-		<input type="submit" value="Delete"><br>
+		<#if item["id"]??>
+			<input type="hidden" name = "id" value = "${item["id"]}">
+			<input type="submit" value="Delete"><br>
+		<#else>
+			<input type="hidden" name = "idl" value = "${item["idLeft"]}">
+			<input type="hidden" name = "idr" value = "${item["idRight"]}">
+			<input type="submit" value="Delete"><br>
+		</#if>
 	</form>
-	<a href="../">Back</a><br>
+	<#if item["id"]??>
+		<a href="../">Back</a>
+	<#else>
+		<a href="../..">Back</a>
+	</#if>
 </body>
