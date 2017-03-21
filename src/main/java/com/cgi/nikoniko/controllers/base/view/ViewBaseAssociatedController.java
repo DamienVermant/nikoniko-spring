@@ -1,6 +1,7 @@
 package com.cgi.nikoniko.controllers.base.view;
 
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -107,7 +108,7 @@ public class ViewBaseAssociatedController <T extends AssociationItem> extends Ba
 	}
 
 	@RequestMapping(path = ROUTE_UPDATE, method = RequestMethod.POST)
-	public String updateItemPost(Model model,T item) {
+	public String updateItemPost(Model model, T item) {
 		updateItem(item);
 		return updateRedirect;
 	}
