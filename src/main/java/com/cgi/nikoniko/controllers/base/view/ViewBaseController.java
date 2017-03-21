@@ -29,7 +29,7 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 
 	private String showView;
 	private String showRedirect;
-	
+
 	private String loginView;
 	private String loginRedirect;
 
@@ -44,7 +44,7 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 		this.createView = this.baseView + PATH_CREATE_FILE;
 		this.showView = this.baseView + PATH_SHOW_FILE;
 		this.loginView = this.baseView + PATH_LOGIN;
-		
+
 
 		this.listRedirect = REDIRECT + baseURL + PATH_LIST_FILE;
 		this.updateRedirect = REDIRECT + baseURL + PATH_LIST_FILE;
@@ -119,12 +119,12 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 		return updateRedirect;
 	}
 
-	
+
 	@RequestMapping(path = ROUTE_SHOW, method = RequestMethod.GET)
-	public String showItemGet(Model model,@PathVariable Long id) {  
+	public String showItemGet(Model model,@PathVariable Long id) {
 		model.addAttribute("page",this.baseName + " " + SHOW_ACTION.toUpperCase());
 		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
-		model.addAttribute("item",DumpFields.fielder(super.getItem(id))); 
+		model.addAttribute("item",DumpFields.fielder(super.getItem(id)));
 		model.addAttribute("go_index", LIST_ACTION);
 		model.addAttribute("go_delete", DELETE_ACTION);
 		model.addAttribute("go_update", UPDATE_ACTION);
@@ -133,10 +133,10 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 
 	// ADD REDIRECTION LOGIN
 	@RequestMapping(path = ROUTE_LOGIN, method = RequestMethod.GET)
-	public String loginGet(Model model) { 
+	public String loginGet(Model model) {
 		return loginView;
 	}
-	
+
 	@RequestMapping(path = ROUTE_LOGIN, method = RequestMethod.POST)
 	public String loginPost(String login, String password) {
 		return authentification(login, password);
