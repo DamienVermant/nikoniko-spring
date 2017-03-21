@@ -120,39 +120,24 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 	}
 
 	
-	// MODIFICATION DU SHOW POUR TEST LE LOGIN
-	
-	@RequestMapping(path = ROUTE_SHOW, method = RequestMethod.GET) // Remodifier en get
-	public String showItemGet(Model model) {  // remodifier juste avec en paramètre id
+	@RequestMapping(path = ROUTE_SHOW, method = RequestMethod.GET)
+	public String showItemGet(Model model,@PathVariable Long id) {  
 		model.addAttribute("page",this.baseName + " " + SHOW_ACTION.toUpperCase());
 		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
-		//model.addAttribute("item",DumpFields.fielder(super.getItem(id))); // Décommenter
+		model.addAttribute("item",DumpFields.fielder(super.getItem(id))); 
 		model.addAttribute("go_index", LIST_ACTION);
 		model.addAttribute("go_delete", DELETE_ACTION);
 		model.addAttribute("go_update", UPDATE_ACTION);
-		return loginView;
-	}
-	
-	// MODIFICATION DU SHOW POUR TEST LE LOGIN (à Supprimer par la suite)
-	
-	@RequestMapping(path = ROUTE_SHOW, method = RequestMethod.POST)
-	public String showItemPost(Model model,@PathVariable String login, @PathVariable String password) { 
-		return authentification(login, password);
-		//return loginRedirect;
-	}
-	
-	
-	// NE FONCTIONNE PAS (Problème de path)
-	
-	@RequestMapping(path = ROUTE_LOGIN, method = RequestMethod.POST)
-	public String login(Model model,@PathVariable String login, @PathVariable String password) {
-		model.addAttribute("page",this.baseName + " " + LOGIN_ACTION.toUpperCase());
-		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
-		//model.addAttribute("item",DumpFields.fielder(super.getItem(id)));
-		model.addAttribute("go_index", LIST_ACTION);
-		model.addAttribute("go_delete", DELETE_ACTION);
-		model.addAttribute("go_update", UPDATE_ACTION);
-		return loginView;
+		return showView;
 	}
 
+	@RequestMapping(path = ROUTE_LOGIN, method = RequestMethod.GET)
+	public String loginGet(Model model) { 
+		return loginView;
+	}
+	
+	@RequestMapping(path = ROUTE_LOGIN, method = RequestMethod.POST)
+	public String loginPost(String login, String password) {
+		return authentification(login, password);
+	}
 }

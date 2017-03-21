@@ -43,41 +43,6 @@
 	<div class="row-fluid">
 		<div class="col-lg-4">
 			<div class="text">Login :</div>
-			
-			<!-- TABLE A SUPPRIMER PAR LA SUITE -->
-			<table class="table table-bordered table-hover">
-			<tr>
-				<#list items as item>
-					<#list sortedFields as field>
-						<#list item?keys as key>
-							<#if key == field>
-								<th>${key}</th>
-							</#if>
-						</#list>
-					</#list>
-					<#break>
-				</#list>
-			</tr>
-			<#list items as item>
-				<tr>
-					<#list sortedFields as field>
-						<#list item?keys as key>
-							<#if key == field>
-								<#if item[key]?is_boolean>
-									<td>${item[key]?c}</td>
-								<#elseif item[key]?is_date_like>
-									<td>${item[key]?string("yyyy:MM:dd HH:mm:ss")}</td>
-								<#else>
-									<td>${item[key]}</td>
-								</#if>
-							</#if>
-						</#list>
-					</#list>
-				</tr>
-			</#list>
-		</table>
-		
-		
 			<form action = "" method = "POST">
 				<input type="texte" name="login" placeholder="Votre login"> <br>
 				<div class="text"> Mot de passe :</div> 

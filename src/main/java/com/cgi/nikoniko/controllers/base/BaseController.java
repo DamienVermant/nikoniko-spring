@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
-
 import com.cgi.nikoniko.dao.base.IBaseCrudRepository;
 import com.cgi.nikoniko.models.User;
 import com.cgi.nikoniko.models.modelbase.DatabaseItem;
@@ -18,7 +17,7 @@ public abstract class BaseController <T extends DatabaseItem> {
 	public final static String DELETE_ACTION= "delete";
 	public final static String CREATE_ACTION= "create";
 	public final static String SHOW_ACTION= "show";
-	public final static String LOGIN_ACTION = "login";
+	public final static String LOGIN_ACTION = "/login";
 
 	public final static String PATH = "/";
 	public final static String PATH_LIST_FILE = PATH + LIST_ACTION ;
@@ -102,7 +101,7 @@ public abstract class BaseController <T extends DatabaseItem> {
 	public String authentification(String login, String password){
 		
 		// Création d'un chemin de redirection
-		String road = null;
+		String road = "";
 		
 		// Création d'un nouvel utilisateur
 		User user = new User();
@@ -117,7 +116,7 @@ public abstract class BaseController <T extends DatabaseItem> {
 				user = (User) object;
 				user.getId();
 				// Création de PATH pour la redirection vers la page USER
-				road = PATH + user.getId() +"/" + SHOW_ACTION;
+				road = REDIRECT + "/user" + PATH + user.getId() + PATH + SHOW_ACTION;
 			}
 			else {
 				System.err.println("Mauvais mot de passe ou login");
@@ -126,5 +125,15 @@ public abstract class BaseController <T extends DatabaseItem> {
 		// On retourne le chemin de redirection
 		return road;
 	}
+	
+	// CREATE FUNCTION RELATION 1-N
+	
+//	public ArrayList<T> getChildForParent(T item){
+//		
+//		Object object = DumpFields.createContentsEmpty(item.getClass());
+//		
+//		((Ob) item).getNikoNiko()
+//		
+//	}
 
 }
