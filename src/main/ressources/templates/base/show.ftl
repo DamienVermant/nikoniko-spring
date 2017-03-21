@@ -30,6 +30,9 @@
 	</table>
 	<a href="${go_update}">Update</a> <br>
 	<a href="${go_delete}">Delete</a> <br>
-	<a href="../">Back</a> <br>
-
+	<#if item["id"]??>
+		<a href="../">Back</a>
+	<#else>
+		<a href="../..">Back</a>
+	</#if>
 </body>

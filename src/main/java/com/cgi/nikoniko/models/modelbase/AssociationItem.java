@@ -26,10 +26,24 @@ public abstract class AssociationItem implements Serializable{
 	private Long idRight;
 
 	/**
+	 * @param idLeft the idLeft to set
+	 */
+	public void setIdLeft(Long idLeft) {
+		this.idLeft = idLeft;
+	}
+
+	/**
 	 * @return the idLeft
 	 */
 	public Long getIdLeft() {
 		return idLeft;
+	}
+
+	/**
+	 * @param idRight the idRight to set
+	 */
+	public void setIdRight(Long idRight) {
+		this.idRight = idRight;
 	}
 
 	/**

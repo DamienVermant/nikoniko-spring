@@ -1,3 +1,7 @@
+<head>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
 <body>
 	<h1>${page}</h1>
 
@@ -20,8 +24,9 @@
 		</table>
 		<input type="submit" value="create"><br>
 	</form>
-	
-		<a href="../">Back</a><br>					
-			
-
+	<#if item["id"]??>
+		<a href="${go_index}">Back</a><br>
+	<#else>
+		<a href="${go_index}">Back</a><br>
+	</#if>
 </body>

@@ -131,6 +131,7 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 		return showView;
 	}
 
+	// ADD REDIRECTION LOGIN
 	@RequestMapping(path = ROUTE_LOGIN, method = RequestMethod.GET)
 	public String loginGet(Model model) { 
 		return loginView;

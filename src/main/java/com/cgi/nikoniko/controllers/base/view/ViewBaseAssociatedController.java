@@ -107,7 +107,7 @@ public class ViewBaseAssociatedController <T extends AssociationItem> extends Ba
 	}
 
 	@RequestMapping(path = ROUTE_UPDATE, method = RequestMethod.POST)
-	public String updateItemPost(Model model,T item) {
+	public String updateItemPost(Model model, T item) {
 		updateItem(item);
 		return updateRedirect;
 	}

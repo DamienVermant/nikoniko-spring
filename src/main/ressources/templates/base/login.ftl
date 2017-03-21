@@ -1,4 +1,3 @@
-<!-- Je renvoie sur la page "items" qui contient tous les utilisateurs -->
 <head>
 	<!-- Encodage -->
 	<meta charset="utf-8">
@@ -84,5 +83,4 @@ function affichage() {
     alert("Veuillez contacter l'administrateur système.");
 }
 </script>
-
 </body>
