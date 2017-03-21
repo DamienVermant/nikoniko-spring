@@ -6,7 +6,6 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -46,8 +45,8 @@ public class User extends SecurityUser {
 	@OneToMany
 	private Set<NikoNiko> nikoNikos;
 
-	@ManyToMany
-	private Set<RoleCGI> roles;
+	@OneToMany
+	private Set<UserHasRole> roles;
 
 	@OneToMany
 	private Set<UserHasTeam> teamsHasUsers;
@@ -126,15 +125,15 @@ public class User extends SecurityUser {
 	/**
 	 * @return the roles
 	 */
-	public ArrayList<RoleCGI> getRoles() {
-		return (ArrayList<RoleCGI>)roles;
+	public ArrayList<UserHasRole> getRoles() {
+		return (ArrayList<UserHasRole>)roles;
 	}
 
 	/**
 	 * @param roles the roles to set
 	 */
-	public void setRoles(ArrayList<RoleCGI> roles) {
-		this.roles = (Set<RoleCGI>)roles;
+	public void setRoles(ArrayList<UserHasRole> roles) {
+		this.roles = (Set<UserHasRole>)roles;
 	}
 
 	/**

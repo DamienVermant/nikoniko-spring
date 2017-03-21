@@ -124,4 +124,14 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 		return showView;
 	}
 
+//	@RequestMapping(path = ROUTE_SHOW, method = RequestMethod.GET)
+//	public String loginPage(Model model,@PathVariable Long id) {
+//		model.addAttribute("page",this.baseName + " " + SHOW_ACTION.toUpperCase());
+//		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
+//		model.addAttribute("item",DumpFields.fielder(super.getItem(id)));
+//		model.addAttribute("go_index", LIST_ACTION);
+//		model.addAttribute("go_delete", DELETE_ACTION);
+//		model.addAttribute("go_update", UPDATE_ACTION);
+//		return showView;
+//	}
 }

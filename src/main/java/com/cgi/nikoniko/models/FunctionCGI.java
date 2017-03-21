@@ -4,7 +4,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -22,8 +22,9 @@ public class FunctionCGI extends DatabaseItem{
 	@Column(name = "function_name", nullable = false)
 	private String name;
 
-	@ManyToMany
-	private Set<RoleCGI> role;
+	@Transient
+	@OneToMany
+	private Set<RoleHasFunction> roles;
 
 	/**
 	 *
@@ -45,16 +46,16 @@ public class FunctionCGI extends DatabaseItem{
 	 *
 	 * @return role
 	 */
-	public Set<RoleCGI> getRole() {
-		return role;
+	public Set<RoleHasFunction> getRoles() {
+		return roles;
 	}
 
 	/**
 	 *
 	 * @param role
 	 */
-	public void setRole(Set<RoleCGI> role) {
-		this.role = role;
+	public void setRoles(Set<RoleHasFunction> role) {
+		this.roles = role;
 	}
 
 	public FunctionCGI(){
