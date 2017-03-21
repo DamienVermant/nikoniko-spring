@@ -1,10 +1,12 @@
 package com.cgi.nikoniko.models;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -22,8 +24,9 @@ public class FunctionCGI extends DatabaseItem{
 	@Column(name = "function_name", nullable = false)
 	private String name;
 
-	@ManyToMany
-	private Set<RoleCGI> role;
+	@Transient
+	@OneToMany
+	private ArrayList<RoleCGI> role;
 
 	/**
 	 *
@@ -45,7 +48,7 @@ public class FunctionCGI extends DatabaseItem{
 	 *
 	 * @return role
 	 */
-	public Set<RoleCGI> getRole() {
+	public ArrayList<RoleCGI> getRole() {
 		return role;
 	}
 
@@ -53,7 +56,7 @@ public class FunctionCGI extends DatabaseItem{
 	 *
 	 * @param role
 	 */
-	public void setRole(Set<RoleCGI> role) {
+	public void setRole(ArrayList<RoleCGI> role) {
 		this.role = role;
 	}
 

@@ -57,7 +57,6 @@
 								<input type="submit" value="Delete">
 							</form>
 						</#if>
-
 					</td>
 				</tr>
 			</#list>

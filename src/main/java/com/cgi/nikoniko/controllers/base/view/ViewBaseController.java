@@ -29,6 +29,9 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 
 	private String showView;
 	private String showRedirect;
+	
+	private String loginView;
+	private String loginRedirect;
 
 	public ViewBaseController (Class<T> clazz, String baseURL) {
 		super(clazz);
@@ -40,12 +43,15 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 		this.deleteView = this.baseView + PATH_DELETE_FILE;
 		this.createView = this.baseView + PATH_CREATE_FILE;
 		this.showView = this.baseView + PATH_SHOW_FILE;
+		this.loginView = this.baseView + PATH_LOGIN;
+		
 
 		this.listRedirect = REDIRECT + baseURL + PATH_LIST_FILE;
 		this.updateRedirect = REDIRECT + baseURL + PATH_LIST_FILE;
 		this.deleteRedirect = REDIRECT + baseURL + PATH_LIST_FILE;
 		this.createRedirect = REDIRECT + baseURL + PATH_LIST_FILE;
 		this.showRedirect = REDIRECT + baseURL + PATH_LIST_FILE;
+		this.loginRedirect = REDIRECT + baseURL + PATH_LOGIN;
 
 	}
 
@@ -113,15 +119,40 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 		return updateRedirect;
 	}
 
-	@RequestMapping(path = ROUTE_SHOW, method = RequestMethod.GET)
-	public String showItem(Model model,@PathVariable Long id) {
+	
+	// MODIFICATION DU SHOW POUR TEST LE LOGIN
+	
+	@RequestMapping(path = ROUTE_SHOW, method = RequestMethod.GET) // Remodifier en get
+	public String showItemGet(Model model) {  // remodifier juste avec en paramètre id
 		model.addAttribute("page",this.baseName + " " + SHOW_ACTION.toUpperCase());
 		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
-		model.addAttribute("item",DumpFields.fielder(super.getItem(id)));
+		//model.addAttribute("item",DumpFields.fielder(super.getItem(id))); // Décommenter
 		model.addAttribute("go_index", LIST_ACTION);
 		model.addAttribute("go_delete", DELETE_ACTION);
 		model.addAttribute("go_update", UPDATE_ACTION);
-		return showView;
+		return loginView;
+	}
+	
+	// MODIFICATION DU SHOW POUR TEST LE LOGIN (à Supprimer par la suite)
+	
+	@RequestMapping(path = ROUTE_SHOW, method = RequestMethod.POST)
+	public String showItemPost(Model model,@PathVariable String login, @PathVariable String password) { 
+		return authentification(login, password);
+		//return loginRedirect;
+	}
+	
+	
+	// NE FONCTIONNE PAS (Problème de path)
+	
+	@RequestMapping(path = ROUTE_LOGIN, method = RequestMethod.POST)
+	public String login(Model model,@PathVariable String login, @PathVariable String password) {
+		model.addAttribute("page",this.baseName + " " + LOGIN_ACTION.toUpperCase());
+		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
+		//model.addAttribute("item",DumpFields.fielder(super.getItem(id)));
+		model.addAttribute("go_index", LIST_ACTION);
+		model.addAttribute("go_delete", DELETE_ACTION);
+		model.addAttribute("go_update", UPDATE_ACTION);
+		return loginView;
 	}
 
 }

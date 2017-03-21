@@ -2,6 +2,11 @@ package com.cgi.nikoniko.models;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Embeddable;
+import javax.persistence.ManyToOne;
+
+@Embeddable
 public class AssociationItemId implements Serializable {
 	private Long idLeft;
 	private Long idRight;

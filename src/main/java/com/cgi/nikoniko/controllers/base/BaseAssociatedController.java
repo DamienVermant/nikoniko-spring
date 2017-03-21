@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.cgi.nikoniko.dao.base.IBaseAssociatedCrudRepository;
 import com.cgi.nikoniko.models.AssociationItemId;
+import com.cgi.nikoniko.models.UserHasTeam;
 import com.cgi.nikoniko.models.modelbase.AssociationItem;
 import com.cgi.nikoniko.models.modelbase.DatabaseItem;
 
@@ -81,9 +82,9 @@ public abstract class BaseAssociatedController <T extends AssociationItem> {
 //		return item;
 //	}//TODO : a test is necessary to validate this part
 
-	public T getItem (Long idLeft, Long idRigt) {
+	public T getItem (Long idLeft, Long idRight) {
 		T item = null;
-		item = baseAssociatedCrud.findOne(new AssociationItemId(idLeft,idRigt));
+		item = baseAssociatedCrud.findOne(new AssociationItemId(idLeft,idRight));
 		return item;
 	}//TODO : a test is necessary to validate this part
 

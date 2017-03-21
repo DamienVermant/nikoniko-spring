@@ -20,6 +20,8 @@
 		</table>
 		<input type="submit" value="create"><br>
 	</form>
-	<a href="${go_index}">Back</a><br>
+	
+		<a href="../">Back</a><br>					
+			
 
 </body>

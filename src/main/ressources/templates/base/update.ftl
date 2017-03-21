@@ -25,8 +25,6 @@
 							</#if>
 						</tr>
 					</#if>
-					<input type="hidden" name = "idl" value = "${items["idLeft"]}">
-					<input type="hidden" name = "idr" value = "${items["idRight"]}">
 
 				</#list>
 			</#if>
