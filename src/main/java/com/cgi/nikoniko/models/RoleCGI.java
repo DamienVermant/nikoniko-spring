@@ -23,10 +23,10 @@ public class RoleCGI extends DatabaseItem{
 	@Column(name = "role_name", nullable = false)
 	private String name;
 
-	@ManyToMany
+	@ManyToMany(mappedBy = "roles")
 	private Set<User> users;
 
-	@ManyToMany
+	@ManyToMany(mappedBy="roles")
 	private Set<FunctionCGI> functionCGI;
 
 	/**

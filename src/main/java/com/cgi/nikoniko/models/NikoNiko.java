@@ -5,6 +5,8 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -31,7 +33,7 @@ public class NikoNiko extends DatabaseItem {
 	@Column(name = "nikoniko_comment", nullable = true)
 	private String comment;
 
-	@OneToMany
+	@OneToMany(mappedBy = "nikoniko")
 	private Set<ChangeDates> changeDates;
 
 	@ManyToOne

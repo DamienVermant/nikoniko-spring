@@ -6,6 +6,8 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -43,10 +45,14 @@ public class User extends SecurityUser {
 	@Column(name = "user_registration", nullable = false)
 	private String registration_cgi;
 
-	@OneToMany
+	@OneToMany(mappedBy = "user")
 	private Set<NikoNiko> nikoNikos;
 
 	@ManyToMany
+	@JoinTable(
+		      name="user_role",
+		      joinColumns=@JoinColumn(name="user_id", referencedColumnName="id"),
+		      inverseJoinColumns=@JoinColumn(name="role_id", referencedColumnName="id"))
 	private Set<RoleCGI> roles;
 
 	@OneToMany

@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
 import com.cgi.nikoniko.dao.base.IBaseCrudRepository;
+import com.cgi.nikoniko.models.NikoNiko;
 import com.cgi.nikoniko.models.modelbase.DatabaseItem;
 
 public abstract class BaseController <T extends DatabaseItem> {
@@ -13,6 +15,7 @@ public abstract class BaseController <T extends DatabaseItem> {
 	public final static String REDIRECT = "redirect:";
 
 	public final static String LIST_ACTION= "list";
+	public final static String LIST_ID_ACTION= "list_id";
 	public final static String UPDATE_ACTION= "update";
 	public final static String DELETE_ACTION= "delete";
 	public final static String CREATE_ACTION= "create";
@@ -20,6 +23,7 @@ public abstract class BaseController <T extends DatabaseItem> {
 
 	public final static String PATH = "/";
 	public final static String PATH_LIST_FILE = PATH + LIST_ACTION ;
+	public final static String PATH_LIST_ID_FILE = PATH + LIST_ID_ACTION ;
 	public final static String PATH_UPDATE_FILE = PATH + UPDATE_ACTION ;
 	public final static String PATH_DELETE_FILE = PATH + DELETE_ACTION ;
 	public final static String PATH_CREATE_FILE = PATH + CREATE_ACTION ;
@@ -30,6 +34,7 @@ public abstract class BaseController <T extends DatabaseItem> {
 	public final static String ROUTE_DELETE = "{id}/"+ DELETE_ACTION;
 	public final static String ROUTE_CREATE = CREATE_ACTION;
 	public final static String ROUTE_SHOW = "{id}/"+ SHOW_ACTION;
+	public final static String ROUTE_LIST_ID = LIST_ACTION;
 
 
 

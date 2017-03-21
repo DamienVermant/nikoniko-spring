@@ -27,10 +27,10 @@ public class Verticale extends DatabaseItem{
 	@Column(name = "verticale_name", nullable = false)
 	private String name;
 
-	@OneToMany
+	@OneToMany(mappedBy = "verticale")
 	private Set<Team> teams;
 
-	@OneToMany
+	@OneToMany(mappedBy = "verticale")
 	private Set<User> users;
 
 	/**

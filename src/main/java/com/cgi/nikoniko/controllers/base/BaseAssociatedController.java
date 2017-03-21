@@ -75,11 +75,11 @@ public abstract class BaseAssociatedController <T extends AssociationItem> {
 		return "Update : SUCCESS";
 	}
 
-	public T getItem (Long id) {
-		T item = null;
-		item = baseAssociatedCrud.findOne(id);
-		return item;
-	}
+//	public T getItem (Long id) {
+//		T item = null;
+//		item = baseAssociatedCrud.findOne(id);
+//		return item;
+//	}
 
 	public ArrayList<T> getItems() {
 
