@@ -43,7 +43,7 @@ public class User extends SecurityUser {
 	@Column(name = "user_registration", nullable = false)
 	private String registration_cgi;
 
-	@OneToMany//(mappedBy = "userN")
+	@OneToMany(mappedBy = "user")
 	private Set<NikoNiko> nikoNikos;
 
 //	@ManyToMany

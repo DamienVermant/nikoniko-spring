@@ -17,7 +17,7 @@ public class UserHasTeam extends AssociationItem {
 	public static final String TABLE = "user_has_team";//ou creer TABLE_LEFT et TABLE_RIGHT
 
 	@Transient //convention {idLeft,idRight, Other attributes...}
-	public static final String[] FIELDS = {/*"idLeft", "idRight",*/ "arrivalDate", "leavingDate"};
+	public static final String[] FIELDS = {"idLeft", "idRight", "arrivalDate", "leavingDate"};
 	//TODO : fonction generation des noms des idLeft et IdRight pour le viewer
 
 	@Column(nullable = false, name = "arrival_date")

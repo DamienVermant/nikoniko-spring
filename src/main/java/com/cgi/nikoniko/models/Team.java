@@ -65,12 +65,12 @@ public class Team extends DatabaseItem{
 
 	@OneToMany
 	private Set<UserHasTeam> teamHasUsers;
-	
+
 	// ADD TO TEST RELATIONS /////
-	
+
 	@Transient
 	private ArrayList<User> users;
-	
+
 	public ArrayList<User> getUsers() {
 		return users;
 	}
@@ -78,8 +78,6 @@ public class Team extends DatabaseItem{
 	public void setUsers(ArrayList<User> users) {
 		this.users = users;
 	}
-	
-	/////////////////////////////
 
 	/**
 	 * @return the name
