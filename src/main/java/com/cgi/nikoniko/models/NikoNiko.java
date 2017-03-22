@@ -38,9 +38,9 @@ public class NikoNiko extends DatabaseItem {
 	@OneToMany(mappedBy = "nikoniko")
 	private Set<ChangeDates> changeDates;
 
-	@ManyToOne//(fetch=FetchType.LAZY)
-	//@JoinColumn(name="USER_ID")
-	private User userN;
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="USER_ID")
+	private User user;
 
 	/**
 	 *
@@ -109,7 +109,7 @@ public class NikoNiko extends DatabaseItem {
 	 * @return user
 	 */
 	public User getUser() {
-		return userN;
+		return user;
 	}
 
 	/**
@@ -117,7 +117,7 @@ public class NikoNiko extends DatabaseItem {
 	 * @param user
 	 */
 	public void setUser(User user) {
-		this.userN = user;
+		this.user = user;
 	}
 
 //	public ArrayList<NikoNiko> getNikoNikoByUser(User user) {
@@ -134,8 +134,8 @@ public class NikoNiko extends DatabaseItem {
 
 	public NikoNiko(User user, int mood, Date entry_date) {
 		this();
-		this.userN = user;
-		this.userN.getNikoNikos().add(this);
+		this.user = user;
+		this.user.getNikoNikos().add(this);
 		this.setMood(mood);
 		this.entry_date = entry_date;
 	}

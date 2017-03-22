@@ -1,11 +1,15 @@
 package com.cgi.nikoniko.controllers;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+
 import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
 import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
 import com.cgi.nikoniko.models.NikoNiko;
@@ -27,32 +31,23 @@ public class UserController extends ViewBaseController<User> {
 		super(User.class,BASE_URL);
 	}
 
-	private String listIdView;
-	private String baseView;
-
-	private String baseName;
 
 	protected UserController(Class<User> clazz, String baseURL) {
 		super(clazz, baseURL);
 
-		this.baseName = DumpFields.createContentsEmpty(super.getClazz()).table.toUpperCase();
-		this.baseView = "base";
-		this.listIdView = this.baseView + PATH_LIST_ID_FILE;
+
 	}
 
-
-
-
-	@RequestMapping("{userId}/nikonikolink")
+	@RequestMapping("{userId}/link")
 	public String getNikoNikosForUser(Model model, @PathVariable Long userId) {
 		User user = super.getItem(userId);
+		Set<NikoNiko> niko =  user.getNikoNikos();
+		List<NikoNiko> listOfNiko = new ArrayList<NikoNiko>(niko);
 
 		model.addAttribute("page", user.getFirstname() + " nikonikos");
-		model.addAttribute("fields", NikoNiko.FIELDS);
-		model.addAttribute("currentItem", DumpFields.fielder(user));
-		ArrayList<NikoNiko> nikos = user.getNikoNikos();
-		model.addAttribute("items", DumpFields.listFielder(user.getNikoNikos()));
-		return "nikonikolink";
+		model.addAttribute("sortedFields", NikoNiko.FIELDS);
+		model.addAttribute("items", DumpFields.listFielder(listOfNiko));
+		return "base/nikoUser";
 	}
 
 }
