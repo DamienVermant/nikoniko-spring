@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.cgi.nikoniko.dao.base.IBaseAssociatedCrudRepository;
-import com.cgi.nikoniko.models.AssociationItemId;
 import com.cgi.nikoniko.models.UserHasTeam;
 import com.cgi.nikoniko.models.modelbase.AssociationItem;
+import com.cgi.nikoniko.models.modelbase.AssociationItemId;
 import com.cgi.nikoniko.models.modelbase.DatabaseItem;
 
 public abstract class BaseAssociatedController <T extends AssociationItem> {
@@ -75,6 +75,14 @@ public abstract class BaseAssociatedController <T extends AssociationItem> {
 		}
 		return "Update : SUCCESS";
 	}
+
+
+//	public T getItem (DatabaseItem itemLeft, DatabaseItem itemRight) {
+//		T item = null;
+//		item = baseAssociatedCrud.findOne(new AssociationItemId(itemLeft.getId(),itemRight.getId()));
+//		return item;
+//	}//TODO : a test is necessary to validate this part
+
 
 	public T getItem (Long idLeft, Long idRight) {
 		T item = null;

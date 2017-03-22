@@ -1,16 +1,20 @@
 package com.cgi.nikoniko.models;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.cgi.nikoniko.models.modelbase.DatabaseItem;
+import com.cgi.nikoniko.utils.DumpFields;
 
 @Entity
 @Table(name = "nikoniko")
@@ -31,10 +35,11 @@ public class NikoNiko extends DatabaseItem {
 	@Column(name = "nikoniko_comment", nullable = true)
 	private String comment;
 
-	@OneToMany
+	@OneToMany(mappedBy = "nikoniko")
 	private Set<ChangeDates> changeDates;
 
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="USER_ID")
 	private User user;
 
 	/**
@@ -114,7 +119,6 @@ public class NikoNiko extends DatabaseItem {
 	public void setUser(User user) {
 		this.user = user;
 	}
-
 
 	public NikoNiko() {
 		super(NikoNiko.TABLE, NikoNiko.FIELDS);

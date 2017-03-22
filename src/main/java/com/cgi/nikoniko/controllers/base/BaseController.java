@@ -15,14 +15,16 @@ public abstract class BaseController <T extends DatabaseItem> {
 	public final static String REDIRECT = "redirect:";
 
 	public final static String LIST_ACTION= "list";
+	public final static String LIST_ID_ACTION= "list_id";
 	public final static String UPDATE_ACTION= "update";
 	public final static String DELETE_ACTION= "delete";
 	public final static String CREATE_ACTION= "create";
 	public final static String SHOW_ACTION= "show";
-	public final static String LOGIN_ACTION = "/login"; 
+	public final static String LOGIN_ACTION = "/login";
 
 	public final static String PATH = "/";
 	public final static String PATH_LIST_FILE = PATH + LIST_ACTION ;
+	public final static String PATH_LIST_ID_FILE = PATH + LIST_ID_ACTION ;
 	public final static String PATH_UPDATE_FILE = PATH + UPDATE_ACTION ;
 	public final static String PATH_DELETE_FILE = PATH + DELETE_ACTION ;
 	public final static String PATH_CREATE_FILE = PATH + CREATE_ACTION ;
@@ -34,6 +36,7 @@ public abstract class BaseController <T extends DatabaseItem> {
 	public final static String ROUTE_DELETE = "{id}/"+ DELETE_ACTION;
 	public final static String ROUTE_CREATE = CREATE_ACTION;
 	public final static String ROUTE_SHOW = "{id}/"+ SHOW_ACTION;
+
 	public final static String ROUTE_LOGIN = LOGIN_ACTION;
 
 	@Autowired
@@ -98,21 +101,21 @@ public abstract class BaseController <T extends DatabaseItem> {
 		items = (ArrayList<T>) baseCrud.findAll();
 		return items;
 	}
-	
+
 	// Fonction permettant de s'authentifier en tant que user (retourne un PATH vers le show de user)
 	// A modifier
 	public String authentification(String login, String password){
-		
+
 		// Création d'un chemin de redirection
 		String road = "";
-		
+
 		// Création d'un nouvel utilisateur
 		User user = new User();
-		
+
 		// Récupération de tous les utilisateurs
 		ArrayList<T> items = null;
 		items = (ArrayList<T>) baseCrud.findAll();
-		
+
 		// Condition pour avoir le bon mot de passe de password
 		for (T object : items) {
 			if (((User) object).getLogin().equals(login) && ((User) object).getPassword().equals(password) ) {
@@ -128,9 +131,16 @@ public abstract class BaseController <T extends DatabaseItem> {
 		// On retourne le chemin de redirection
 		return road;
 	}
-	
-	
-	
-	
+
+
+	// CREATE FUNCTION RELATION 1-N
+
+//	public ArrayList<T> getChildForParent(T item){
+//
+//		Object object = DumpFields.createContentsEmpty(item.getClass());
+//
+//		((Ob) item).getNikoNiko()
+//
+//	}
 
 }

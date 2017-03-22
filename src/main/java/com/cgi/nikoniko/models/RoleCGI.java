@@ -25,12 +25,18 @@ public class RoleCGI extends DatabaseItem{
 	@Column(name = "role_name", nullable = false)
 	private String name;
 
+
+//	@ManyToMany(mappedBy = "roles")
+//	private Set<User> users;
+//
+//	@ManyToMany(mappedBy="roles")
+//	private Set<FunctionCGI> functionCGI;
+
 	@OneToMany
 	private Set<UserHasRole> users;
 
-	@ManyToMany
+	@OneToMany
 	private Set<RoleHasFunction> functionCGI;
-
 	/**
 	 *
 	 * @return name
