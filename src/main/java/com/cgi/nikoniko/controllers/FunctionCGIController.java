@@ -2,7 +2,6 @@ package com.cgi.nikoniko.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
 import com.cgi.nikoniko.models.FunctionCGI;
 

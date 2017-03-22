@@ -52,6 +52,7 @@ public class User extends SecurityUser {
 	@ManyToOne
 	private Verticale verticale;
 
+
 	/**
 	 * @return the lastname
 	 */

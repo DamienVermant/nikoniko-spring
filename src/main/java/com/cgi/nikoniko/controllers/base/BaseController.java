@@ -4,9 +4,11 @@ import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
+
 import com.cgi.nikoniko.dao.base.IBaseCrudRepository;
 import com.cgi.nikoniko.models.User;
 import com.cgi.nikoniko.models.modelbase.DatabaseItem;
+import com.cgi.nikoniko.utils.DumpFields;
 
 public abstract class BaseController <T extends DatabaseItem> {
 
@@ -17,7 +19,7 @@ public abstract class BaseController <T extends DatabaseItem> {
 	public final static String DELETE_ACTION= "delete";
 	public final static String CREATE_ACTION= "create";
 	public final static String SHOW_ACTION= "show";
-	public final static String LOGIN_ACTION = "/login";
+	public final static String LOGIN_ACTION = "/login"; 
 
 	public final static String PATH = "/";
 	public final static String PATH_LIST_FILE = PATH + LIST_ACTION ;
@@ -98,6 +100,7 @@ public abstract class BaseController <T extends DatabaseItem> {
 	}
 	
 	// Fonction permettant de s'authentifier en tant que user (retourne un PATH vers le show de user)
+	// A modifier
 	public String authentification(String login, String password){
 		
 		// Création d'un chemin de redirection
@@ -126,14 +129,8 @@ public abstract class BaseController <T extends DatabaseItem> {
 		return road;
 	}
 	
-	// CREATE FUNCTION RELATION 1-N
 	
-//	public ArrayList<T> getChildForParent(T item){
-//		
-//		Object object = DumpFields.createContentsEmpty(item.getClass());
-//		
-//		((Ob) item).getNikoNiko()
-//		
-//	}
+	
+	
 
 }
