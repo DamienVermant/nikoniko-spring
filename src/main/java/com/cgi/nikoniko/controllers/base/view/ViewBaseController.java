@@ -1,13 +1,23 @@
 package com.cgi.nikoniko.controllers.base.view;
 
+import java.util.ArrayList;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.cgi.nikoniko.controllers.TeamController;
 import com.cgi.nikoniko.controllers.base.BaseController;
+import com.cgi.nikoniko.dao.IUserCrudRepository;
+import com.cgi.nikoniko.dao.IUserHasTeamCrudRepository;
+import com.cgi.nikoniko.models.Team;
+import com.cgi.nikoniko.models.User;
+import com.cgi.nikoniko.models.UserHasTeam;
 import com.cgi.nikoniko.models.modelbase.DatabaseItem;
 import com.cgi.nikoniko.utils.DumpFields;
+import com.mysql.fabric.xmlrpc.base.Array;
 
 
 public abstract class ViewBaseController<T extends DatabaseItem> extends BaseController<T> {
@@ -32,6 +42,7 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 
 	private String loginView;
 	private String loginRedirect;
+
 
 	public ViewBaseController (Class<T> clazz, String baseURL) {
 		super(clazz);
@@ -119,7 +130,6 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 		return updateRedirect;
 	}
 
-
 	@RequestMapping(path = ROUTE_SHOW, method = RequestMethod.GET)
 	public String showItemGet(Model model,@PathVariable Long id) {
 		model.addAttribute("page",this.baseName + " " + SHOW_ACTION.toUpperCase());
@@ -141,4 +151,6 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 	public String loginPost(String login, String password) {
 		return authentification(login, password);
 	}
+
+
 }

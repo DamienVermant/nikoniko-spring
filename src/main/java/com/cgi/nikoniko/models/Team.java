@@ -1,6 +1,7 @@
 package com.cgi.nikoniko.models;
 
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Set;
 
@@ -64,6 +65,21 @@ public class Team extends DatabaseItem{
 
 	@OneToMany
 	private Set<UserHasTeam> teamHasUsers;
+	
+	// ADD TO TEST RELATIONS /////
+	
+	@Transient
+	private ArrayList<User> users;
+	
+	public ArrayList<User> getUsers() {
+		return users;
+	}
+
+	public void setUsers(ArrayList<User> users) {
+		this.users = users;
+	}
+	
+	/////////////////////////////
 
 	/**
 	 * @return the name

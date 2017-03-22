@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import com.cgi.nikoniko.dao.base.IBaseCrudRepository;
 import com.cgi.nikoniko.models.User;
 import com.cgi.nikoniko.models.modelbase.DatabaseItem;
+import com.cgi.nikoniko.utils.DumpFields;
 
 public abstract class BaseController <T extends DatabaseItem> {
 
@@ -102,6 +103,7 @@ public abstract class BaseController <T extends DatabaseItem> {
 	}
 
 	// Fonction permettant de s'authentifier en tant que user (retourne un PATH vers le show de user)
+	// A modifier
 	public String authentification(String login, String password){
 
 		// Création d'un chemin de redirection
@@ -129,6 +131,7 @@ public abstract class BaseController <T extends DatabaseItem> {
 		// On retourne le chemin de redirection
 		return road;
 	}
+
 
 	// CREATE FUNCTION RELATION 1-N
 

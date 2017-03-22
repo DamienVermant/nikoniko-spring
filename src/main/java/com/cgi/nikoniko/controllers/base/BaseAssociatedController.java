@@ -83,6 +83,7 @@ public abstract class BaseAssociatedController <T extends AssociationItem> {
 //		return item;
 //	}//TODO : a test is necessary to validate this part
 
+
 	public T getItem (Long idLeft, Long idRight) {
 		T item = null;
 		item = baseAssociatedCrud.findOne(new AssociationItemId(idLeft,idRight));
