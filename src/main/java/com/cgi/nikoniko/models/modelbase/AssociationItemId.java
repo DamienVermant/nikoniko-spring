@@ -1,4 +1,4 @@
-package com.cgi.nikoniko.models;
+package com.cgi.nikoniko.models.modelbase;
 
 import java.io.Serializable;
 

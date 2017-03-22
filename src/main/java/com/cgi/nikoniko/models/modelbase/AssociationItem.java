@@ -7,8 +7,6 @@ import javax.persistence.IdClass;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
-import com.cgi.nikoniko.models.AssociationItemId;
-
 @MappedSuperclass
 @IdClass(AssociationItemId.class)
 public abstract class AssociationItem implements Serializable{

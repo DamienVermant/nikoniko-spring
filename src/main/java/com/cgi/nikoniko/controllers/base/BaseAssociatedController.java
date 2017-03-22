@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.cgi.nikoniko.dao.base.IBaseAssociatedCrudRepository;
-import com.cgi.nikoniko.models.AssociationItemId;
 import com.cgi.nikoniko.models.UserHasTeam;
 import com.cgi.nikoniko.models.modelbase.AssociationItem;
+import com.cgi.nikoniko.models.modelbase.AssociationItemId;
 import com.cgi.nikoniko.models.modelbase.DatabaseItem;
 
 public abstract class BaseAssociatedController <T extends AssociationItem> {

@@ -160,6 +160,11 @@ public class User extends SecurityUser {
 	 */
 	public void setVerticale(Verticale verticale) {
 		this.verticale = verticale;
+		//TODO : mettre cette partie dans le getter peut donner un meilleur resultat
+//		if (!this.verticale.getUsers().contains(this)) {
+//			//TODO rajouter ce user a la verticale qui a ete set
+//			this.verticale.getUsers().add(this);
+//		}
 	}
 
 	/**
