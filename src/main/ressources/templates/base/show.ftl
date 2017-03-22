@@ -28,6 +28,7 @@
 			</#if>
 		</#list>
 	</table>
+	<a>Add user</a> <br>
 	<a href="${go_update}">Update</a> <br>
 	<a href="${go_delete}">Delete</a> <br>
 	<#if item["id"]??>

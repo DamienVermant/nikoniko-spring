@@ -21,6 +21,15 @@ import com.cgi.nikoniko.models.UserHasTeam;
 @RequestMapping(TeamController.BASE_URL)
 public class TeamController extends ViewBaseController<Team> {
 	
+	@Autowired
+	IUserHasTeamCrudRepository userTeamCrud;
+	
+	@Autowired
+	IUserCrudRepository userCrud;
+	
+	@Autowired
+	ITeamCrudRepository teamCrud;
+	
 	public final static String BASE_URL = "/team";
 
 	public TeamController() {
@@ -28,26 +37,20 @@ public class TeamController extends ViewBaseController<Team> {
 		// TODO Auto-generated constructor stub
 	}
 	
-	// TEST SHOW RELATIONS (TEAM HAS USER)
-	
+		// RELATIONS (TEAM HAS USER)
 		@RequestMapping(path = "{id}/" + "/showlink", method = RequestMethod.GET)
-		public String showLinksGet(Model model, @PathVariable Long id, Team item) { 
-			//model.addAttribute("usersFirstname", this.getUsersFirstname(this.setUsersForTeamGet(id)));
-			//model.addAttribute("usersLastname", this.getUsersLastname(this.setUsersForTeamGet(id)));
+		public <T> String showLinksGet(Model model, @PathVariable Long id) { 
+			
+			// Récupération de la team en fonction de l'objet souhaitée
+			Object teamBuffer = new Object();
+			teamBuffer = teamCrud.findOne(id);
+			
+			// On ajoute au model les champs nécessaires
 			model.addAttribute("fullName", this.getFullName(this.getUsersFirstname(this.setUsersForTeamGet(id)), this.getUsersLastname(this.setUsersForTeamGet(id))));
 			model.addAttribute("fields", User.FIELDS);
-			//model.addAttribute("namePage", ((Team) item).getName()); // DOES NOT WORK
+			model.addAttribute("page", ((Team) teamBuffer).getName()); // DOES NOT WORK
 			return "base" + "/showlink";
 		}
-		
-		@Autowired
-		IUserHasTeamCrudRepository userTeamCrud;
-		
-		@Autowired
-		IUserCrudRepository userCrud;
-		
-		@Autowired
-		ITeamCrudRepository teamCrud;
 
 		// FUNCTION RETURNING A LIST OF USER WITH THE ID OF TEAM
 		public ArrayList<User> setUsersForTeamGet(Long teamId) {
@@ -109,7 +112,7 @@ public class TeamController extends ViewBaseController<Team> {
 			return fullName;
 		}
 	
-		// CREATE A FUNCTION THAT SET NEW USER IN TEAM
+		// CREATE A FUNCTION THAT SET NEW USER IN TEAM 
 		public Team setUsersForTeam(Team team,User user){
 			
 			// On créer un object vide qui va contenir le nouvel user

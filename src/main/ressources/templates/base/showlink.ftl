@@ -5,7 +5,7 @@
 </head>
 
 <body>
-	<h1>USERS IN TEAM : </h1>
+	<h1>USERS IN TEAM : ${page}  </h1>
 		
 	<table class="table table-bordered table-hover">
 		
