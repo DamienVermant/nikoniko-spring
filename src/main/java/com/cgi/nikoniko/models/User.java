@@ -138,8 +138,8 @@ public class User extends SecurityUser {
 	/**
 	 * @return the teamsHasUsers
 	 */
-	public ArrayList<UserHasTeam> getTeamsHasUsers() {
-		return (ArrayList<UserHasTeam>)teamsHasUsers;
+	public Set<UserHasTeam> getTeamsHasUsers() {
+		return teamsHasUsers;
 	}
 
 	/**

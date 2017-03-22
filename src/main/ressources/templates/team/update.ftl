@@ -6,20 +6,25 @@
 
 <body>
 	<h1>${page}</h1>
+	<form action = "" method = "POST">
 	<table class="table table-bordered table-hover">
 		<#list sortedFields as field>
 			<#if field != "id">
-				<#list item?keys as key>
+				<#list items?keys as key>
 					<#if key == field>
 						<tr>
 							<th>${key}</th>
-							<#if item[key]?is_boolean>
+							<#if items[key]?is_boolean>
 								<td>
-									${item[key]?c}
+									<input type="text" name = "${key}">
+								</td>
+							<#elseif items[key]?is_date_like>
+								<td>
+									<input type="text" name = "${key}" value ="${items[key]?string("yyyy/MM/dd HH:mm:ss")}">
 								</td>
 							<#else>
 								<td>
-									${item[key]}
+									<input type="text" name = "${key}" value ="${items[key]}">
 								</td>
 							</#if>
 						</tr>
@@ -28,9 +33,9 @@
 			</#if>
 		</#list>
 	</table>
-	<a href="${go_update}">Update</a> <br>
-	<a href="${go_delete}">Delete</a> <br>
-	<#if item["id"]??>
+		<input type="submit" value="Update">
+	</form>
+	<#if items["id"]??>
 		<a href="../">Back</a>
 	<#else>
 		<a href="../..">Back</a>

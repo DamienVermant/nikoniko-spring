@@ -28,8 +28,16 @@
 			</#if>
 		</#list>
 	</table>
-	<a href="${go_update}">Update</a> <br>
-	<a href="${go_delete}">Delete</a> <br>
+	<form action = "${go_delete}" method = "POST">
+		<#if item["id"]??>
+			<input type="hidden" name = "id" value = "${item["id"]}">
+			<input type="submit" value="Delete"><br>
+		<#else>
+			<input type="hidden" name = "idl" value = "${item["idLeft"]}">
+			<input type="hidden" name = "idr" value = "${item["idRight"]}">
+			<input type="submit" value="Delete"><br>
+		</#if>
+	</form>
 	<#if item["id"]??>
 		<a href="../">Back</a>
 	<#else>

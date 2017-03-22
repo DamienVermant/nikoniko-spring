@@ -138,7 +138,8 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 		model.addAttribute("go_index", LIST_ACTION);
 		model.addAttribute("go_delete", DELETE_ACTION);
 		model.addAttribute("go_update", UPDATE_ACTION);
-		return showView;
+		model.addAttribute("show_users", "./showUsers");
+		return "team/show"; // changer en show view (on est toujours ici en generic, il faudra implanter cette fonction dans TeamController)
 	}
 
 	// ADD REDIRECTION LOGIN
