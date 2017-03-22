@@ -25,7 +25,8 @@ public class ChangeDates extends DatabaseItem {
 		@Column(name = "change_date", nullable = true)
 		private Date changeDate;
 
-		@ManyToOne
+		@ManyToOne(fetch=FetchType.LAZY)
+		@JoinColumn(name="NIKONIKO_ID")
 		private NikoNiko nikoniko;
 
 		/**

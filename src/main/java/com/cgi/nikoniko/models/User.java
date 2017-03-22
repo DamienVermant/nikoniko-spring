@@ -2,9 +2,12 @@ package com.cgi.nikoniko.models;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -12,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
 import com.cgi.nikoniko.models.security.SecurityUser;
 
 
@@ -59,7 +63,8 @@ public class User extends SecurityUser {
 	@OneToMany
 	private Set<UserHasTeam> teamsHasUsers;
 
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="VERTICALE_ID")
 	private Verticale verticale;
 
 
@@ -134,14 +139,14 @@ public class User extends SecurityUser {
 	/**
 	 * @return the roles
 	 */
-	public ArrayList<UserHasRole> getRoles() {
-		return (ArrayList<UserHasRole>)roles;
+	public Set<UserHasRole> getRoles() {
+		return (Set<UserHasRole>)roles;
 	}
 
 	/**
 	 * @param roles the roles to set
 	 */
-	public void setRoles(ArrayList<UserHasRole> roles) {
+	public void setRoles(Set<UserHasRole> roles) {
 		this.roles = (Set<UserHasRole>)roles;
 	}
 
@@ -188,8 +193,8 @@ public class User extends SecurityUser {
 	/**
 	 * @return the nikoNikos
 	 */
-	public ArrayList<NikoNiko> getNikoNikos() {
-		return (ArrayList<NikoNiko>)nikoNikos;
+	public Set<NikoNiko> getNikoNikos() {
+		return (Set<NikoNiko>)nikoNikos;
 	}
 
 	/**

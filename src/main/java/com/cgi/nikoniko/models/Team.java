@@ -7,6 +7,8 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -60,7 +62,8 @@ public class Team extends DatabaseItem{
 	@Column(name = "team_privacy", nullable = false)
 	private Boolean niko_privacy;
 
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="VERTICALE_ID")
 	private Verticale verticale;
 
 	@OneToMany
