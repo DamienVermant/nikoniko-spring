@@ -1,3 +1,5 @@
+<head>
+
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
 </head>
@@ -28,6 +30,9 @@
 	</table>
 	<a href="${go_update}">Update</a> <br>
 	<a href="${go_delete}">Delete</a> <br>
-	<a href="../">Back</a> <br>
-
+	<#if item["id"]??>
+		<a href="../">Back</a>
+	<#else>
+		<a href="../..">Back</a>
+	</#if>
 </body>

@@ -1,18 +1,12 @@
 package com.cgi.nikoniko.models;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import ch.qos.logback.core.joran.conditional.IfAction;
 
 import com.cgi.nikoniko.models.modelbase.AssociationItem;
 
@@ -84,7 +78,10 @@ public class UserHasTeam extends AssociationItem {
 		return team;
 	}
 
-	//No empty constructor!!!
+	public UserHasTeam () {
+		super(UserHasTeam.TABLE,UserHasTeam.FIELDS);
+	}
+
 	public UserHasTeam (User user, Team team) {
 		super(UserHasTeam.TABLE,UserHasTeam.FIELDS, user, team);
 		this.user = user;

@@ -7,8 +7,6 @@ import javax.persistence.IdClass;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
-import com.cgi.nikoniko.models.AssociationItemId;
-
 @MappedSuperclass
 @IdClass(AssociationItemId.class)
 public abstract class AssociationItem implements Serializable{
@@ -26,10 +24,24 @@ public abstract class AssociationItem implements Serializable{
 	private Long idRight;
 
 	/**
+	 * @param idLeft the idLeft to set
+	 */
+	public void setIdLeft(Long idLeft) {
+		this.idLeft = idLeft;
+	}
+
+	/**
 	 * @return the idLeft
 	 */
 	public Long getIdLeft() {
 		return idLeft;
+	}
+
+	/**
+	 * @param idRight the idRight to set
+	 */
+	public void setIdRight(Long idRight) {
+		this.idRight = idRight;
 	}
 
 	/**
@@ -47,5 +59,10 @@ public abstract class AssociationItem implements Serializable{
 	}
 
 	public AssociationItem() {
+	}
+
+	public AssociationItem(String table, String[] fields) {
+		this.table = table;
+		this.fields = fields;
 	}
 }
