@@ -44,12 +44,12 @@
 			<div class="text">Login :</div>
 			<form action = "" method = "POST">
 				<input type="texte" name="login" placeholder="Votre login"> <br>
-				<div class="text"> Mot de passe :</div> 
-					<input type="texte" name="password" placeholder="Votre mot de passe"> <br>
-					<input type="submit" value="Se connecter"><br>
-					<button class="buttons" onclick="affichage()" class="password"> Mot de passe oublié ?</button>
-				</div>
-			</form>
+				<div class="text"> Mot de passe : </div> 
+				<input type="texte" name="password" placeholder="Votre mot de passe"> 
+				<input type="submit" value="Se connecter"> </div>
+				<button class="buttons" onclick="affichage()" class="password"> Mot de passe oublié ?</button>
+				</form>
+			</div>
 		<div class="col-lg-4">
 		<div class="comment">
 			Bienvenue sur Niko Niko !

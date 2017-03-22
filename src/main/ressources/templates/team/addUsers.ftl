@@ -5,9 +5,7 @@
 </head>
 
 <body>
-	<h1>USERS IN TEAM : ${page}  </h1>
-		
-	<a href="${go_create}">Create new</a>
+	<h1>USERS TO ADD IN TEAM : ${page}  </h1>
 		<table class="table table-bordered table-hover">
 			<tr>
 				<#list items as item>
@@ -38,14 +36,12 @@
 					</#list>
 					<td>
 						<form action = "" method = "POST">
-							<input type="submit" value="Add">
+							<input type="hidden" name = "idUser" value = "${item["id"]}">
+							<input type="submit" value="add"><br>
 						</form>
 					</td>
 				</tr>
 			</#list>
 		</table>
-	
-	
 	<a href="${back}"> Back <a>		
-	
 </body>
