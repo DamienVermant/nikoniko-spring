@@ -1,5 +1,6 @@
 package com.cgi.nikoniko.models;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Set;
 
@@ -13,6 +14,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.cgi.nikoniko.models.modelbase.DatabaseItem;
+import com.cgi.nikoniko.utils.DumpFields;
 
 @Entity
 @Table(name = "nikoniko")
@@ -36,8 +38,9 @@ public class NikoNiko extends DatabaseItem {
 	@OneToMany(mappedBy = "nikoniko")
 	private Set<ChangeDates> changeDates;
 
-	@ManyToOne
-	private User user;
+	@ManyToOne//(fetch=FetchType.LAZY)
+	//@JoinColumn(name="USER_ID")
+	private User userN;
 
 	/**
 	 *
@@ -106,7 +109,7 @@ public class NikoNiko extends DatabaseItem {
 	 * @return user
 	 */
 	public User getUser() {
-		return user;
+		return userN;
 	}
 
 	/**
@@ -114,9 +117,16 @@ public class NikoNiko extends DatabaseItem {
 	 * @param user
 	 */
 	public void setUser(User user) {
-		this.user = user;
+		this.userN = user;
 	}
 
+//	public ArrayList<NikoNiko> getNikoNikoByUser(User user) {
+//
+//
+//		ArrayList<NikoNiko> niko = new ArrayList<NikoNiko>;
+//
+//		return niko;
+//	}
 
 	public NikoNiko() {
 		super(NikoNiko.TABLE, NikoNiko.FIELDS);
@@ -124,8 +134,8 @@ public class NikoNiko extends DatabaseItem {
 
 	public NikoNiko(User user, int mood, Date entry_date) {
 		this();
-		this.user = user;
-		this.user.getNikoNikos().add(this);
+		this.userN = user;
+		this.userN.getNikoNikos().add(this);
 		this.setMood(mood);
 		this.entry_date = entry_date;
 	}
