@@ -40,11 +40,6 @@ public abstract class BaseAssociatedController <T extends AssociationItem> {
 
 	private Class<T> clazz;
 
-
-	/**
-	 *
-	 * @return the clazz
-	 */
 	protected Class<T> getClazz(){
 		return clazz;
 	}
@@ -75,14 +70,6 @@ public abstract class BaseAssociatedController <T extends AssociationItem> {
 		}
 		return "Update : SUCCESS";
 	}
-
-
-//	public T getItem (DatabaseItem itemLeft, DatabaseItem itemRight) {
-//		T item = null;
-//		item = baseAssociatedCrud.findOne(new AssociationItemId(itemLeft.getId(),itemRight.getId()));
-//		return item;
-//	}//TODO : a test is necessary to validate this part
-
 
 	public T getItem (Long idLeft, Long idRight) {
 		T item = null;

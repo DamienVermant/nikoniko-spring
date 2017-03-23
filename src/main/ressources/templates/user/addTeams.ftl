@@ -1,12 +1,11 @@
-<head>
+ <head>
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
 </head>
 
 <body>
-	<h1>${page}</h1>
-	<a href="${go_create}">Create new</a>
+	<h1>TEAMS TO ADD FOR USER : ${page}  </h1>
 		<table class="table table-bordered table-hover">
 			<tr>
 				<#list items as item>
@@ -36,29 +35,13 @@
 						</#list>
 					</#list>
 					<td>
-						<#if item["id"]??>
-							<a href="${item["id"]}/${go_show}">Select</a>
-
-						<#else>
-							<a href="${item["idLeft"]}/${item["idRight"]}/${go_show}">Select</a>
-						</#if>
-					</td>
-					<td>
-						<#if item["id"]??>
-							<form action = "${item["id"]}/${go_delete}" method = "POST">
-								<input type="hidden" name = "id" value = "${item["id"]}">
-								<input type="submit" value="Delete">
-							</form>
-
-						<#else>
-							<form action = "${item["idLeft"]}/${item["idRight"]}/${go_delete}" method = "POST">
-								<input type="hidden" name = "idl" value = "${item["idLeft"]}">
-								<input type="hidden" name = "idr" value = "${item["idRight"]}">
-								<input type="submit" value="Delete">
-							</form>
-						</#if>
+						<form action = "" method = "POST">
+							<input type="hidden" name = "idTeam" value = "${item["id"]}">
+							<input type="submit" value="add"><br>
+						</form>
 					</td>
 				</tr>
 			</#list>
 		</table>
+	<a href="${back}"> Back <a>		
 </body>

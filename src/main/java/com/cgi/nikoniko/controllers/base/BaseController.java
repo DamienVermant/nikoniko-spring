@@ -133,14 +133,4 @@ public abstract class BaseController <T extends DatabaseItem> {
 	}
 
 
-	// CREATE FUNCTION RELATION 1-N
-
-//	public ArrayList<T> getChildForParent(T item){
-//
-//		Object object = DumpFields.createContentsEmpty(item.getClass());
-//
-//		((Ob) item).getNikoNiko()
-//
-//	}
-
 }
