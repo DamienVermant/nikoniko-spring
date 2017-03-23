@@ -1,12 +1,14 @@
 package com.cgi.nikoniko.controllers;
 
 import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
 import com.cgi.nikoniko.dao.base.IBaseCrudRepository;
-import com.cgi.nikoniko.models.User;
+import com.cgi.nikoniko.models.tables.User;
 
 @Controller
 @RequestMapping(LoginController.BASE_URL)

@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
-import com.cgi.nikoniko.models.ChangeDates;
-import com.cgi.nikoniko.models.NikoNiko;
-import com.cgi.nikoniko.models.User;
-import com.cgi.nikoniko.models.Verticale;
+import com.cgi.nikoniko.models.tables.ChangeDates;
+import com.cgi.nikoniko.models.tables.NikoNiko;
+import com.cgi.nikoniko.models.tables.User;
+import com.cgi.nikoniko.models.tables.Verticale;
 import com.cgi.nikoniko.utils.DumpFields;
 
 @Controller

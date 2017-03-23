@@ -16,9 +16,9 @@ import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
 import com.cgi.nikoniko.dao.ITeamCrudRepository;
 import com.cgi.nikoniko.dao.IUserCrudRepository;
 import com.cgi.nikoniko.dao.IUserHasTeamCrudRepository;
-import com.cgi.nikoniko.models.Team;
-import com.cgi.nikoniko.models.User;
-import com.cgi.nikoniko.models.UserHasTeam;
+import com.cgi.nikoniko.models.association.UserHasTeam;
+import com.cgi.nikoniko.models.tables.Team;
+import com.cgi.nikoniko.models.tables.User;
 import com.cgi.nikoniko.utils.DumpFields;
 
 @Controller

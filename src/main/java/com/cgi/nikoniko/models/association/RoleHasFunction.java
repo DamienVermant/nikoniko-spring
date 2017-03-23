@@ -1,20 +1,21 @@
-package com.cgi.nikoniko.models;
+package com.cgi.nikoniko.models.association;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import com.cgi.nikoniko.models.modelbase.AssociationItem;
+import com.cgi.nikoniko.models.association.base.AssociationItem;
+import com.cgi.nikoniko.models.tables.FunctionCGI;
+import com.cgi.nikoniko.models.tables.RoleCGI;
 
 @Entity
-@Table(name = "role_has_function")
+@Table(name = RoleHasFunction.TABLE)
 public class RoleHasFunction extends AssociationItem {
 
-	@Transient
+	@Transient //naming convention : LeftTableName_has_RightTableName
 	public static final String TABLE = "role_has_function";
 
-	@Transient
+	@Transient //FIELDS filling convention : {idLeft,idRight, Other attributes...}
 	public static final String[] FIELDS = {"idLeft", "idRight"};
 
 	@Transient
@@ -24,6 +25,22 @@ public class RoleHasFunction extends AssociationItem {
 	@Transient
 	@ManyToOne
 	private FunctionCGI function;
+
+	/**
+	 *
+	 * @return the role
+	 */
+	public RoleCGI getRole() {
+		return role;
+	}
+
+	/**
+	 *
+	 * @return the function
+	 */
+	public FunctionCGI getFunction() {
+		return function;
+	}
 
 	public RoleHasFunction() {
 		super(RoleHasFunction.TABLE,RoleHasFunction.FIELDS);
@@ -36,4 +53,5 @@ public class RoleHasFunction extends AssociationItem {
 		this.role = role;
 		this.role.getFunctionCGI().add(this);
 	}
+
 }

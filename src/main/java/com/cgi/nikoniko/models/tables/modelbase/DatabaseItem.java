@@ -1,7 +1,6 @@
-package com.cgi.nikoniko.models.modelbase;
+package com.cgi.nikoniko.models.tables.modelbase;
 
 import java.io.Serializable;
-
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,6 +21,7 @@ public abstract class DatabaseItem implements Serializable {
 	private Long id;
 
 	/**
+	 *
 	 * @return the id
 	 */
 	public Long getId() {
@@ -29,8 +29,8 @@ public abstract class DatabaseItem implements Serializable {
 	}
 
 	/**
-	 * @param id
-	 *            the id to set
+	 *
+	 * @param id : the id to set
 	 */
 	public void setId(Long id) {
 		if (id>0){
@@ -38,7 +38,6 @@ public abstract class DatabaseItem implements Serializable {
 		}else {
 			this.id = null;
 		}
-
 	}
 
 	public DatabaseItem(String table, String[] fields) {
@@ -48,4 +47,5 @@ public abstract class DatabaseItem implements Serializable {
 
 	public DatabaseItem() {
 	}
+
 }

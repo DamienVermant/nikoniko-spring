@@ -1,18 +1,16 @@
-package com.cgi.nikoniko.models;
+package com.cgi.nikoniko.models.tables;
 
-
+import java.util.ArrayList;
 import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import com.cgi.nikoniko.models.modelbase.DatabaseItem;
+import com.cgi.nikoniko.models.tables.modelbase.DatabaseItem;
 
 @Entity
-@Table(name = "verticale")
+@Table(name = Verticale.TABLE)
 public class Verticale extends DatabaseItem{
 
 	@Transient
@@ -21,10 +19,10 @@ public class Verticale extends DatabaseItem{
 	@Transient
 	public static final String[] FIELDS = { "id", "agency", "name" };
 
-	@Column(name = "verticale_agency", nullable = false)
+	@Column(name = "agency", nullable = false)
 	private String agency;
 
-	@Column(name = "verticale_name", nullable = false)
+	@Column(name = "name", nullable = false)
 	private String name;
 
 	@OneToMany(mappedBy = "verticale")
@@ -77,8 +75,8 @@ public class Verticale extends DatabaseItem{
 	 *
 	 * @param team
 	 */
-	public void setTeams(Set<Team> teams) {
-		this.teams = teams;
+	public void setTeams(ArrayList<Team> teams) {
+		this.teams = (Set<Team>) teams;
 	}
 
 	/**
@@ -93,8 +91,8 @@ public class Verticale extends DatabaseItem{
 	 *
 	 * @param users
 	 */
-	public void setUsers(Set<User> users) {
-		this.users = users;
+	public void setUsers(ArrayList<User> users) {
+		this.users = (Set<User>) users;
 	}
 
 	public Verticale(){

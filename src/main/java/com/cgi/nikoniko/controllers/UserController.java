@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
 import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
-import com.cgi.nikoniko.models.NikoNiko;
-import com.cgi.nikoniko.models.User;
+import com.cgi.nikoniko.models.tables.NikoNiko;
+import com.cgi.nikoniko.models.tables.User;
 import com.cgi.nikoniko.utils.DumpFields;
 
 @Controller

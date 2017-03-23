@@ -1,4 +1,4 @@
-package com.cgi.nikoniko.models;
+package com.cgi.nikoniko.models.association;
 
 import java.util.Date;
 import javax.persistence.Column;
@@ -6,19 +6,19 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import com.cgi.nikoniko.models.modelbase.AssociationItem;
+import com.cgi.nikoniko.models.association.base.AssociationItem;
+import com.cgi.nikoniko.models.tables.Team;
+import com.cgi.nikoniko.models.tables.User;
 
 @Entity
-@Table(name = "user_has_team")
+@Table(name = UserHasTeam.TABLE)
 public class UserHasTeam extends AssociationItem {
 
-	@Transient //nom de table toujours tableDeGauche_has_tableDeDroite
-	public static final String TABLE = "user_has_team";//ou creer TABLE_LEFT et TABLE_RIGHT
+	@Transient //naming convention : LeftTableName_has_RightTableName
+	public static final String TABLE = "user_has_team";
 
-	@Transient //convention {idLeft,idRight, Other attributes...}
+	@Transient //FIELDS filling convention : {idLeft,idRight, Other attributes...}
 	public static final String[] FIELDS = {"idLeft", "idRight", "arrivalDate", "leavingDate"};
-	//TODO : fonction generation des noms des idLeft et IdRight pour le viewer
 
 	@Column(nullable = false, name = "arrival_date")
 	private Date arrivalDate;
@@ -34,8 +34,8 @@ public class UserHasTeam extends AssociationItem {
 	@ManyToOne
 	private Team team;
 
-
 	/**
+	 *
 	 * @return the arrivalDate
 	 */
 	public Date getArrivalDate() {
@@ -43,6 +43,7 @@ public class UserHasTeam extends AssociationItem {
 	}
 
 	/**
+	 *
 	 * @param arrivalDate the arrivalDate to set
 	 */
 	public void setArrivalDate(Date arrivalDate) {
@@ -50,6 +51,7 @@ public class UserHasTeam extends AssociationItem {
 	}
 
 	/**
+	 *
 	 * @return the leavingDate
 	 */
 	public Date getLeavingDate() {
@@ -57,6 +59,7 @@ public class UserHasTeam extends AssociationItem {
 	}
 
 	/**
+	 *
 	 * @param leavingDate the leavingDate to set
 	 */
 	public void setLeavingDate(Date leavingDate) {
@@ -64,6 +67,7 @@ public class UserHasTeam extends AssociationItem {
 	}
 
 	/**
+	 *
 	 * @return the user
 	 */
 	public User getUser() {
@@ -71,6 +75,7 @@ public class UserHasTeam extends AssociationItem {
 	}
 
 	/**
+	 *
 	 * @return the team
 	 */
 	public Team getTeam() {
@@ -84,9 +89,9 @@ public class UserHasTeam extends AssociationItem {
 	public UserHasTeam (User user, Team team) {
 		super(UserHasTeam.TABLE,UserHasTeam.FIELDS, user, team);
 		this.user = user;
-		this.user.getTeamsHasUsers().add(this);
+		this.user.getUserHasTeams().add(this);
 		this.team = team;
-		this.team.getTeamHasUsers().add(this);
+		this.team.getUserHasTeams().add(this);
 		this.arrivalDate = new Date();
 	}
 

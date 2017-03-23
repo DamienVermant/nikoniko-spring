@@ -1,7 +1,6 @@
-package com.cgi.nikoniko.models;
+package com.cgi.nikoniko.models.tables;
 
 import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,24 +8,23 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import com.cgi.nikoniko.models.modelbase.DatabaseItem;
+import com.cgi.nikoniko.models.tables.modelbase.DatabaseItem;
 
 @Entity
-@Table(name = "change_dates")
+@Table(name = ChangeDates.TABLE)
 public class ChangeDates extends DatabaseItem {
 
 		@Transient
-		public static final String TABLE = "change_date";
+		public static final String TABLE = "change_dates";
 
 		@Transient
 		public static final String[] FIELDS = { "id", "changeDate", "nikoniko_id"};
 
-		@Column(name = "change_date", nullable = true)
+		@Column(name = "change_date", nullable = false)
 		private Date changeDate;
 
 		@ManyToOne(fetch=FetchType.LAZY)
-		@JoinColumn(name="NIKONIKO_ID")
+		@JoinColumn(name="nikoniko_id")
 		private NikoNiko nikoniko;
 
 		/**
@@ -65,17 +63,15 @@ public class ChangeDates extends DatabaseItem {
 			super(ChangeDates.TABLE, ChangeDates.FIELDS);
 		}
 
-		public ChangeDates(NikoNiko nikoniko) {
+		public ChangeDates(Date changeDate, NikoNiko nikoniko) {
 			this();
-			this.changeDate = new Date();
+			this.changeDate = changeDate;
 			this.nikoniko = nikoniko;
 			this.nikoniko.getChangeDates().add(this);
 		}
 
-		public ChangeDates(Date changeDate, NikoNiko nikoniko) {
-			this(nikoniko);
-			this.changeDate = changeDate;
-//			this.nikoniko = nikoniko;
-//			this.nikoniko.getChangeDates().add(this);
+		public ChangeDates(NikoNiko nikoniko) {
+			this(new Date(), nikoniko);
 		}
+
 }

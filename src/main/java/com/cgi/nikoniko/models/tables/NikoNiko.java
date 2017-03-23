@@ -1,9 +1,8 @@
-package com.cgi.nikoniko.models;
+package com.cgi.nikoniko.models.tables;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,24 +11,22 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import com.cgi.nikoniko.models.modelbase.DatabaseItem;
-import com.cgi.nikoniko.utils.DumpFields;
+import com.cgi.nikoniko.models.tables.modelbase.DatabaseItem;
 
 @Entity
-@Table(name = "nikoniko")
+@Table(name = NikoNiko.TABLE)
 public class NikoNiko extends DatabaseItem {
 
 	@Transient
 	public static final String TABLE = "nikoniko";
 
 	@Transient
-	public static final String[] FIELDS = { "id", "entry_date", "mood", "comment", "id_user"};
+	public static final String[] FIELDS = { "id", "entry_date", "mood", "comment", "user_id"};
 
-	@Column(name = "nikoniko_mood", nullable = false)
+	@Column(name = "mood", nullable = false)
 	private int mood;
 
-	@Column(name = "nikoniko_entry_date", nullable = false)
+	@Column(name = "entry_date", nullable = false)
 	private Date entry_date;
 
 	@Column(name = "nikoniko_comment", nullable = true)
@@ -39,7 +36,7 @@ public class NikoNiko extends DatabaseItem {
 	private Set<ChangeDates> changeDates;
 
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="USER_ID")
+	@JoinColumn(name="user_id")
 	private User user;
 
 	/**
@@ -54,8 +51,8 @@ public class NikoNiko extends DatabaseItem {
 	 *
 	 * @param mood
 	 */
-	public void setMood(int mood) {
-		this.mood = NikoNikoSatisfaction.satisfactionRule(mood);
+	public void setMood(int mood) {//TODO : find a way to import sticker number from team (here default is 3)
+		this.mood = NikoNikoSatisfaction.satisfactionRule(mood,3);
 	}
 
 	/**
@@ -100,8 +97,8 @@ public class NikoNiko extends DatabaseItem {
 	 *
 	 * @param changeDates
 	 */
-	public void setChangeDates(Set<ChangeDates> changeDates) {
-		this.changeDates = changeDates;
+	public void setChangeDates(ArrayList<ChangeDates> changeDates) {
+		this.changeDates = (Set<ChangeDates>)changeDates;
 	}
 
 	/**
@@ -141,15 +138,15 @@ public class NikoNiko extends DatabaseItem {
 		this.comment = comment;
 	}
 
+	//Class to check if given satisfaction is valid with our configuration
 	private static class NikoNikoSatisfaction {
 
-		public static final int[] satisfactionItems = { 1, 2, 3 };
 		public static final int defaultSatisfactionError = 0;
 
-		public static Boolean inSatisfactionItems(int satisfaction) {
+		public static Boolean inSatisfactionItems(int satisfaction, int maxSatisfaction) {
 			Boolean flag = false;
-			for (int i = 0; i < satisfactionItems.length; i++) {
-				if (satisfaction == satisfactionItems[i]) {
+			for (int i = 0; i < maxSatisfaction+1; i++) {
+				if (satisfaction == i) {
 					flag = true;
 					break;
 				}
@@ -157,15 +154,15 @@ public class NikoNiko extends DatabaseItem {
 			return flag;
 		}
 
-		public static int satisfactionRule(int satisfaction) {
-			if (inSatisfactionItems(satisfaction)) {
+		public static int satisfactionRule(int satisfaction, int maxSatisfaction) {
+			if (inSatisfactionItems(satisfaction, maxSatisfaction)) {
 				return satisfaction;
 			} else {
 				String error = "Error satisfaction not in ";
-				for (int i = 0; i < satisfactionItems.length - 1; i++) {
-					error += satisfactionItems[i] + ", ";
+				for (int i = 1; i < maxSatisfaction; i++) {
+					error += i + ", ";
 				}
-				error += satisfactionItems[satisfactionItems.length - 1] + ".";
+				error += maxSatisfaction + ".";
 				System.err.println(error);
 				return defaultSatisfactionError;
 			}
