@@ -77,6 +77,7 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("show_teams", DOT + PATH + SHOW_TEAM);
 		model.addAttribute("go_delete", DELETE_ACTION);
 		model.addAttribute("go_update", UPDATE_ACTION);
+		
 		return BASE_USER + PATH + SHOW_PATH;
 	}
 
@@ -115,6 +116,7 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("show_teams", DOT + PATH + SHOW_TEAM);
 		model.addAttribute("back", DOT + PATH + SHOW_PATH);
 		model.addAttribute("add", "addTeams");
+		
 		return BASE_USER + PATH + SHOW_TEAM;
 	}
 	
@@ -145,6 +147,7 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("go_delete", DELETE_ACTION);
 		model.addAttribute("back", DOT + PATH + SHOW_TEAM);
 		model.addAttribute("add", ADD_TEAM);
+		
 		return BASE_USER + PATH + ADD_TEAM;
 	}
 	

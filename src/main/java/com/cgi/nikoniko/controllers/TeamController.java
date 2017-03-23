@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,20 +20,12 @@ import com.cgi.nikoniko.dao.IUserHasTeamCrudRepository;
 import com.cgi.nikoniko.models.Team;
 import com.cgi.nikoniko.models.User;
 import com.cgi.nikoniko.models.UserHasTeam;
+import com.cgi.nikoniko.models.modelbase.AssociationItemId;
 import com.cgi.nikoniko.utils.DumpFields;
 
 @Controller
 @RequestMapping(TeamController.BASE_URL)
 public class TeamController extends ViewBaseController<Team> {
-	
-	@Autowired
-	IUserHasTeamCrudRepository userTeamCrud;
-	
-	@Autowired
-	IUserCrudRepository userCrud;
-	
-	@Autowired
-	ITeamCrudRepository teamCrud;
 	
 	public final static String DOT = ".";
 	public final static String PATH = "/";
@@ -45,6 +38,15 @@ public class TeamController extends ViewBaseController<Team> {
 	public final static String ADD_USER = "addUsers";
 	
 	public final static String REDIRECT = "redirect:";
+	
+	@Autowired
+	IUserHasTeamCrudRepository userTeamCrud;
+	
+	@Autowired
+	IUserCrudRepository userCrud;
+	
+	@Autowired
+	ITeamCrudRepository teamCrud;
 	
 	public TeamController() {
 		super(Team.class, BASE_URL);
@@ -62,7 +64,7 @@ public class TeamController extends ViewBaseController<Team> {
 			model.addAttribute("page","TEAM : " + teamBuffer.getName());
 			model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
 			model.addAttribute("item",DumpFields.fielder(super.getItem(id)));
-			model.addAttribute("show_users", "./showUser");
+			model.addAttribute("show_users", DOT + PATH + SHOW_USER);
 			model.addAttribute("go_index", LIST_ACTION);
 			model.addAttribute("go_delete", DELETE_ACTION);
 			model.addAttribute("go_update", UPDATE_ACTION);
@@ -76,13 +78,14 @@ public class TeamController extends ViewBaseController<Team> {
 		 * @param id
 		 * @return
 		 */
-		@RequestMapping(path = "{id}" + PATH + SHOW_USER, method = RequestMethod.GET)
-		public <T> String showLinksGet(Model model, @PathVariable Long id) { 
+		@RequestMapping(path = "{idTeam}" + PATH + SHOW_USER, method = RequestMethod.GET)
+		public <T> String showLinksGet(Model model, @PathVariable Long idTeam) { 
 			
 			Team teamBuffer = new Team();
-			teamBuffer = teamCrud.findOne(id);
+			teamBuffer = teamCrud.findOne(idTeam);
 			
-			model.addAttribute("items", DumpFields.listFielder(this.setUsersForTeamGet(id)));
+			//model.addAttribute("items", DumpFields.listFielder(this.setUsersForTeamGet(id)));
+			model.addAttribute("items",this.UserInTeam(idTeam));
 			model.addAttribute("sortedFields",User.FIELDS);
 			model.addAttribute("page", ((Team) teamBuffer).getName()); 
 			model.addAttribute("go_show", SHOW_ACTION);
@@ -92,6 +95,14 @@ public class TeamController extends ViewBaseController<Team> {
 			model.addAttribute("add", "addUsers");
 			
 			return BASE_TEAM + PATH + SHOW_USER;
+		}
+		
+		/**
+		 * SHOW POST THAT UPDATE USER RELATION WITH TEAM WHEN A USER QUIT A TEAM
+		 */
+		@RequestMapping(path = "{idTeam}" + PATH + SHOW_USER, method = RequestMethod.POST)
+		public String showItemPost(Model model,@PathVariable Long idTeam, Long idUser) {
+			return quitTeam(idUser, idTeam);
 		}
 		
 		/**
@@ -113,7 +124,7 @@ public class TeamController extends ViewBaseController<Team> {
 			model.addAttribute("go_create", CREATE_ACTION);
 			model.addAttribute("go_delete", DELETE_ACTION);
 			model.addAttribute("back", "./showUser");
-			model.addAttribute("add", "addUsers");
+			model.addAttribute("add", ADD_USER);
 			
 			return BASE_TEAM + PATH + ADD_USER;
 		}
@@ -161,7 +172,7 @@ public class TeamController extends ViewBaseController<Team> {
 		 */
 		public String setUsersForTeamPost(Long idTeam,Long idUser){
 			
-			String redirect = REDIRECT + PATH + BASE_TEAM + idUser + PATH + SHOW_USER;
+			String redirect = REDIRECT + PATH + BASE_TEAM + PATH + idTeam + PATH + SHOW_USER;
 			
 			Team team = new Team();
 			team = teamCrud.findOne(idTeam);
@@ -175,5 +186,54 @@ public class TeamController extends ViewBaseController<Team> {
 			
 			return redirect;
 			
+		}
+		
+		
+		/**
+		 * UPDATE USER_HAS_TEAM (leaving_date) WHEN A TEAM DELETE AN USER FROM HIS OWN
+		 * @param idUser
+		 * @param idTeam
+		 * @return
+		 */
+		public String quitTeam(Long idUser, Long idTeam){
+			
+			String redirect = REDIRECT + PATH + BASE_TEAM + PATH + idTeam + PATH + SHOW_USER;
+			
+			Date date = new Date();
+			
+			UserHasTeam userHasTeamBuffer = userTeamCrud.findOne(new AssociationItemId(idUser, idTeam));
+			userHasTeamBuffer.setLeavingDate(date);
+			
+			userTeamCrud.save(userHasTeamBuffer);
+			
+			return redirect;
+		}
+		
+		/**
+		 * FUNCTION RETURNING ALL TEAM RELATED WITH ONE USER WITH leaving_date = null
+		 * @param idUser
+		 * @return
+		 */
+		public ArrayList<Map<String, Object>> UserInTeam(Long idTeam){
+			
+			ArrayList<Long> ids = new ArrayList<Long>();
+			ArrayList<User> userList = new ArrayList<User>();
+			ArrayList<UserHasTeam> userHasTeamList = new ArrayList<UserHasTeam>();
+			ArrayList<UserHasTeam> userHasTeamListClean = new ArrayList<UserHasTeam>();
+			
+			userList = setUsersForTeamGet(idTeam);
+			
+			for (int i = 0; i < userList.size(); i++) {
+				userHasTeamList.add(userTeamCrud.findAssociatedUserTeamALL(userList.get(i).getId(), idTeam));
+				
+				if(userHasTeamList.get(i).getLeavingDate() == null){
+					
+					userHasTeamListClean.add(userHasTeamList.get(i));
+					ids.add(userHasTeamList.get(i).getIdLeft());
+					
+					}
+			}
+			
+			return DumpFields.listFielder((List<User>) userCrud.findAll(ids));
 		}
 }

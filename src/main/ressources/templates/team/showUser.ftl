@@ -37,7 +37,8 @@
 					</#list>
 					<td>
 						<form action = "" method = "POST">
-							<input type="hidden" name = "id" value = "${item["id"]}">
+							<input type="hidden" name = "idUser" value = "${item["id"]}">
+							<input type="submit" value="Enlever"><br>
 						</form>
 					</td>
 				</tr>
