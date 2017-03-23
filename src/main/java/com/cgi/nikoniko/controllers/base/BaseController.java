@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.cgi.nikoniko.dao.base.IBaseCrudRepository;
-import com.cgi.nikoniko.models.User;
-import com.cgi.nikoniko.models.modelbase.DatabaseItem;
+import com.cgi.nikoniko.models.tables.User;
+import com.cgi.nikoniko.models.tables.modelbase.DatabaseItem;
 import com.cgi.nikoniko.utils.DumpFields;
 
 public abstract class BaseController <T extends DatabaseItem> {

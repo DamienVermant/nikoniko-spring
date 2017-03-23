@@ -4,7 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
-import com.cgi.nikoniko.models.RoleCGI;
+import com.cgi.nikoniko.models.tables.RoleCGI;
 
 @Controller
 @RequestMapping(RoleCGIController.BASE_URL)

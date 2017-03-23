@@ -1,17 +1,14 @@
-package com.cgi.nikoniko.models.modelbase;
+package com.cgi.nikoniko.models.association.base;
 
 import java.io.Serializable;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Embeddable;
-import javax.persistence.ManyToOne;
-
-@Embeddable
 public class AssociationItemId implements Serializable {
+
 	private Long idLeft;
 	private Long idRight;
 
 	/**
+	 *
 	 * @return the idLeft
 	 */
 	public Long getIdLeft() {
@@ -19,19 +16,19 @@ public class AssociationItemId implements Serializable {
 	}
 
 	/**
+	 *
 	 * @return the idRight
 	 */
 	public Long getIdRight() {
 		return idRight;
 	}
 
+	public AssociationItemId (){
+	}
+
 	public AssociationItemId (Long idLeft, Long idRight){
 		this.idLeft = idLeft;
 		this.idRight = idRight;
-	}
-
-	public AssociationItemId (){
-
 	}
 
 	@Override
@@ -62,4 +59,5 @@ public class AssociationItemId implements Serializable {
 			return false;
 		return true;
 	}
+
 }

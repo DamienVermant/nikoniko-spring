@@ -4,7 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cgi.nikoniko.controllers.base.view.ViewBaseAssociatedController;
-import com.cgi.nikoniko.models.RoleHasFunction;
+import com.cgi.nikoniko.models.association.RoleHasFunction;
 
 @Controller
 @RequestMapping(RoleHasFunctionController.BASE_URL)

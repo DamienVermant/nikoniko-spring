@@ -4,7 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
-import com.cgi.nikoniko.models.ChangeDates;
+import com.cgi.nikoniko.models.tables.ChangeDates;
 
 @Controller
 @RequestMapping(ChangeDatesController.BASE_URL)

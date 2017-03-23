@@ -18,7 +18,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import com.cgi.nikoniko.models.modelbase.DatabaseItem;
+import com.cgi.nikoniko.models.tables.modelbase.DatabaseItem;
 
 public class DumpFields {
 	public static <T> ArrayList<String> inspectBaseAttribut(Class<T> klazz) {

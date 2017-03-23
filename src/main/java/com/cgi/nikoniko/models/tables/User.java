@@ -1,28 +1,23 @@
-package com.cgi.nikoniko.models;
+package com.cgi.nikoniko.models.tables;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import com.cgi.nikoniko.models.security.SecurityUser;
-
-
+import com.cgi.nikoniko.models.association.UserHasRole;
+import com.cgi.nikoniko.models.association.UserHasTeam;
+import com.cgi.nikoniko.models.tables.security.SecurityUser;
 
 @Entity
-@Table(name = "user")
+@Table(name = User.TABLE)
 public class User extends SecurityUser {
 
     public static final char SEX_MALE = 'M';
@@ -36,36 +31,31 @@ public class User extends SecurityUser {
 	public static final String[] FIELDS = { "id", "lastname", "firstname", "sex", "registration_cgi",
 											"login", "password","verticale_id"};
 
-	@Column(name = "user_lastname", nullable = false)
+	@Column(name = "lastname", nullable = false)
 	private String lastname;
 
-	@Column(name = "user_firstname", nullable = false)
+	@Column(name = "firstname", nullable = false)
 	private String firstname;
 
-	@Column(name = "user_sex", nullable = false)
+	@Column(name = "sex", nullable = true)
 	private char sex;
 
-	@Column(name = "user_registration", nullable = false)
+	@Column(name = "registration_number", nullable = false, unique = true)
 	private String registration_cgi;
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
 	private Set<NikoNiko> nikoNikos;
 
-//	@ManyToMany
-//	@JoinTable(
-//		      name="user_role",
-//		      joinColumns=@JoinColumn(name="user_id", referencedColumnName="id"),
-//		      inverseJoinColumns=@JoinColumn(name="role_id", referencedColumnName="id"))
-//	private Set<RoleCGI> roles;
-
+	@Transient
 	@OneToMany
 	private Set<UserHasRole> roles;
 
+	@Transient
 	@OneToMany
-	private Set<UserHasTeam> teamsHasUsers;
+	private Set<UserHasTeam> userHasTeams;
 
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="VERTICALE_ID")
+	@JoinColumn(name="verticale_id")
 	private Verticale verticale;
 
 
@@ -74,29 +64,6 @@ public class User extends SecurityUser {
 	 */
 	public String getLastname() {
 		return lastname;
-	}
-
-	/**
-	 * @return the sex
-	 */
-	public char getSex() {
-		return sex;
-	}
-
-	/**
-	 * @param sex
-	 *            the sex to set
-	 */
-	public void setSex(char sex) {
-	    switch (sex) {
-	    case User.SEX_MALE:
-	    case User.SEX_FEMALE:
-	    case User.SEX_UNDEFINNED:
-	        this.sex = sex;
-	        break;
-        default:
-            throw new InvalidParameterException();
-	    }
 	}
 
 	/**
@@ -123,6 +90,30 @@ public class User extends SecurityUser {
 	}
 
 	/**
+	 *
+	 * @return the sex
+	 */
+	public char getSex() {
+		return sex;
+	}
+
+	/**
+	 *
+	 * @param sex : the sex to set
+	 */
+	public void setSex(char sex) {
+	    switch (sex) {
+	    case User.SEX_MALE:
+	    case User.SEX_FEMALE:
+	    case User.SEX_UNDEFINNED:
+	        this.sex = sex;
+	        break;
+        default:
+            throw new InvalidParameterException();
+	    }
+	}
+
+	/**
 	 * @return the registration_cgi
 	 */
 	public String getRegistration_cgi() {
@@ -138,31 +129,45 @@ public class User extends SecurityUser {
 	}
 
 	/**
+	 * @return the nikoNikos
+	 */
+	public Set<NikoNiko> getNikoNikos() {
+		return nikoNikos;
+	}
+
+	/**
+	 * @param nikoNikos the nikoNikos to set
+	 */
+	public void setNikoNikos(ArrayList<NikoNiko> nikoNikos) {
+		this.nikoNikos = (Set<NikoNiko>)nikoNikos;
+	}
+
+	/**
 	 * @return the roles
 	 */
 	public Set<UserHasRole> getRoles() {
-		return (Set<UserHasRole>)roles;
+		return roles;
 	}
 
 	/**
 	 * @param roles the roles to set
 	 */
-	public void setRoles(Set<UserHasRole> roles) {
+	public void setRoles(ArrayList<UserHasRole> roles) {
 		this.roles = (Set<UserHasRole>)roles;
 	}
 
 	/**
-	 * @return the teamsHasUsers
+	 * @return the userHasTeams
 	 */
-	public Set<UserHasTeam> getTeamsHasUsers() {
-		return teamsHasUsers;
+	public Set<UserHasTeam> getUserHasTeams() {
+		return userHasTeams;
 	}
 
 	/**
-	 * @param teamsHasUsers the teamsHasUsers to set
+	 * @param userHasTeams : the userHasTeams to set
 	 */
-	public void setTeamsHasUsers(ArrayList<UserHasTeam> teamsHasUsers) {
-		this.teamsHasUsers = (Set<UserHasTeam>)teamsHasUsers;
+	public void setUserHasTeams(ArrayList<UserHasTeam> teamsHasUsers) {
+		this.userHasTeams = (Set<UserHasTeam>)teamsHasUsers;
 	}
 
 	/**
@@ -173,7 +178,7 @@ public class User extends SecurityUser {
 	}
 
 	/**
-	 * @param verticale the verticale to set
+	 * @param verticale : the verticale to set
 	 */
 	public void setVerticale(Verticale verticale) {
 		this.verticale = verticale;
@@ -184,36 +189,13 @@ public class User extends SecurityUser {
 //		}
 	}
 
-	/**
-	 * @param nikoNikos the nikoNikos to set
-	 */
-	public void setNikoNikos(Set<NikoNiko> nikoNikos) {
-		this.nikoNikos = nikoNikos;
-	}
-
-	/**
-	 * @return the nikoNikos
-	 */
-	public Set<NikoNiko> getNikoNikos() {
-		return (Set<NikoNiko>)nikoNikos;
-	}
-
-	/**
-	 * @param nikoNikos
-	 *            the nikoNikos to set
-	 */
-	public void setNikoNikos(ArrayList<NikoNiko> nikoNikos) {
-		this.nikoNikos = (Set<NikoNiko>)nikoNikos;
-	}
-
-
 	public User() {
 		super(User.TABLE, User.FIELDS);
 	}
 
 	public User (Verticale  verticale, String registration_cgi, String login, String password) {
 		super(User.TABLE, User.FIELDS, login, password);
-		this.registration_cgi = registration_cgi;//TODO : implement verification of unicity of this attribute
+		this.registration_cgi = registration_cgi;
 		this.verticale = verticale;
 		this.verticale.getUsers().add(this);
 	}

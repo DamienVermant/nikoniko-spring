@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.cgi.nikoniko.dao.base.IBaseAssociatedCrudRepository;
-import com.cgi.nikoniko.models.UserHasTeam;
+import com.cgi.nikoniko.models.association.UserHasTeam;
 
 
 public interface IUserHasTeamCrudRepository extends IBaseAssociatedCrudRepository <UserHasTeam> {

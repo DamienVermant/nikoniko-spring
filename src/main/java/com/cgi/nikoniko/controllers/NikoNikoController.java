@@ -2,7 +2,6 @@ package com.cgi.nikoniko.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
 import com.cgi.nikoniko.dao.IChangeDatesCrudRepository;
-import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
-import com.cgi.nikoniko.models.ChangeDates;
-import com.cgi.nikoniko.models.NikoNiko;
-import com.cgi.nikoniko.models.User;
-import com.cgi.nikoniko.models.Verticale;
+import com.cgi.nikoniko.models.tables.ChangeDates;
+import com.cgi.nikoniko.models.tables.NikoNiko;
 import com.cgi.nikoniko.utils.DumpFields;
 
 @Controller

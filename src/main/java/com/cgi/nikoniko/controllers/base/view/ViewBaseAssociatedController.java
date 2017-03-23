@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.cgi.nikoniko.controllers.base.BaseAssociatedController;
-import com.cgi.nikoniko.models.modelbase.AssociationItem;
+import com.cgi.nikoniko.models.association.base.AssociationItem;
 import com.cgi.nikoniko.utils.DumpFields;
 
 public class ViewBaseAssociatedController <T extends AssociationItem> extends BaseAssociatedController<T>{

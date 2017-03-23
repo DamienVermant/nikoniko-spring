@@ -1,20 +1,19 @@
-package com.cgi.nikoniko.models;
+package com.cgi.nikoniko.models.tables;
 
 import java.util.ArrayList;
 import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import com.cgi.nikoniko.models.modelbase.DatabaseItem;
+import com.cgi.nikoniko.models.association.RoleHasFunction;
+import com.cgi.nikoniko.models.association.UserHasRole;
+import com.cgi.nikoniko.models.tables.modelbase.DatabaseItem;
 
 @Entity
-@Table(name = "role")
-public class RoleCGI extends DatabaseItem{
+@Table(name = RoleCGI.TABLE)
+public class RoleCGI extends DatabaseItem {
 
 	@Transient
 	public static final String TABLE = "role";
@@ -22,21 +21,17 @@ public class RoleCGI extends DatabaseItem{
 	@Transient
 	public static final String[] FIELDS = { "id", "name" };
 
-	@Column(name = "role_name", nullable = false)
+	@Column(name = "name", nullable = false)
 	private String name;
 
-
-//	@ManyToMany(mappedBy = "roles")
-//	private Set<User> users;
-//
-//	@ManyToMany(mappedBy="roles")
-//	private Set<FunctionCGI> functionCGI;
-
+	@Transient
 	@OneToMany
 	private Set<UserHasRole> users;
 
+	@Transient
 	@OneToMany
 	private Set<RoleHasFunction> functionCGI;
+
 	/**
 	 *
 	 * @return name
@@ -65,8 +60,8 @@ public class RoleCGI extends DatabaseItem{
 	 *
 	 * @param users
 	 */
-	public void setUsers(Set<UserHasRole> users) {
-		this.users = users;
+	public void setUsers(ArrayList<UserHasRole> users) {
+		this.users = (Set<UserHasRole>) users;
 	}
 
 	/**
@@ -81,8 +76,8 @@ public class RoleCGI extends DatabaseItem{
 	 *
 	 * @param functionCGI
 	 */
-	public void setFunctionCGI(Set<RoleHasFunction> functionCGI) {
-		this.functionCGI = functionCGI;
+	public void setFunctionCGI(ArrayList<RoleHasFunction> functionCGI) {
+		this.functionCGI = (Set<RoleHasFunction> ) functionCGI;
 	}
 
 	public RoleCGI(){
