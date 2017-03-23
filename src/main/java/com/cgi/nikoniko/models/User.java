@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -47,7 +48,7 @@ public class User extends SecurityUser {
 	@Column(name = "user_registration", nullable = false)
 	private String registration_cgi;
 
-	@OneToMany(mappedBy = "user")
+	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
 	private Set<NikoNiko> nikoNikos;
 
 //	@ManyToMany
@@ -176,7 +177,7 @@ public class User extends SecurityUser {
 	 */
 	public void setVerticale(Verticale verticale) {
 		this.verticale = verticale;
-		//TODO : mettre cette partie dans le getter peut donner un meilleur resultat
+//		//TODO : mettre cette partie dans le getter peut donner un meilleur resultat
 //		if (!this.verticale.getUsers().contains(this)) {
 //			//TODO rajouter ce user a la verticale qui a ete set
 //			this.verticale.getUsers().add(this);
@@ -204,6 +205,7 @@ public class User extends SecurityUser {
 	public void setNikoNikos(ArrayList<NikoNiko> nikoNikos) {
 		this.nikoNikos = (Set<NikoNiko>)nikoNikos;
 	}
+
 
 	public User() {
 		super(User.TABLE, User.FIELDS);

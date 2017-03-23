@@ -219,8 +219,13 @@ public class Team extends DatabaseItem{
 	 * @param verticale
 	 *            the verticale to set
 	 */
-	public void setProjects(Verticale projects) {
-		this.verticale = projects;
+	public void setVerticale(Verticale verticale) {
+		this.verticale = verticale;
+//		//TODO : mettre cette partie dans le getter peut donner un meilleur resultat
+//		if (!this.verticale.getTeam().contains(this)) {
+//			//TODO rajouter ce user a la verticale qui a ete set
+//			this.verticale.getTeam().add(this);
+//		}
 	}
 
 	/**

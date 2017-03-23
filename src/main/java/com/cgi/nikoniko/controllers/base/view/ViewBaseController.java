@@ -32,7 +32,7 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 
 	private String loginView;
 	private String loginRedirect;
-	
+
 	private String baseNameClass;
 
 
@@ -55,9 +55,9 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 		this.showRedirect = REDIRECT + baseURL + PATH_LIST_FILE;
 		this.loginRedirect = REDIRECT + baseURL + PATH_LOGIN;
 	}
-	
+
 	// TODO : Gérer la généricité des différentes fonctions (certaines ne peuvent plus être générics)
-	
+
 	@RequestMapping(path = {PATH, ROUTE_LIST}, method = RequestMethod.GET)
 	public String index(Model model) {
 		model.addAttribute("page",this.baseName + " " + LIST_ACTION.toUpperCase());
@@ -121,19 +121,20 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 		updateItem(item);
 		return updateRedirect;
 	}
-	
+
 	// COMMENT FOR TEST WITH TEAM
 
-//	@RequestMapping(path = ROUTE_SHOW, method = RequestMethod.GET)
-//	public String showItemGet(Model model,@PathVariable Long id) {
-//		model.addAttribute("page",this.baseName + " " + SHOW_ACTION.toUpperCase());
-//		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
-//		model.addAttribute("item",DumpFields.fielder(super.getItem(id)));
-//		model.addAttribute("go_index", LIST_ACTION);
-//		model.addAttribute("go_delete", DELETE_ACTION);
-//		model.addAttribute("go_update", UPDATE_ACTION);
-//		return showView;
-//	}
+
+	@RequestMapping(path = ROUTE_SHOW, method = RequestMethod.GET)
+	public String showItemGet(Model model,@PathVariable Long id) {
+		model.addAttribute("page",this.baseName + " " + SHOW_ACTION.toUpperCase());
+		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
+		model.addAttribute("item",DumpFields.fielder(super.getItem(id)));
+		model.addAttribute("go_index", LIST_ACTION);
+		model.addAttribute("go_delete", DELETE_ACTION);
+		model.addAttribute("go_update", UPDATE_ACTION);
+		return showView;
+	}
 
 	// TODO : Gérér corectement le PATH de login
 	@RequestMapping(path = ROUTE_LOGIN, method = RequestMethod.GET)

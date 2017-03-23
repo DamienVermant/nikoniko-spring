@@ -32,10 +32,11 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 		Set<User> user =  verticale.getUsers();
 		List<User> listOfUser = new ArrayList<User>(user);
 
-		model.addAttribute("page", verticale.getAgency() + " nikonikos");
+		model.addAttribute("page", verticale.getAgency());
+		model.addAttribute("type","user");
 		model.addAttribute("sortedFields", User.FIELDS);
 		model.addAttribute("items", DumpFields.listFielder(listOfUser));
-		return "base/nikoUser";
+		return "verticale/showAllRelation";
 	}
 
 	@RequestMapping("{verticaleId}/link/team")
@@ -44,9 +45,10 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 		Set<Team> team =  verticale.getTeams();
 		List<Team> listOfTeam = new ArrayList<Team>(team);
 
-		model.addAttribute("page", verticale.getAgency() + " nikonikos");
+		model.addAttribute("page", verticale.getAgency());
+		model.addAttribute("type","team");
 		model.addAttribute("sortedFields", Team.FIELDS);
 		model.addAttribute("items", DumpFields.listFielder(listOfTeam));
-		return "base/nikoUser";
+		return "verticale/showAllRelation";
 	}
 }
