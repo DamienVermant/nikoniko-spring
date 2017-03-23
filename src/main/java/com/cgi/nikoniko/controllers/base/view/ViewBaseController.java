@@ -56,6 +56,7 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 		this.loginRedirect = REDIRECT + baseURL + PATH_LOGIN;
 	}
 	
+	// TODO : Gérer la généricité des différentes fonctions (certaines ne peuvent plus être générics)
 	
 	@RequestMapping(path = {PATH, ROUTE_LIST}, method = RequestMethod.GET)
 	public String index(Model model) {
