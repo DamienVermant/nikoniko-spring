@@ -3,9 +3,7 @@ package com.cgi.nikoniko.controllers;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Map;
 import java.util.List;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,14 +35,26 @@ public class TeamController extends ViewBaseController<Team> {
 	ITeamCrudRepository teamCrud;
 	
 	public final static String BASE_URL = "/team";
-
+	public final static String BASE_TEAM = "team";
+	
 	public TeamController() {
 		super(Team.class, BASE_URL);
 	}
-
 	
+		@RequestMapping(path = ROUTE_SHOW, method = RequestMethod.GET)
+		public String showItemGet(Model model,@PathVariable Long id) {
+		model.addAttribute("page","team" + " " + SHOW_ACTION.toUpperCase());
+		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
+		model.addAttribute("item",DumpFields.fielder(super.getItem(id)));
+		model.addAttribute("show_users", "./showUser");
+		model.addAttribute("go_index", LIST_ACTION);
+		model.addAttribute("go_delete", DELETE_ACTION);
+		model.addAttribute("go_update", UPDATE_ACTION);
+		return BASE_TEAM + "/show";
+	}
+
 		// RELATIONS (TEAM HAS USER)
-		@RequestMapping(path = "{id}" + "/showUsers", method = RequestMethod.GET)
+		@RequestMapping(path = "{id}" + "/showUser", method = RequestMethod.GET)
 		public <T> String showLinksGet(Model model, @PathVariable Long id) { 
 			
 			// Récupération de la team en fonction de l'objet souhaitée
@@ -60,7 +70,7 @@ public class TeamController extends ViewBaseController<Team> {
 			model.addAttribute("go_delete", DELETE_ACTION);
 			model.addAttribute("back", "./show");
 			model.addAttribute("add", "addUsers");
-			return "team" + "/showUsers";
+			return "team" + "/showUser";
 		}
 		
 		// ADD USER FOR CURRENT TEAM
@@ -76,50 +86,18 @@ public class TeamController extends ViewBaseController<Team> {
 			model.addAttribute("go_show", SHOW_ACTION);
 			model.addAttribute("go_create", CREATE_ACTION);
 			model.addAttribute("go_delete", DELETE_ACTION);
-			model.addAttribute("back", "./show");
+			model.addAttribute("back", "./showUser");
 			model.addAttribute("add", "addUsers");
-			return "team" + "/addUsers";
+			return BASE_TEAM + "/addUsers";
 			
 		}
 		
 		// ADD USER FOR CURRENT TEAM
 		@RequestMapping(path = "{idTeam}" + "/addUsers", method = RequestMethod.POST)
 		public <T> String addUsersPost(Model model, @PathVariable Long idTeam, Long idUser) { 
-			Long test = (long) 3;
-			return setUsersForTeamPost(idTeam, test);
+			return setUsersForTeamPost(idTeam, idUser);
 		}
 		
-//		// FUNCTION RETURNING A LIST OF USER WITH THE ID OF TEAM (TODO : CREATE A MAP FOR FREEMARKER, TODO : CREATE A ARRAYLIST OF MAP)
-//		public ArrayList<User> setUsersForTeamGet(Long teamId) {
-//			
-//			// On initialise une nouvelle map
-//			Map<String, User> mapUsers;
-//		
-//			// On va chercher dans la table d'association les éléments correspondant à Team récupéré
-//			ArrayList<UserHasTeam> userHasTeamList = new ArrayList<UserHasTeam>();
-//			userHasTeamList = (ArrayList<UserHasTeam>) userTeamCrud.findAll();
-//			
-//			// On créer une liste vide qui va stocker les id des users correspondant au bon id team
-//			ArrayList<Long> ids = new ArrayList<Long>();
-//			
-//			// Boucle sur tous les élements de la liste pour récupérer la bonne team
-//			for (UserHasTeam userHasTeam : userHasTeamList) {
-//				if (userHasTeam.getIdRight() == teamId) {
-//					// On récupère les ids user correspondant à l'id de la team
-//					ids.add(userHasTeam.getIdLeft());
-		
-//			// On créé une arrayList vide qui va contenir des users
-//			ArrayList<User> userList = new ArrayList<User>();
-//		
-//			// On va maintenant chercher les users en fonction des ids récupérés
-//			userList = (ArrayList<User>) userCrud.findAll(ids);
-//		
-//			// On stocke maintenant les fields et les champs de chaque users dans une map
-		
-//			return userList;
-//}
-
-
 		/**
 		 *
 		 * @param teamId
@@ -147,7 +125,7 @@ public class TeamController extends ViewBaseController<Team> {
 		public String setUsersForTeamPost(Long idTeam,Long idUser){
 			
 			// Redirection vers showUsers pour updater le résultat
-			String redirect ="redirect:/team/" + idTeam + "/showUsers";
+			String redirect ="redirect:/team/" + idTeam + "/showUser";
 			
 			// On récupère l'objet team renseigner par l'id en paramètre
 			Team team = new Team();
@@ -158,7 +136,7 @@ public class TeamController extends ViewBaseController<Team> {
 			user = userCrud.findOne(idUser);
 
 			// On créer l'association entre les deux objects
-			UserHasTeam userHasTeamBuffer = new UserHasTeam(user, team);
+			UserHasTeam userHasTeamBuffer = new UserHasTeam(user, team, new Date());
 			
 			// On sauvegarde la relation dans la table UserHasTeam
 			userTeamCrud.save(userHasTeamBuffer);
@@ -166,26 +144,4 @@ public class TeamController extends ViewBaseController<Team> {
 			return redirect;
 			
 		}
-
-//		// CREATE A FUNCTION THAT SET NEW USER IN TEAM
-//		public Team setUsersForTeam(Team team,User user){
-//
-//			// On créer un object vide qui va contenir le nouvel user
-//			Object userBuffer = new Object();
-//
-//			// On définit l'id de User
-//			Long idUser = user.getId();
-//
-//			// On va récupérer l'user correspondant à l'id définit
-//			userBuffer = userCrud.findOne(idUser);
-//
-//			// On va setter cet User dans la liste de users de team
-//			team.getUsers().add(user);
-//
-//			// On sauvegarde dans la base données
-//			teamCrud.save(team);
-//
-//			return team;
-//
-//		}
 }

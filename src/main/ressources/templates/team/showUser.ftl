@@ -6,8 +6,6 @@
 
 <body>
 	<h1>USERS IN TEAM : ${page}  </h1>
-		
-	<a href="${go_create}">Create new</a>
 		<table class="table table-bordered table-hover">
 			<tr>
 				<#list items as item>
@@ -32,20 +30,19 @@
 									<td>${item[key]?string("yyyy:MM:dd HH:mm:ss")}</td>
 								<#else>
 									<td>${item[key]}</td>
+									
 								</#if>
 							</#if>
 						</#list>
 					</#list>
 					<td>
-							<form action = "${item["id"]}/${go_delete}" method = "POST">
-								<input type="hidden" name = "id" value = "${item["id"]}">
-							</form>
+						<form action = "" method = "POST">
+							<input type="hidden" name = "id" value = "${item["id"]}">
+						</form>
 					</td>
 				</tr>
 			</#list>
 		</table>
-	
 	<a href = "${add}"> Add user </a> <br>
 	<a href="${back}"> Back <a>		
-	
 </body>
