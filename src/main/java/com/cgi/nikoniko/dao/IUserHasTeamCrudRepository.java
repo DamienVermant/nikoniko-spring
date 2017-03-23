@@ -1,6 +1,7 @@
 package com.cgi.nikoniko.dao;
 
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
@@ -11,20 +12,6 @@ import com.cgi.nikoniko.models.association.UserHasTeam;
 
 
 public interface IUserHasTeamCrudRepository extends IBaseAssociatedCrudRepository <UserHasTeam> {
-
-//	/**
-//	 * WARNING : Unable to recognize "selectedId" proprely (return null event if the query is ok)
-//	 *
-//	 * @param linkedIds : id(s) of element(s) linked to the selectedId in association table
-//	 * @param selectedId
-//	 * @param idValue
-//	 */
-//	@Query(value = "SELECT :linkedIds FROM user_has_team WHERE :selectedId"
-//			+ "=:idValue", nativeQuery=true)
-//	public List<BigInteger> findAssociated(	@Param("linkedIds") String linkedIds,
-//										@Param("selectedId") String selectedId,
-//										@Param("idValue") long idValue);
-
 
 	/**
 	 * Query to see if one or more users are linked to a team
@@ -41,24 +28,24 @@ public interface IUserHasTeamCrudRepository extends IBaseAssociatedCrudRepositor
 	 */
 	@Query(value = "SELECT idRight FROM user_has_team WHERE idLeft = :idValue", nativeQuery=true)
 	public List<BigInteger> findAssociatedTeam(@Param("idValue") long idValue);
-
-
-//	/**
-//	 *  Query to set an association between an user and a team
-//	 *
-//	 * @param idLeft : id of the user
-//	 * @param idRight : id of the team
-//	 * @param arrivalDate : arrival date (given in a string format)
-//	 * @param leavingDate : leaving date (given in a string format)
-//	 * @return
-//	 */
-//	@Query(value = "INSERT INTO user_has_team VALUES (:idLeft, :idRight,"
-//				 + ":arrivalDate, :leavingDate)", nativeQuery=true)
-//	public List<BigInteger> associateTeamAndUser(	@Param("idLeft") long idLeft,
-//													@Param("idRight") long idRight,
-//													@Param("arrivalDate") String arrivalDate,
-//													@Param("leavingDate") String leavingDate);
-
-
+	
+	/**
+	 * QUERY TO SET THE LEAVING DATE WHEN A USER LEAVE A TEAM
+	 * @param idUser
+	 * @param idTeam
+	 * @return
+	 */
+	@Query(value = "SELECT leaving_date FROM user_has_team WHERE idLeft = :idUser AND idRight = :idTeam", nativeQuery=true)
+	public UserHasTeam findAssociatedUserTeam(@Param("idUser") long idUser, @Param("idTeam") long idTeam);
+	
+	
+	/**
+	 * QUERY THAT SELECT ALL INFORMATIONS FROM user_has_team WITH A GIVEN idUser AND idRight
+	 * @param idUser
+	 * @param idTeam
+	 * @return
+	 */
+	@Query(value = "SELECT * FROM user_has_team WHERE idLeft = :idUser AND idRight = :idTeam", nativeQuery=true)
+	public UserHasTeam findAssociatedUserTeamALL(@Param("idUser") long idUser, @Param("idTeam") long idTeam);
 
 }

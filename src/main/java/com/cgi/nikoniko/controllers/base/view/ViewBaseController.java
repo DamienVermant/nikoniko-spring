@@ -123,8 +123,6 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 	}
 
 	// COMMENT FOR TEST WITH TEAM
-
-
 	@RequestMapping(path = ROUTE_SHOW, method = RequestMethod.GET)
 	public String showItemGet(Model model,@PathVariable Long id) {
 		model.addAttribute("page",this.baseName + " " + SHOW_ACTION.toUpperCase());
@@ -141,11 +139,5 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 	public String loginGet(Model model) {
 		return loginView;
 	}
-
-	@RequestMapping(path = ROUTE_LOGIN, method = RequestMethod.POST)
-	public String loginPost(String login, String password) {
-		return authentification(login, password);
-	}
-
 
 }

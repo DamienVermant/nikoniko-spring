@@ -28,6 +28,10 @@
 			</#if>
 		</#list>
 	</table>
+<<<<<<< HEAD:src/main/ressources/templates/user/show.ftl
+=======
+	<a href="${show_teams}"> Show teams </a> <br>
+>>>>>>> a9c53255e7221dde8eb6ad63955cd7f324b64cf4:src/main/ressources/templates/user/show.ftl
 	<a href="${go_update}">Update</a> <br>
 	<a href="${go_delete}">Delete</a> <br>
 	<#if item["id"]??>
