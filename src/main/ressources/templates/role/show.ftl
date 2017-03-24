@@ -28,6 +28,7 @@
 			</#if>
 		</#list>
 	</table>
+	<a href="${show_users}"> Show users </a> <br>
 	<a href="${show_functions}"> Show functions </a> <br>
 	<a href="${go_update}">Update</a> <br>
 	<a href="${go_delete}">Delete</a> <br>

@@ -15,7 +15,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cgi.nikoniko.controllers.UserController;
 import com.cgi.nikoniko.dao.IRoleCrudRepository;
 import com.cgi.nikoniko.dao.IUserCrudRepository;
 import com.cgi.nikoniko.dao.IUserHasRoleCrudRepository;
@@ -50,6 +49,7 @@ public class UserDetailsServiceImp implements UserDetailsService {
 		return new org.springframework.security.core.userdetails
 					.User(user.getLogin(),user.getPassword(),grantedAuthorities);
 	}
+
 
 	public ArrayList<RoleCGI> setRolesForUserGet(Long idUser) {
 

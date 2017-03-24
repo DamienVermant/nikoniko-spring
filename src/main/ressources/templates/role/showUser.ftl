@@ -5,8 +5,7 @@
 </head>
 
 <body>
-	<h1>${page}</h1>
-	<a href="${go_create}">Create new</a>
+	<h1>USERS IN TEAM : ${page}  </h1>
 		<table class="table table-bordered table-hover">
 			<tr>
 				<#list items as item>
@@ -31,36 +30,21 @@
 									<td>${item[key]?string("yyyy:MM:dd HH:mm:ss")}</td>
 								<#else>
 									<td>${item[key]}</td>
+									
 								</#if>
 							</#if>
 						</#list>
 					</#list>
 					<td>
-						<#if item["id"]??>
-							<a href="${item["id"]}/${go_show}">Select</a>
-
-						<#else>
-							<a href="${item["idLeft"]}/${item["idRight"]}/${go_show}">Select</a>
-						</#if>
-					</td>
-					<td>
-						<#if item["id"]??>
-							<form action = "${item["id"]}/${go_delete}" method = "POST">
+						<form action = "" method = "POST">
 							<#include "../includable/security/securityToken.ftl">
-								<input type="hidden" name = "id" value = "${item["id"]}">
-								<input type="submit" value="Delete">
-							</form>
-
-						<#else>
-							<form action = "${item["idLeft"]}/${item["idRight"]}/${go_delete}" method = "POST">
-							<#include "../includable/security/securityToken.ftl">
-								<input type="hidden" name = "idl" value = "${item["idLeft"]}">
-								<input type="hidden" name = "idr" value = "${item["idRight"]}">
-								<input type="submit" value="Delete">
-							</form>
-						</#if>
+							<input type="hidden" name = "idUser" value = "${item["id"]}">
+							<input type="submit" value="Enlever"><br>
+						</form>
 					</td>
 				</tr>
 			</#list>
 		</table>
+	<a href = "${add}"> Add function </a> <br>
+	<a href="${back}"> Back <a>		
 </body>

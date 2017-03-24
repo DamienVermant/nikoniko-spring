@@ -23,6 +23,9 @@ public interface IUserHasRoleCrudRepository extends IBaseAssociatedCrudRepositor
 	@Query(value = "SELECT idRight FROM user_has_role WHERE idLeft = :idUser", nativeQuery=true)
 	public List<BigInteger> findAssociatedRole(@Param("idUser") long idUser);
 
+	@Query(value = "SELECT idLeft FROM user_has_role WHERE idRight = :idRole", nativeQuery=true)
+	public List<BigInteger> findAssociatedUser(@Param("idRole") Long idRole);
+
 //	@Query(value = "SET @@FOREIGN_KEY_CHECKS = 0", nativeQuery=true)
 //	public void unsetForeignKeys();
 //
