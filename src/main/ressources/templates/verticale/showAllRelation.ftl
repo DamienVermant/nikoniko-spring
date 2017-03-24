@@ -5,7 +5,7 @@
 </head>
 
 <body>
-    <h1>${page}</h1>
+    <h1>${page}  ${type}</h1>
 
         <table class="table table-bordered table-hover">
             <tr>
@@ -35,6 +35,9 @@
                             </#if>
                         </#list>
                     </#list>
+                    <td>
+                            <a href="/${type}/${item["id"]}/${"show"}">Select</a>
+                    </td>
                 </tr>
             </#list>
         </table>

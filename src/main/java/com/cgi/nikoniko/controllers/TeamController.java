@@ -34,34 +34,54 @@ public class TeamController extends ViewBaseController<Team> {
 	@Autowired
 	ITeamCrudRepository teamCrud;
 	
-	public final static String BASE_URL = "/team";
+	public final static String DOT = ".";
+	public final static String PATH = "/";
 	public final static String BASE_TEAM = "team";
+	public final static String BASE_URL = PATH + BASE_TEAM;
+	
+	public static final String SHOW_PATH = "show";
+	
+	public final static String SHOW_USER = "showUser";
+	public final static String ADD_USER = "addUsers";
+	
+	public final static String REDIRECT = "redirect:";
 	
 	public TeamController() {
 		super(Team.class, BASE_URL);
 	}
-	
+		
+		/**
+		 * SHOW ALL USERS OF A TEAM WITH A GIVEN ID
+		 */
 		@RequestMapping(path = ROUTE_SHOW, method = RequestMethod.GET)
 		public String showItemGet(Model model,@PathVariable Long id) {
-		model.addAttribute("page","team" + " " + SHOW_ACTION.toUpperCase());
-		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
-		model.addAttribute("item",DumpFields.fielder(super.getItem(id)));
-		model.addAttribute("show_users", "./showUser");
-		model.addAttribute("go_index", LIST_ACTION);
-		model.addAttribute("go_delete", DELETE_ACTION);
-		model.addAttribute("go_update", UPDATE_ACTION);
-		return BASE_TEAM + "/show";
-	}
-
-		// RELATIONS (TEAM HAS USER)
-		@RequestMapping(path = "{id}" + "/showUser", method = RequestMethod.GET)
-		public <T> String showLinksGet(Model model, @PathVariable Long id) { 
 			
-			// Récupération de la team en fonction de l'objet souhaitée
 			Team teamBuffer = new Team();
 			teamBuffer = teamCrud.findOne(id);
 			
-			// On ajoute au model les champs nécessaires
+			model.addAttribute("page","TEAM : " + teamBuffer.getName());
+			model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
+			model.addAttribute("item",DumpFields.fielder(super.getItem(id)));
+			model.addAttribute("show_users", "./showUser");
+			model.addAttribute("go_index", LIST_ACTION);
+			model.addAttribute("go_delete", DELETE_ACTION);
+			model.addAttribute("go_update", UPDATE_ACTION);
+			
+		return BASE_TEAM + PATH + SHOW_PATH;
+	}
+
+		/**
+		 * RELATIONS (TEAM HAS USER)
+		 * @param model
+		 * @param id
+		 * @return
+		 */
+		@RequestMapping(path = "{id}" + PATH + SHOW_USER, method = RequestMethod.GET)
+		public <T> String showLinksGet(Model model, @PathVariable Long id) { 
+			
+			Team teamBuffer = new Team();
+			teamBuffer = teamCrud.findOne(id);
+			
 			model.addAttribute("items", DumpFields.listFielder(this.setUsersForTeamGet(id)));
 			model.addAttribute("sortedFields",User.FIELDS);
 			model.addAttribute("page", ((Team) teamBuffer).getName()); 
@@ -70,16 +90,22 @@ public class TeamController extends ViewBaseController<Team> {
 			model.addAttribute("go_delete", DELETE_ACTION);
 			model.addAttribute("back", "./show");
 			model.addAttribute("add", "addUsers");
-			return "team" + "/showUser";
+			
+			return BASE_TEAM + PATH + SHOW_USER;
 		}
 		
-		// ADD USER FOR CURRENT TEAM
-		@RequestMapping(path = "{idTeam}" + "/addUsers", method = RequestMethod.GET)
+		/**
+		 * ADD USER FOR CURRENT TEAM
+		 * @param model
+		 * @param idTeam
+		 * @return
+		 */
+		@RequestMapping(path = "{idTeam}" + PATH + ADD_USER, method = RequestMethod.GET)
 		public <T> String addUsersGet(Model model, @PathVariable Long idTeam) { 
 			
-			// Récupération de la team en fonction de l'objet souhaitée
 			Object teamBuffer = new Object();
 			teamBuffer = teamCrud.findOne(idTeam);
+			
 			model.addAttribute("items", DumpFields.listFielder((ArrayList<User>) userCrud.findAll()));
 			model.addAttribute("sortedFields",User.FIELDS);
 			model.addAttribute("page", ((Team) teamBuffer).getName()); 
@@ -88,18 +114,24 @@ public class TeamController extends ViewBaseController<Team> {
 			model.addAttribute("go_delete", DELETE_ACTION);
 			model.addAttribute("back", "./showUser");
 			model.addAttribute("add", "addUsers");
-			return BASE_TEAM + "/addUsers";
 			
+			return BASE_TEAM + PATH + ADD_USER;
 		}
 		
-		// ADD USER FOR CURRENT TEAM
-		@RequestMapping(path = "{idTeam}" + "/addUsers", method = RequestMethod.POST)
+		/**
+		 * ADD USER FOR CURRENT TEAM
+		 * @param model
+		 * @param idTeam
+		 * @param idUser
+		 * @return
+		 */
+		@RequestMapping(path = "{idTeam}" + PATH + ADD_USER, method = RequestMethod.POST)
 		public <T> String addUsersPost(Model model, @PathVariable Long idTeam, Long idUser) { 
 			return setUsersForTeamPost(idTeam, idUser);
 		}
 		
 		/**
-		 *
+		 *	RETURN LIST OF ALL USERS IN A TEAM WITH A GIVEN ID
 		 * @param teamId
 		 * @return userList (list of user associated to a team)
 		 */
@@ -121,24 +153,24 @@ public class TeamController extends ViewBaseController<Team> {
 			return userList;
 		}
 		
-		// CREATE A FUNCTION THAT SET NEW USER IN TEAM (JUST AFFECT A USER ALREADY CREATE)
+		/**
+		 * FUNCTION THAT SET NEW USER IN TEAM (JUST AFFECT A USER ALREADY CREATE)
+		 * @param idTeam
+		 * @param idUser
+		 * @return
+		 */
 		public String setUsersForTeamPost(Long idTeam,Long idUser){
 			
-			// Redirection vers showUsers pour updater le résultat
-			String redirect ="redirect:/team/" + idTeam + "/showUser";
+			String redirect = REDIRECT + PATH + BASE_TEAM + idUser + PATH + SHOW_USER;
 			
-			// On récupère l'objet team renseigner par l'id en paramètre
 			Team team = new Team();
 			team = teamCrud.findOne(idTeam);
 			
-			// On récupère l'objet user renseigner par l'id en paramètre
 			User user = new User();
 			user = userCrud.findOne(idUser);
 
-			// On créer l'association entre les deux objects
 			UserHasTeam userHasTeamBuffer = new UserHasTeam(user, team, new Date());
 			
-			// On sauvegarde la relation dans la table UserHasTeam
 			userTeamCrud.save(userHasTeamBuffer);
 			
 			return redirect;

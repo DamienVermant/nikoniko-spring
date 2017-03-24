@@ -3,6 +3,7 @@ package com.cgi.nikoniko.models.tables;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -32,7 +33,7 @@ public class NikoNiko extends DatabaseItem {
 	@Column(name = "nikoniko_comment", nullable = true)
 	private String comment;
 
-	@OneToMany(mappedBy = "nikoniko")
+	@OneToMany(mappedBy = "nikoniko", cascade = CascadeType.REMOVE)
 	private Set<ChangeDates> changeDates;
 
 	@ManyToOne(fetch=FetchType.LAZY)
@@ -115,6 +116,9 @@ public class NikoNiko extends DatabaseItem {
 	 */
 	public void setUser(User user) {
 		this.user = user;
+        if (!user.getNikoNikos().contains(this)) { // warning this may cause performance issues if you have a large data set since this operation is O(n)
+            user.getNikoNikos().add(this);
+            }
 	}
 
 	public NikoNiko() {

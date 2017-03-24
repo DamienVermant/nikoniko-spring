@@ -3,6 +3,7 @@ package com.cgi.nikoniko.models.tables;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -42,7 +43,7 @@ public class User extends SecurityUser {
 	@Column(name = "registration_number", nullable = false, unique = true)
 	private String registration_cgi;
 
-	@OneToMany(mappedBy = "user")
+	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
 	private Set<NikoNiko> nikoNikos;
 
 	@Transient
@@ -181,7 +182,7 @@ public class User extends SecurityUser {
 	 */
 	public void setVerticale(Verticale verticale) {
 		this.verticale = verticale;
-		//TODO : mettre cette partie dans le getter peut donner un meilleur resultat
+//		//TODO : mettre cette partie dans le getter peut donner un meilleur resultat
 //		if (!this.verticale.getUsers().contains(this)) {
 //			//TODO rajouter ce user a la verticale qui a ete set
 //			this.verticale.getUsers().add(this);
