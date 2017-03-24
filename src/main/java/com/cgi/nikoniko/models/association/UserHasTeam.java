@@ -89,9 +89,9 @@ public class UserHasTeam extends AssociationItem {
 	public UserHasTeam (User user, Team team) {
 		super(UserHasTeam.TABLE,UserHasTeam.FIELDS, user, team);
 		this.user = user;
-		this.user.getUserHasTeams().add(this);
+		//this.user.getUserHasTeams().add(this);
 		this.team = team;
-		this.team.getUserHasTeams().add(this);
+		//this.team.getUserHasTeams().add(this);
 		this.arrivalDate = new Date();
 	}
 

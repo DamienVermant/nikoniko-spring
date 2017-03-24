@@ -7,6 +7,7 @@
 <body>
 	<h1>${page}</h1>
 	<form action = "" method = "POST">
+	<#include "../includable/security/securityToken.ftl">
 	<table class="table table-bordered table-hover">
 		<#list sortedFields as field>
 			<#if field != "id">

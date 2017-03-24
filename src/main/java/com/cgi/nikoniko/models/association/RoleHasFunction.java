@@ -57,7 +57,7 @@ public class RoleHasFunction extends AssociationItem {
 		this.function = function;
 		//this.function.getRoles().add(this);
 		this.role = role;
-		this.role.getFunctionCGI().add(this);
+		//this.role.getFunctionCGI().add(this);
 	}
 
 }

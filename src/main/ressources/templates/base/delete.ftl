@@ -29,6 +29,7 @@
 		</#list>
 	</table>
 	<form action = "${go_delete}" method = "POST">
+	<#include "../includable/security/securityToken.ftl">
 		<#if item["id"]??>
 			<input type="hidden" name = "id" value = "${item["id"]}">
 			<input type="submit" value="Delete"><br>

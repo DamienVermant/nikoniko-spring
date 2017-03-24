@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,9 +14,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
 import com.cgi.nikoniko.models.tables.RoleCGI;
+import com.cgi.nikoniko.models.tables.User;
 import com.cgi.nikoniko.dao.IFunctionCGICrudRepository;
 import com.cgi.nikoniko.dao.IRoleCrudRepository;
 import com.cgi.nikoniko.dao.IRoleHasFunctionCrudRepository;
+import com.cgi.nikoniko.dao.IUserCrudRepository;
+import com.cgi.nikoniko.dao.IUserHasRoleCrudRepository;
 import com.cgi.nikoniko.models.tables.FunctionCGI;
 import com.cgi.nikoniko.models.association.RoleHasFunction;
 import com.cgi.nikoniko.utils.DumpFields;
@@ -37,6 +41,10 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 
 	public final static String SHOW_FUNC = "showFunction";
 	public final static String ADD_FUNC = "addFunctions";
+	private static final String SHOW_USERS = "showUser";
+	
+	@Autowired
+	IUserCrudRepository userCrud;
 
 	@Autowired
 	IRoleCrudRepository roleCrud;
@@ -46,7 +54,11 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 
 	@Autowired
 	IRoleHasFunctionCrudRepository roleFuncCrud;
+	
+	@Autowired
+	IUserHasRoleCrudRepository userRoleCrud;
 
+	@Secured({"Admin"})
 	@RequestMapping(path = ROUTE_SHOW, method = RequestMethod.GET)
 	public String showItemGet(Model model,@PathVariable Long id) {
 
@@ -56,6 +68,7 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 		model.addAttribute("page","ROLE : " + roleBuffer.getName());
 		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
 		model.addAttribute("item",DumpFields.fielder(super.getItem(id)));
+		model.addAttribute("show_users", DOT + PATH + SHOW_USERS);
 		model.addAttribute("show_functions", DOT + PATH + SHOW_FUNC);
 		model.addAttribute("go_index", LIST_ACTION);
 		model.addAttribute("go_delete", DELETE_ACTION);
@@ -78,6 +91,24 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 		model.addAttribute("go_delete", DELETE_ACTION);
 		model.addAttribute("back", "./show");
 		model.addAttribute("add", "addFunctions");
+
+		return BASE_ROLE + PATH + SHOW_FUNC;
+	}
+	
+	@RequestMapping(path = "{idRole}" + PATH + SHOW_USERS, method = RequestMethod.GET)
+	public <T> String showLinksGetUser(Model model, @PathVariable Long idRole) {
+
+		RoleCGI roleBuffer = new RoleCGI();
+		roleBuffer= roleCrud.findOne(idRole);
+
+		model.addAttribute("items", DumpFields.listFielder(this.setUsersForRoleGet(idRole)));
+		model.addAttribute("sortedFields",User.FIELDS);
+		model.addAttribute("page", ((RoleCGI) roleBuffer).getName());
+		model.addAttribute("show_users", DOT + PATH + SHOW_FUNC);
+		model.addAttribute("go_create", CREATE_ACTION);
+		model.addAttribute("go_delete", DELETE_ACTION);
+		model.addAttribute("back", "./show");
+		model.addAttribute("add", "addUsers");
 
 		return BASE_ROLE + PATH + SHOW_FUNC;
 	}
@@ -137,6 +168,24 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 		}
 
 		return functionList;
+	}
+	
+	public ArrayList<User> setUsersForRoleGet(Long idRole) {
+
+		List<Long> ids = new ArrayList<Long>();
+		ArrayList<User> userList = new ArrayList<User>();
+
+		List<BigInteger> idsBig = userRoleCrud.findAssociatedUser(idRole);
+
+		if (!idsBig.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
+			for (BigInteger id : idsBig) {
+				ids.add(id.longValue());
+
+			}
+			userList =  (ArrayList<User>) userCrud.findAll(ids);
+		}
+
+		return userList;
 	}
 
 
