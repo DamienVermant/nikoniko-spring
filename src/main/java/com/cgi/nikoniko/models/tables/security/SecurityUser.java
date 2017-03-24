@@ -15,6 +15,9 @@ public abstract class SecurityUser extends DatabaseItem {
 	@Column(name = "password", nullable = false)
 	private String password;
 
+	@Column(name = "enable", nullable = true)
+	private Boolean enable;
+
 	/**
 	 * @return the login
 	 */
@@ -42,6 +45,21 @@ public abstract class SecurityUser extends DatabaseItem {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
+	/**
+	 * @return the enable
+	 */
+	public Boolean getEnable() {
+		return enable;
+	}
+
+	/**
+	 * @param enable the enable to set
+	 */
+	public void setEnable(Boolean enable) {
+		this.enable = enable;
+	}
+
 
 	public SecurityUser(String table, String[] fields, String login, String password) {
 		super(table, fields);

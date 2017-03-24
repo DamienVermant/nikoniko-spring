@@ -13,13 +13,13 @@ import com.cgi.nikoniko.models.tables.User;
 @Controller
 @RequestMapping(LoginController.BASE_URL)
 public class LoginController {
-	
+
 	@Autowired
 	private IBaseCrudRepository<User> baseCrud;
-	
+
 	public final static String BASE_URL = "/login";
 	public final static String PATH = "/";
-	
+
 		@RequestMapping(path = PATH, method = RequestMethod.GET)
 		public String loginGet() {
 			return "base" + BASE_URL;
@@ -29,7 +29,7 @@ public class LoginController {
 		public String loginPost(String login, String password) {
 			return authentification(login, password);
 		}
-		
+
 		// Fonction permettant de s'authentifier en tant que user (retourne un PATH vers le show de user)
 		// A modifier
 		public String authentification(String login, String password){
