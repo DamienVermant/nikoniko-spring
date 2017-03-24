@@ -48,4 +48,5 @@ public interface IUserHasTeamCrudRepository extends IBaseAssociatedCrudRepositor
 	@Query(value = "SELECT * FROM user_has_team WHERE idLeft = :idUser AND idRight = :idTeam", nativeQuery=true)
 	public UserHasTeam findAssociatedUserTeamALL(@Param("idUser") long idUser, @Param("idTeam") long idTeam);
 
+	
 }

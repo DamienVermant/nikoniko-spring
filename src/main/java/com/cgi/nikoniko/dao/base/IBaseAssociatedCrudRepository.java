@@ -7,5 +7,4 @@ import com.cgi.nikoniko.models.modelbase.AssociationItemId;
 public interface IBaseAssociatedCrudRepository<T extends AssociationItem> extends CrudRepository<T, AssociationItemId>{
 
 
-
 }
