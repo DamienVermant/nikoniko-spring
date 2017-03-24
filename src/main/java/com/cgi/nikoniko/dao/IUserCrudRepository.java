@@ -5,4 +5,6 @@ import com.cgi.nikoniko.models.tables.User;
 
 public interface IUserCrudRepository extends IBaseCrudRepository<User>{
 
+	User findByLogin(String login); //"Login" in the name cause the "login" attribute exist in user!!
+
 }

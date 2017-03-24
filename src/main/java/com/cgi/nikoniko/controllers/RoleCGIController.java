@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,6 +48,7 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 	@Autowired
 	IRoleHasFunctionCrudRepository roleFuncCrud;
 
+	@Secured("ROLE_ADMIN")
 	@RequestMapping(path = ROUTE_SHOW, method = RequestMethod.GET)
 	public String showItemGet(Model model,@PathVariable Long id) {
 

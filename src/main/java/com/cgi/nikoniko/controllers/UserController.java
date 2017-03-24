@@ -374,7 +374,6 @@ public class UserController extends ViewBaseController<User> {
 			}
 			roleList = (ArrayList<RoleCGI>) roleCrud.findAll(ids);
 		}
-
 		return roleList;
 	}
 
