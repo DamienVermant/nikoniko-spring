@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.hibernate.annotations.Cascade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,21 +20,16 @@ import com.cgi.nikoniko.models.tables.NikoNiko;
 import com.cgi.nikoniko.models.tables.RoleCGI;
 import com.cgi.nikoniko.models.tables.User;
 
-import ch.qos.logback.classic.pattern.DateConverter;
-
 import com.cgi.nikoniko.dao.IRoleCrudRepository;
 import com.cgi.nikoniko.dao.ITeamCrudRepository;
 import com.cgi.nikoniko.dao.IUserCrudRepository;
 import com.cgi.nikoniko.dao.IUserHasRoleCrudRepository;
 import com.cgi.nikoniko.dao.IUserHasTeamCrudRepository;
-import com.cgi.nikoniko.dao.base.IBaseAssociatedCrudRepository;
 import com.cgi.nikoniko.models.tables.Team;
 import com.cgi.nikoniko.models.association.UserHasRole;
 import com.cgi.nikoniko.models.association.UserHasTeam;
 import com.cgi.nikoniko.models.association.base.AssociationItemId;
 import com.cgi.nikoniko.utils.DumpFields;
-import com.mysql.jdbc.Connection;
-import com.mysql.jdbc.Statement;
 
 @Controller
 @RequestMapping(UserController.BASE_URL)
