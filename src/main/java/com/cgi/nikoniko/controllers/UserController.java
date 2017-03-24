@@ -18,18 +18,24 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
 import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
 import com.cgi.nikoniko.models.tables.NikoNiko;
+import com.cgi.nikoniko.models.tables.RoleCGI;
 import com.cgi.nikoniko.models.tables.User;
 
 import ch.qos.logback.classic.pattern.DateConverter;
 
+import com.cgi.nikoniko.dao.IRoleCrudRepository;
 import com.cgi.nikoniko.dao.ITeamCrudRepository;
 import com.cgi.nikoniko.dao.IUserCrudRepository;
+import com.cgi.nikoniko.dao.IUserHasRoleCrudRepository;
 import com.cgi.nikoniko.dao.IUserHasTeamCrudRepository;
 import com.cgi.nikoniko.dao.base.IBaseAssociatedCrudRepository;
 import com.cgi.nikoniko.models.tables.Team;
+import com.cgi.nikoniko.models.association.UserHasRole;
 import com.cgi.nikoniko.models.association.UserHasTeam;
 import com.cgi.nikoniko.models.association.base.AssociationItemId;
 import com.cgi.nikoniko.utils.DumpFields;
+import com.mysql.jdbc.Connection;
+import com.mysql.jdbc.Statement;
 
 @Controller
 @RequestMapping(UserController.BASE_URL)
@@ -43,8 +49,9 @@ public class UserController extends ViewBaseController<User> {
 	public final static String SHOW_PATH = "show";
 
 	public final static String SHOW_TEAM = "showTeam";
+	public final static String SHOW_ROLE = "showRole";
 	public final static String ADD_TEAM = "addTeams";
-
+	public final static String ADD_ROLE = "addRoles";
 	public final static String REDIRECT = "redirect:";
 
 	@Autowired
@@ -54,10 +61,16 @@ public class UserController extends ViewBaseController<User> {
 	IUserHasTeamCrudRepository userTeamCrud;
 
 	@Autowired
+	IUserHasRoleCrudRepository userRoleCrud;
+
+	@Autowired
 	IUserCrudRepository userCrud;
 
 	@Autowired
 	ITeamCrudRepository teamCrud;
+
+	@Autowired
+	IRoleCrudRepository roleCrud;
 
 	public UserController() {
 		super(User.class,BASE_URL);
@@ -85,8 +98,10 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
 		model.addAttribute("item",DumpFields.fielder(super.getItem(idUser)));
 		model.addAttribute("show_teams", DOT + PATH + SHOW_TEAM);
+		model.addAttribute("show_roles", DOT + PATH + SHOW_ROLE);
 		model.addAttribute("go_delete", DELETE_ACTION);
 		model.addAttribute("go_update", UPDATE_ACTION);
+
 		return BASE_USER + PATH + SHOW_PATH;
 	}
 
@@ -159,6 +174,7 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("show_teams", DOT + PATH + SHOW_TEAM);
 		model.addAttribute("back", DOT + PATH + SHOW_PATH);
 		model.addAttribute("add", "addTeams");
+
 		return BASE_USER + PATH + SHOW_TEAM;
 	}
 
@@ -189,6 +205,7 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("go_delete", DELETE_ACTION);
 		model.addAttribute("back", DOT + PATH + SHOW_TEAM);
 		model.addAttribute("add", ADD_TEAM);
+
 		return BASE_USER + PATH + ADD_TEAM;
 	}
 
@@ -295,8 +312,93 @@ public class UserController extends ViewBaseController<User> {
 
 				}
 		}
+		return DumpFields.listFielder((List<Team>) teamCrud.findAll(ids));
+	}
 
-		return DumpFields.listFielder( (List<Team>) teamCrud.findAll(ids));
+
+
+
+
+
+
+
+
+
+	// TODO : RELATION WITH ROLE
+
+	@RequestMapping(path = "{idUser}" + PATH + SHOW_ROLE, method = RequestMethod.GET)
+	public String showItemGetRole(Model model,@PathVariable Long idUser) {
+
+		User userBuffer = new User();
+		userBuffer = userCrud.findOne(idUser);
+
+		model.addAttribute("page",userBuffer.getRegistration_cgi());
+		model.addAttribute("sortedFields",Team.FIELDS);
+		model.addAttribute("items", DumpFields.listFielder(this.setRolesForUserGet(idUser)));
+		//model.addAttribute("items",DumpFields.listFielder((List<RoleCGI>) roleCrud.findAll()));
+		model.addAttribute("show_roles", DOT + PATH + SHOW_ROLE);
+		model.addAttribute("back", DOT + PATH + SHOW_PATH);
+		model.addAttribute("add", "addRoles");
+
+		return BASE_USER + PATH + SHOW_ROLE;
+	}
+
+
+	@RequestMapping(path = "{idUser}" + PATH + SHOW_ROLE, method = RequestMethod.POST)
+	public String showItemDeleteRole(Model model,@PathVariable Long idUser, Long idRole) {
+
+		String redirect = REDIRECT + PATH + BASE_USER + PATH + idUser + PATH + SHOW_ROLE;
+		UserHasRole userHasRole = new UserHasRole(userCrud.findOne(idUser), roleCrud.findOne(idRole));
+		userRoleCrud.delete(userHasRole);
+		return redirect;
+	}
+
+	@RequestMapping(path = "{idUser}" + PATH + ADD_ROLE, method = RequestMethod.POST)
+	public String showItemPostRole(Model model,@PathVariable Long idUser, Long idRole) {
+
+		String redirect = REDIRECT + PATH + BASE_USER + PATH + idUser + PATH + SHOW_ROLE;
+		UserHasRole userHasRole = new UserHasRole(userCrud.findOne(idUser), roleCrud.findOne(idRole));
+		userRoleCrud.save(userHasRole);
+
+		return redirect;
+	}
+
+
+	public ArrayList<RoleCGI> setRolesForUserGet(Long idUser) {
+
+		List<Long> ids = new ArrayList<Long>();
+		ArrayList<RoleCGI> roleList = new ArrayList<RoleCGI>();
+
+		List<BigInteger> idsBig = userRoleCrud.findAssociatedRole(idUser);
+
+		if (!idsBig.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
+			for (BigInteger id : idsBig) {
+				ids.add(id.longValue());
+
+			}
+			roleList = (ArrayList<RoleCGI>) roleCrud.findAll(ids);
+		}
+
+		return roleList;
+	}
+
+
+	@RequestMapping(path = "{idUser}" + PATH + ADD_ROLE, method = RequestMethod.GET)
+	public <T> String addUsersGetRole(Model model, @PathVariable Long idUser) {
+
+		Object userBuffer = new Object();
+		userBuffer = userCrud.findOne(idUser);
+
+		model.addAttribute("items", DumpFields.listFielder((ArrayList<RoleCGI>) roleCrud.findAll()));
+		model.addAttribute("sortedFields",RoleCGI.FIELDS);
+		model.addAttribute("page", ((User) userBuffer).getRegistration_cgi());
+		model.addAttribute("go_show", SHOW_ACTION);
+		model.addAttribute("go_create", CREATE_ACTION);
+		model.addAttribute("go_delete", DELETE_ACTION);
+		model.addAttribute("back", DOT + PATH + SHOW_ROLE);
+		model.addAttribute("add", ADD_ROLE);
+
+		return BASE_USER + PATH + ADD_ROLE;
 	}
 
 

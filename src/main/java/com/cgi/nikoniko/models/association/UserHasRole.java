@@ -49,9 +49,9 @@ public class UserHasRole extends AssociationItem {
 	public UserHasRole (User user, RoleCGI role) {
 		super(UserHasRole.TABLE,UserHasRole.FIELDS, user, role);
 		this.user = user;
-		this.user.getRoles().add(this);
+		//this.user.getRoles().add(this);
 		this.role = role;
-		this.role.getUsers().add(this);
+		//this.role.getUsers().add(this);
 	}
 
 }

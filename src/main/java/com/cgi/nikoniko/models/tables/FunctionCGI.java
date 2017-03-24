@@ -2,6 +2,8 @@ package com.cgi.nikoniko.models.tables;
 
 import java.util.ArrayList;
 import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;

@@ -5,7 +5,7 @@
 </head>
 
 <body>
-	<h1>USERS IN TEAM : ${page}  </h1>
+	<h1>ADD ROLES : ${page}  </h1>
 		<table class="table table-bordered table-hover">
 			<tr>
 				<#list items as item>
@@ -37,13 +37,12 @@
 					</#list>
 					<td>
 						<form action = "" method = "POST">
-							<input type="hidden" name = "idUser" value = "${item["id"]}">
-							<input type="submit" value="Enlever"><br>
+							<input type="hidden" name = "idRole" value = "${item["id"]}">
+							<input type="submit" value="add"><br>
 						</form>
 					</td>
 				</tr>
 			</#list>
 		</table>
-	<a href = "${add}"> Add user </a> <br>
 	<a href="${back}"> Back <a>		
 </body>
