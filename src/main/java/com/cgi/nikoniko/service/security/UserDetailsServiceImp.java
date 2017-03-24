@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cgi.nikoniko.controllers.UserController;
 import com.cgi.nikoniko.dao.IRoleCrudRepository;
 import com.cgi.nikoniko.dao.IUserCrudRepository;
 import com.cgi.nikoniko.dao.IUserHasRoleCrudRepository;

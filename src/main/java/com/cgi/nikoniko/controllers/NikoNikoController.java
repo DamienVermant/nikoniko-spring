@@ -13,15 +13,28 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
 import com.cgi.nikoniko.dao.IChangeDatesCrudRepository;
+import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
+import com.cgi.nikoniko.dao.IUserCrudRepository;
 import com.cgi.nikoniko.models.tables.ChangeDates;
 import com.cgi.nikoniko.models.tables.NikoNiko;
+import com.cgi.nikoniko.models.tables.User;
 import com.cgi.nikoniko.utils.DumpFields;
 
 @Controller
 @RequestMapping(NikoNikoController.BASE_URL)
 public class NikoNikoController extends ViewBaseController<NikoNiko> {
 
+
 	public final static String BASE_URL = "/nikoniko";
+
+	public final static String DOT = ".";
+	public final static String PATH = "/";
+	public final static String BASE_NIKONIKO = "nikoniko";
+	public static final String SHOW_PATH = "show";
+	public final static String SHOW_CHANGE_DATES = "showChangeDates";
+
+	@Autowired
+	INikoNikoCrudRepository nikoCrud;
 
 	@Autowired
 	IChangeDatesCrudRepository changeCrud;
@@ -30,11 +43,28 @@ public class NikoNikoController extends ViewBaseController<NikoNiko> {
 		super(NikoNiko.class,BASE_URL);
 	}
 
+	@Override
+	@RequestMapping(path = "{idNiko}" + PATH + SHOW_PATH, method = RequestMethod.GET)
+	public String showItemGet(Model model,@PathVariable Long idNiko) {
+
+		NikoNiko nikoBuffer = new NikoNiko();
+		nikoBuffer = nikoCrud.findOne(idNiko);
+
+		model.addAttribute("page",  "NikoNiko : " + nikoBuffer.getEntry_date());
+		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
+		model.addAttribute("item",DumpFields.fielder(super.getItem(idNiko)));
+		model.addAttribute("show_changes_dates", DOT + PATH + SHOW_CHANGE_DATES);
+		model.addAttribute("go_delete", DELETE_ACTION);
+		model.addAttribute("go_update", UPDATE_ACTION);
+
+		return BASE_NIKONIKO + PATH + SHOW_PATH;
+	}
+
 	/**
 	 *
 	 * Recupération de tous les changedate liés à un nikoniko
 	 */
-	@RequestMapping("{nikonikoId}/link")
+	@RequestMapping("{nikonikoId}/showChangeDates")
 	public String getChangsForNikoNiko(Model model, @PathVariable Long nikonikoId) {
 		NikoNiko niko = super.getItem(nikonikoId);
 		Set<ChangeDates> chang =  niko.getChangeDates();

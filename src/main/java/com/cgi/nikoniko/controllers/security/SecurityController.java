@@ -14,13 +14,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class SecurityController {
 
 	@RequestMapping(path = "/login", method = RequestMethod.GET)
-	public String login () {
-
+	public String login(){
 		return "security/login";
 	}
 
 	@RequestMapping(path = "/logout", method = RequestMethod.GET)
-	public String logout(HttpServletRequest request, HttpServletResponse response){
+	public String logout(HttpServletRequest request, HttpServletResponse response) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth != null) {
 			new SecurityContextLogoutHandler().logout(request, response, auth);

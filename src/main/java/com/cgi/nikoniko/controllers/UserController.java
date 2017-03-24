@@ -41,8 +41,8 @@ public class UserController extends ViewBaseController<User> {
 	public final static String BASE_URL = PATH + BASE_USER;
 
 	public final static String SHOW_PATH = "show";
-	public final static String SHOW_LINK = "link";
 
+	public final static String SHOW_NIKONIKO = "showNikoNikos";
 	public final static String SHOW_TEAM = "showTeam";
 	public final static String SHOW_ROLE = "showRole";
 	public final static String ADD_TEAM = "addTeams";
@@ -92,7 +92,7 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("page",  "USER : " + userBuffer.getRegistration_cgi());
 		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
 		model.addAttribute("item",DumpFields.fielder(super.getItem(idUser)));
-		model.addAttribute("show_nikonikos", DOT + PATH + SHOW_LINK);
+		model.addAttribute("show_nikonikos", DOT + PATH + SHOW_NIKONIKO);
 		model.addAttribute("show_teams", DOT + PATH + SHOW_TEAM);
 		model.addAttribute("show_roles", DOT + PATH + SHOW_ROLE);
 		model.addAttribute("go_delete", DELETE_ACTION);
@@ -107,7 +107,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @param userId
 	 * @return
 	 */
-	@RequestMapping("{userId}/link")
+	@RequestMapping("{userId}/showNikoNikos")
 	public String getNikoNikosForUser(Model model, @PathVariable Long userId) {
 		User user = super.getItem(userId);
 		Set<NikoNiko> niko =  user.getNikoNikos();
