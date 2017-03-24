@@ -1,5 +1,6 @@
 package com.cgi.nikoniko.models.association;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -7,6 +8,11 @@ import javax.persistence.Transient;
 import com.cgi.nikoniko.models.association.base.AssociationItem;
 import com.cgi.nikoniko.models.tables.FunctionCGI;
 import com.cgi.nikoniko.models.tables.RoleCGI;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import com.cgi.nikoniko.models.association.base.AssociationItem;
 
 @Entity
 @Table(name = RoleHasFunction.TABLE)
@@ -19,11 +25,11 @@ public class RoleHasFunction extends AssociationItem {
 	public static final String[] FIELDS = {"idLeft", "idRight"};
 
 	@Transient
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	private RoleCGI role;
 
 	@Transient
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	private FunctionCGI function;
 
 	/**
@@ -49,7 +55,7 @@ public class RoleHasFunction extends AssociationItem {
 	public RoleHasFunction (RoleCGI role, FunctionCGI function) {
 		super(RoleHasFunction.TABLE,RoleHasFunction.FIELDS, role, function);
 		this.function = function;
-		this.function.getRoles().add(this);
+		//this.function.getRoles().add(this);
 		this.role = role;
 		this.role.getFunctionCGI().add(this);
 	}

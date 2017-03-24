@@ -2,11 +2,14 @@ package com.cgi.nikoniko.models.tables;
 
 import java.util.ArrayList;
 import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
 import com.cgi.nikoniko.models.association.RoleHasFunction;
 import com.cgi.nikoniko.models.association.UserHasRole;
 import com.cgi.nikoniko.models.tables.modelbase.DatabaseItem;

@@ -37,13 +37,13 @@
 					</#list>
 					<td>
 						<form action = "" method = "POST">
-							<input type="hidden" name = "idUser" value = "${item["id"]}">
+							<input type="hidden" name = "idFunction" value = "${item["id"]}">
 							<input type="submit" value="Enlever"><br>
 						</form>
 					</td>
 				</tr>
 			</#list>
 		</table>
-	<a href = "${add}"> Add user </a> <br>
+	<a href = "${add}"> Add function </a> <br>
 	<a href="${back}"> Back <a>		
 </body>
