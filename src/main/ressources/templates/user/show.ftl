@@ -28,6 +28,7 @@
 			</#if>
 		</#list>
 	</table>
+    <a href="${show_nikonikos}"> Show nikonikos </a> <br>
 	<a href="${show_roles}"> Show roles </a> <br>
 	<a href="${show_teams}"> Show teams </a> <br>
 	<a href="${go_update}">Update</a> <br>
