@@ -2,12 +2,10 @@ package com.cgi.nikoniko.controllers;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,8 +17,6 @@ import com.cgi.nikoniko.dao.IUserCrudRepository;
 import com.cgi.nikoniko.dao.IUserHasRoleCrudRepository;
 import com.cgi.nikoniko.models.tables.RoleCGI;
 import com.cgi.nikoniko.models.tables.User;
-import com.cgi.nikoniko.models.tables.security.SecurityUser;
-import com.cgi.nikoniko.service.security.UserDetailsServiceImp;
 
 @Controller
 public class MenuController  {
@@ -53,9 +49,7 @@ public class MenuController  {
 	public final static String GO_ROLEFUNC = PATH + "role_has_function" + PATH;
 	
 	
-	// TODO : Récupération du rôle en fonction de l'utilisateur connecté
-	// TODO : Redirection vers le bon menu en fonction du rôle et de l'id de user
-	// TODO : Trier les rôles en fonction de leur importance pour faciliter l'affichage du menu
+	// TODO : GESTION DES PATHS ET DES @SECURED
 	
 	@RequestMapping(path = "/menu", method = RequestMethod.GET)
 	public String index(Model model, String login) {
@@ -97,9 +91,7 @@ public class MenuController  {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		
 		login = auth.getName();
-		
 		user = userCrud.findByLogin(login);
-		
 		roleList = this.setRolesForUserGet(user.getId());
 		roleNames = this.convertObjectToString(roleList);
 		

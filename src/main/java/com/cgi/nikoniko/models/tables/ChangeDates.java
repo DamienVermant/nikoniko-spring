@@ -57,7 +57,7 @@ public class ChangeDates extends DatabaseItem {
 		 */
 		public void setNikoniko(NikoNiko nikoniko) {
 			this.nikoniko = nikoniko;
-			if (!nikoniko.getChangeDates().contains(this)) { // warning this may cause performance issues if you have a large data set since this operation is O(n)
+			if (!nikoniko.getChangeDates().contains(this)) { 
 	            nikoniko.getChangeDates().add(this);
 	            }
 		}

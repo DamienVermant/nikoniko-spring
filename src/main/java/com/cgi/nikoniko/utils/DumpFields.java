@@ -173,16 +173,11 @@ public class DumpFields {
 					.asList(Introspector.getBeanInfo(bean.getClass(),
 							Object.class).getPropertyDescriptors())
 					.stream()
-					// filter out properties with setters only
 					.filter(pd -> Objects.nonNull(pd.getReadMethod()))
 					.collect(
 							Collectors.toMap(
 							// bean property name
-									PropertyDescriptor::getName, pd -> { // invoke
-																			// method
-																			// to
-																			// get
-																			// value
+									PropertyDescriptor::getName, pd -> { 
 										try {
 											Object test = pd.getReadMethod()
 													.invoke(bean);

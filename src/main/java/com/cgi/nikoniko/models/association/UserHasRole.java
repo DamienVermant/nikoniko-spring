@@ -45,6 +45,8 @@ public class UserHasRole extends AssociationItem {
 	public UserHasRole() {
 		super(UserHasRole.TABLE,UserHasRole.FIELDS);
 	}
+	
+	// TODO : CHECK WHY IT DOES NOT WORK
 
 	public UserHasRole (User user, RoleCGI role) {
 		super(UserHasRole.TABLE,UserHasRole.FIELDS, user, role);

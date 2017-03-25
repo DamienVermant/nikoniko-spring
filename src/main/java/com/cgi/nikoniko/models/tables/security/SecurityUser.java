@@ -14,7 +14,7 @@ public abstract class SecurityUser extends DatabaseItem {
 
 	@Column(name = "password", nullable = false)
 	private String password;
-	
+
 	@Column(name = "enable", nullable = true)
 	private Boolean enable;
 
@@ -39,13 +39,14 @@ public abstract class SecurityUser extends DatabaseItem {
 		return password;
 	}
 
+
 	/**
 	 * @param password : the password to set
 	 */
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
 
 	public Boolean getEnable() {
 		return enable;

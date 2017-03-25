@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,7 +41,7 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 	public final static String SHOW_FUNC = "showFunction";
 	public final static String ADD_FUNC = "addFunctions";
 	private static final String SHOW_USERS = "showUser";
-	
+
 	@Autowired
 	IUserCrudRepository userCrud;
 
@@ -54,10 +53,10 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 
 	@Autowired
 	IRoleHasFunctionCrudRepository roleFuncCrud;
-	
+
 	@Autowired
 	IUserHasRoleCrudRepository userRoleCrud;
-	
+
 	@RequestMapping(path = ROUTE_SHOW, method = RequestMethod.GET)
 	public String showItemGet(Model model,@PathVariable Long id) {
 
@@ -93,7 +92,7 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 
 		return BASE_ROLE + PATH + SHOW_FUNC;
 	}
-	
+
 	@RequestMapping(path = "{idRole}" + PATH + SHOW_USERS, method = RequestMethod.GET)
 	public <T> String showLinksGetUser(Model model, @PathVariable Long idRole) {
 
@@ -168,7 +167,7 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 
 		return functionList;
 	}
-	
+
 	public ArrayList<User> setUsersForRoleGet(Long idRole) {
 
 		List<Long> ids = new ArrayList<Long>();
@@ -176,7 +175,7 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 
 		List<BigInteger> idsBig = userRoleCrud.findAssociatedUser(idRole);
 
-		if (!idsBig.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
+		if (!idsBig.isEmpty()) {
 			for (BigInteger id : idsBig) {
 				ids.add(id.longValue());
 

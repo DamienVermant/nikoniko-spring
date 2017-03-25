@@ -86,6 +86,8 @@ public class UserHasTeam extends AssociationItem {
 		super(UserHasTeam.TABLE,UserHasTeam.FIELDS);
 	}
 
+	// TODO : CHECK WHY IT DOES NOT WORK
+	
 	public UserHasTeam (User user, Team team) {
 		super(UserHasTeam.TABLE,UserHasTeam.FIELDS, user, team);
 		this.user = user;

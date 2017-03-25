@@ -22,35 +22,35 @@ import com.cgi.nikoniko.models.tables.RoleCGI;
 import com.cgi.nikoniko.models.tables.User;
 
 @Service
-public class UserDetailsServiceImp implements UserDetailsService{
-	
+public class UserDetailsServiceImp implements UserDetailsService {
+
 	@Autowired
 	private IUserCrudRepository userCrud;
-	
+
+	@Autowired
+	private IRoleCrudRepository roleCrud;
+
 	@Autowired
 	private IUserHasRoleCrudRepository userRoleCrud;
-	
-	@Autowired 
-	private IRoleCrudRepository roleCrud;
 
 	@Override
 	@Transactional(readOnly = true)
 	public UserDetails loadUserByUsername(String login)
 			throws UsernameNotFoundException {
 		User user = userCrud.findByLogin(login);
-		
-		Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-		
+
+		Set<GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
+
 		if (user.getEnable()) {
 			for (RoleCGI role : this.setRolesForUserGet(user.getId())) {
 				grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
 			}
-			
 		}
-		return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(), grantedAuthorities);
+		return new org.springframework.security.core.userdetails
+					.User(user.getLogin(),user.getPassword(),grantedAuthorities);
 	}
 
-	
+
 	public ArrayList<RoleCGI> setRolesForUserGet(Long idUser) {
 
 		List<Long> ids = new ArrayList<Long>();
@@ -58,7 +58,7 @@ public class UserDetailsServiceImp implements UserDetailsService{
 
 		List<BigInteger> idsBig = userRoleCrud.findAssociatedRole(idUser);
 
-		if (!idsBig.isEmpty()) {
+		if (!idsBig.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
 			for (BigInteger id : idsBig) {
 				ids.add(id.longValue());
 
@@ -68,4 +68,5 @@ public class UserDetailsServiceImp implements UserDetailsService{
 
 		return roleList;
 	}
+
 }

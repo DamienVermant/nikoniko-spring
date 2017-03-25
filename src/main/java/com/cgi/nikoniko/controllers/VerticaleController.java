@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
-import com.cgi.nikoniko.models.tables.NikoNiko;
 import com.cgi.nikoniko.models.tables.Team;
 import com.cgi.nikoniko.models.tables.User;
 import com.cgi.nikoniko.models.tables.Verticale;

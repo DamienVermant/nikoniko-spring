@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.hibernate.annotations.Cascade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,21 +20,16 @@ import com.cgi.nikoniko.models.tables.NikoNiko;
 import com.cgi.nikoniko.models.tables.RoleCGI;
 import com.cgi.nikoniko.models.tables.User;
 
-import ch.qos.logback.classic.pattern.DateConverter;
-
 import com.cgi.nikoniko.dao.IRoleCrudRepository;
 import com.cgi.nikoniko.dao.ITeamCrudRepository;
 import com.cgi.nikoniko.dao.IUserCrudRepository;
 import com.cgi.nikoniko.dao.IUserHasRoleCrudRepository;
 import com.cgi.nikoniko.dao.IUserHasTeamCrudRepository;
-import com.cgi.nikoniko.dao.base.IBaseAssociatedCrudRepository;
 import com.cgi.nikoniko.models.tables.Team;
 import com.cgi.nikoniko.models.association.UserHasRole;
 import com.cgi.nikoniko.models.association.UserHasTeam;
 import com.cgi.nikoniko.models.association.base.AssociationItemId;
 import com.cgi.nikoniko.utils.DumpFields;
-import com.mysql.jdbc.Connection;
-import com.mysql.jdbc.Statement;
 
 @Controller
 @RequestMapping(UserController.BASE_URL)
@@ -47,6 +41,8 @@ public class UserController extends ViewBaseController<User> {
 	public final static String BASE_URL = PATH + BASE_USER;
 
 	public final static String SHOW_PATH = "show";
+
+	public final static String SHOW_NIKONIKO = "showNikoNikos";
 	public final static String SHOW_TEAM = "showTeam";
 	public final static String SHOW_ROLE = "showRole";
 	public final static String SHOW_LINK = "link";
@@ -81,6 +77,12 @@ public class UserController extends ViewBaseController<User> {
 
 
 	}
+	
+	/**
+	 * 
+	 * GESTION ASSOCIATION WITH NIKONIKO
+	 * 
+	 */
 
 
 	/**
@@ -97,7 +99,8 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("page",  "USER : " + userBuffer.getRegistration_cgi());
 		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
 		model.addAttribute("item",DumpFields.fielder(super.getItem(idUser)));
-		model.addAttribute("show_nikonikos", DOT + PATH + SHOW_LINK);
+		model.addAttribute("show_nikonikos", DOT + PATH + SHOW_NIKONIKO);
+//		model.addAttribute("show_nikonikos", DOT + PATH + SHOW_LINK);
 		model.addAttribute("show_teams", DOT + PATH + SHOW_TEAM);
 		model.addAttribute("show_roles", DOT + PATH + SHOW_ROLE);
 		model.addAttribute("go_delete", DELETE_ACTION);
@@ -112,7 +115,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @param userId
 	 * @return
 	 */
-	@RequestMapping("{userId}/link")
+	@RequestMapping("{userId}/showNikoNikos")
 	public String getNikoNikosForUser(Model model, @PathVariable Long userId) {
 		User user = super.getItem(userId);
 		Set<NikoNiko> niko =  user.getNikoNikos();
@@ -156,6 +159,12 @@ public class UserController extends ViewBaseController<User> {
 		}
 		return "redirect:/user/1/link";
 	}
+	
+	/**
+	 * 
+	 * GESTION ASSOCIATION WITH TEAM
+	 * 
+	 */
 
 	/**
 	 * RELATION USER HAS TEAM
@@ -315,18 +324,13 @@ public class UserController extends ViewBaseController<User> {
 		}
 		return DumpFields.listFielder((List<Team>) teamCrud.findAll(ids));
 	}
-
-
-
-
-
-
-
-
-
-
-	// TODO : RELATION WITH ROLE
-
+	
+	/**
+	 * 
+	 * GESTION ASSOCIATION WITH ROLE
+	 * 
+	 */
+	
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_ROLE, method = RequestMethod.GET)
 	public String showItemGetRole(Model model,@PathVariable Long idUser) {
 
@@ -379,7 +383,6 @@ public class UserController extends ViewBaseController<User> {
 			}
 			roleList = (ArrayList<RoleCGI>) roleCrud.findAll(ids);
 		}
-
 		return roleList;
 	}
 
