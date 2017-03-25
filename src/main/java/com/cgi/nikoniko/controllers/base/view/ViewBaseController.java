@@ -122,7 +122,6 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 		return updateRedirect;
 	}
 
-	// COMMENT FOR TEST WITH TEAM
 	@RequestMapping(path = ROUTE_SHOW, method = RequestMethod.GET)
 	public String showItemGet(Model model,@PathVariable Long id) {
 		model.addAttribute("page",this.baseName + " " + SHOW_ACTION.toUpperCase());
@@ -132,12 +131,6 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 		model.addAttribute("go_delete", DELETE_ACTION);
 		model.addAttribute("go_update", UPDATE_ACTION);
 		return showView;
-	}
-
-	// TODO : Gérér corectement le PATH de login
-	@RequestMapping(path = ROUTE_LOGIN, method = RequestMethod.GET)
-	public String loginGet(Model model) {
-		return loginView;
 	}
 
 }

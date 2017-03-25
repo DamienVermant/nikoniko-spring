@@ -57,8 +57,7 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 	
 	@Autowired
 	IUserHasRoleCrudRepository userRoleCrud;
-
-	@Secured({"ADMIN"})
+	
 	@RequestMapping(path = ROUTE_SHOW, method = RequestMethod.GET)
 	public String showItemGet(Model model,@PathVariable Long id) {
 

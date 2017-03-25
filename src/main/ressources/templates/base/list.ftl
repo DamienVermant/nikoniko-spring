@@ -63,4 +63,5 @@
 				</tr>
 			</#list>
 		</table>
+		<a href="/menu/">Back</a>
 </body>
