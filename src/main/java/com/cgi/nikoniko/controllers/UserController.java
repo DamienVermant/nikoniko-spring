@@ -157,17 +157,21 @@ public class UserController extends ViewBaseController<User> {
 	
 	// TODO : FONCTION TO ADD A NIKONIKO (FOR POST ACTION)
 	
-	public String addNikoNiko(Long idUser, int mood, String comment){
+	public String addNikoNiko(Long idUser, Integer mood, String comment){
 		
 		Date date = new Date();
 		User user = new User();
 		
-		user = userCrud.findOne(idUser);
+		if (mood ==  null) {
+			return REDIRECT + PATH + MENU_PATH;
+		}
+		else {
+			user = userCrud.findOne(idUser);
+			NikoNiko niko = new NikoNiko(user,mood,date,comment);
+			nikonikoCrud.save(niko);
+			return REDIRECT + PATH + MENU_PATH;
+		}
 		
-		NikoNiko niko = new NikoNiko(user,mood,date,comment);
-		nikonikoCrud.save(niko);
-		
-		return REDIRECT + PATH + MENU_PATH;
 	}
 	
 	//////////////////////////////////////////////////////////////////

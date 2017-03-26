@@ -40,8 +40,8 @@
 			<div class="row-fluid">
 				<div class="col-lg-12">
 					<div class="align">
-					<button onclick="location.href='changer_mdp.html'" class="password"> Préférences (KO) </button> 
-					<button onclick="location.href='vote.html'" class="vote"> Modifier vote (KO) </button>
+					<button onclick="location.href=''" class="password"> Préférences (KO) </button> 
+					<button onclick="location.href=''" class="vote"> Modifier vote (KO) </button>
 					<button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
 					</div>
 				</div>

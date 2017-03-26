@@ -68,9 +68,9 @@ public class MenuController  {
 		model.addAttribute("go_functions", GO_FUNCTIONS);
 		model.addAttribute("go_verticales", GO_VERTICALE);
 		
-		model.addAttribute("go_user_has_team", GO_USERS);
-		model.addAttribute("go_user_has_role", GO_NIKOS);
-		model.addAttribute("go_role_has_function", GO_TEAMS);
+		model.addAttribute("go_user_has_team", GO_USERTEAM);
+		model.addAttribute("go_user_has_role", GO_USERROLE);
+		model.addAttribute("go_role_has_function", GO_ROLEFUNC);
 		
 		
 		return BASE_MENU + PATH + "mainMenu";
