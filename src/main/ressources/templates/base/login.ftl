@@ -43,6 +43,7 @@
 		<div class="col-lg-4">
 			<div class="text">Login :</div>
 			<form action = "" method = "POST">
+				<#include "../includable/security/securityToken.ftl">
 				<input type="texte" name="login" placeholder="Votre login"> <br>
 				<div class="text"> Mot de passe :</div> 
 					<input type="texte" name="password" placeholder="Votre mot de passe"> <br>

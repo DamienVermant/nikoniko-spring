@@ -1,0 +1,126 @@
+body{
+	background-image: url(http://eskipaper.com/images/cloud-background-7.jpg);
+}
+
+hr { 
+	border: 0; 
+	height: 2px; 
+	background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(245, 0, 0, 0.75), rgba(0, 0, 0, 0)); 
+}	
+
+/* LOGO CGI */
+
+.logo{
+	margin-top: 20px;
+	width : 60%;
+	float: left;
+}
+
+/* TITLE NIKO NIKO*/
+
+.title{
+	font-family: 'Gloria Hallelujah', cursive;
+	text-decoration: underline;
+	text-align: center;
+	font-size: 30px;
+	color: #cc1e1e;
+	margin-top: 40px;
+}
+
+/* BUTTONS HEAD */
+
+.logout{
+	height: 30px;
+	width: 100px;
+	font-size: 10px;
+}
+
+.password{
+	margin-top: 30px;
+	margin-bottom: 5px;
+	height: 30px;
+	font-size: 10px;
+	width: 100px;
+}
+
+.vote{
+	height: 30px;
+	font-size: 10px;
+	margin-bottom: 5px;
+	width: 100px;
+}
+
+.align{
+	text-align: right;
+}
+
+/* BUTTONS BODY */
+
+.buttons{
+	margin-top: 10px;
+}
+
+/* COLORS */
+
+#crouge{
+  background: red;
+  border-radius:50%;
+  width:100px;
+  height:100px;
+  border:2px solid #679403; 
+  text-decoration: zfzf;
+  margin-top: 10px;
+}
+
+#corange{
+  background: orange;
+  border-radius:50%;
+  width:100px;
+  height:100px;
+  border:2px solid #679403; 
+  margin-top: 10px;
+}
+
+#cvert{
+  background: green;
+  border-radius:50%;
+  width:100px;
+  height:100px;
+  border:2px solid #679403; 
+  margin-top: 10px;
+}
+
+/* DEFINITION */
+
+.good_day{
+	background-color: green;
+	border-radius: 3px;
+}
+
+.correct_day{
+	background-color: orange;
+	border-radius: 3px;
+}
+
+.bad_day{
+	background-color: red;
+	border-radius: 3px;
+}
+
+/* "COMMENT" FOR COMMENTAIRE */
+
+.comment{
+	display: inline-block;
+	margin-top: 20px;
+	text-decoration: underline;
+}
+
+/* FOOTER */
+
+.copyright{
+	margin-top: 20px;
+	background-color: #cc1e1e;
+	color : white;
+	border-radius: 3px;
+}
+
