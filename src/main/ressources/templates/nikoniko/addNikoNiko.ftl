@@ -24,12 +24,12 @@
                 </#if>
             </#list>
         </table>
-        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         <input type="submit" value="create"><br>
+        <#include "../includable/security/securityToken.ftl">
     </form>
     <#if item["id"]??>
-        <a href="${go_index}">Back</a><br>
+        <a href="${back}">Back</a><br>
     <#else>
-        <a href="${go_index}">Back</a><br>
+        <a href="${back}">Back</a><br>
     </#if>
 </body>

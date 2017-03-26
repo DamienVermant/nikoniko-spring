@@ -186,6 +186,4 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 		return userList;
 	}
 
-
-
 }

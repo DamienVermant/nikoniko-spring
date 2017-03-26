@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +20,6 @@ import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
 import com.cgi.nikoniko.models.tables.NikoNiko;
 import com.cgi.nikoniko.models.tables.RoleCGI;
 import com.cgi.nikoniko.models.tables.User;
-
 import com.cgi.nikoniko.dao.IRoleCrudRepository;
 import com.cgi.nikoniko.dao.ITeamCrudRepository;
 import com.cgi.nikoniko.dao.IUserCrudRepository;
@@ -77,24 +77,49 @@ public class UserController extends ViewBaseController<User> {
 
 
 	}
-	
-	/**
-	 * 
-	 * GESTION ASSOCIATION WITH NIKONIKO
-	 * 
-	 */
-
 
 	/**
 	 *
-	 * Recupération de tous les nikoniko liés à un user
-	*/
+	 * ASSOCIATION USER --> NIKONIKO
+	 *
+	 */
 
+	/**
+	 * SHOW USER ACTIONS FOR A SPECIFIC PROFILE
+	 *
+	 * @param model
+	 * @param idUser
+	 * @return
+	 */
+	@Secured({"ROLE_USER","ROLE_ADMIN"})
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_PATH, method = RequestMethod.GET)
 	public String showItem(Model model,@PathVariable Long idUser) {
 
 		User userBuffer = new User();
 		userBuffer = userCrud.findOne(idUser);
+
+		//BOUCLE VERIF SI UN ROLE SPECIFIQUE EST ASSOCIE A UN USER
+		//SERVIRA A DETERMINER QUEL ENVIRONNEMENT ON AFFICHE
+		//ATTENTION : LE ROLE EST DETERMINE PAR RAPPORT AU USER QU'ON AFFICHE
+		//			  ET PAS LE DETENTEUR DE LA SESSION
+		for (RoleCGI roleName : this.setRolesForUserGet(idUser)) {
+			String varTest = roleName.getName();
+			if (varTest.equals("ROLE_ADMIN")) {
+				model.addAttribute("myRole", roleName.getName());
+				model.addAttribute("page",  "USER : " + userBuffer.getRegistration_cgi());
+				model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
+				model.addAttribute("item",DumpFields.fielder(super.getItem(idUser)));
+				model.addAttribute("show_nikonikos", DOT + PATH + SHOW_NIKONIKO);
+				model.addAttribute("show_teams", DOT + PATH + SHOW_TEAM);
+				model.addAttribute("show_roles", DOT + PATH + SHOW_ROLE);
+				model.addAttribute("go_delete", DELETE_ACTION);
+				model.addAttribute("go_update", UPDATE_ACTION);
+
+				return BASE_USER + PATH + SHOW_PATH;//LATER THIS ROUTE WILL LEAD TO A SPECIFIC FTL FILE
+			} else {
+				model.addAttribute("myRole", null);
+			}
+		}
 
 		model.addAttribute("page",  "USER : " + userBuffer.getRegistration_cgi());
 		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
@@ -106,15 +131,16 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("go_delete", DELETE_ACTION);
 		model.addAttribute("go_update", UPDATE_ACTION);
 
-		return BASE_USER + PATH + SHOW_PATH;
+		return BASE_USER + PATH + SHOW_PATH;//LATER THIS ROUTE WILL LEAD TO A DEFAULT VIEW FOR NON USERS
 	}
 
 	/**
-	 * LINK WITH USER -> NIKONIKO (SELECT ALL NIKONIKOS FOR A USER)
+	 * LINK USER -> NIKONIKO (SELECT ALL NIKONIKOS FOR A USER)
 	 * @param model
 	 * @param userId
 	 * @return
 	 */
+	@Secured("ROLE_ADMIN")//IMPORTANT : indique quels seront les profils autorisés à utiliser la fonction
 	@RequestMapping("{userId}/showNikoNikos")
 	public String getNikoNikosForUser(Model model, @PathVariable Long userId) {
 		User user = super.getItem(userId);
@@ -123,14 +149,16 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("page", user.getFirstname() + " nikonikos");
 		model.addAttribute("sortedFields", NikoNiko.FIELDS);
 		model.addAttribute("items", DumpFields.listFielder(listOfNiko));
-		return "user/showAllRelation";
+		model.addAttribute("back", DOT + PATH + SHOW_PATH);
+		model.addAttribute("add", "addNikoNiko");
+		return "user/showNikoNikos";
 	}
 
 	/**
 	 *
 	 * Page de creation d'un nikoniko pour un user
 	 */
-	@RequestMapping(path = "{userId}/add", method = RequestMethod.GET)
+	@RequestMapping(path = "{userId}/addNikoNiko", method = RequestMethod.GET)
 	public String createItemGet(Model model, @PathVariable Long userId) {
 		User user = super.getItem(userId);
 		NikoNiko niko = new NikoNiko();
@@ -138,7 +166,7 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("page",user.getFirstname() + " " + CREATE_ACTION.toUpperCase());
 		model.addAttribute("sortedFields",NikoNiko.FIELDS);
 		model.addAttribute("item",DumpFields.createContentsEmpty(niko.getClass()));
-		model.addAttribute("go_index", LIST_ACTION);
+		model.addAttribute("back", DOT + PATH + SHOW_PATH);
 		model.addAttribute("create_item", CREATE_ACTION);
 		return "nikoniko/addNikoNiko";
 	}
@@ -157,13 +185,13 @@ public class UserController extends ViewBaseController<User> {
 		} catch (Exception e) {
 			 e.printStackTrace();
 		}
-		return "redirect:/user/1/link";
+		return "redirect:/user/"+userId + "/showNikoNikos";
 	}
-	
+
 	/**
-	 * 
-	 * GESTION ASSOCIATION WITH TEAM
-	 * 
+	 *
+	 * ASSOCIATION USER --> TEAM
+	 *
 	 */
 
 	/**
@@ -324,13 +352,19 @@ public class UserController extends ViewBaseController<User> {
 		}
 		return DumpFields.listFielder((List<Team>) teamCrud.findAll(ids));
 	}
-	
+
 	/**
-	 * 
-	 * GESTION ASSOCIATION WITH ROLE
-	 * 
+	 *
+	 * ASSOCIATION USER --> ROLE
+	 *
 	 */
-	
+
+	/**
+	 *
+	 * @param model
+	 * @param idUser
+	 * @return
+	 */
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_ROLE, method = RequestMethod.GET)
 	public String showItemGetRole(Model model,@PathVariable Long idUser) {
 
@@ -348,7 +382,13 @@ public class UserController extends ViewBaseController<User> {
 		return BASE_USER + PATH + SHOW_ROLE;
 	}
 
-
+	/***
+	 *
+	 * @param model
+	 * @param idUser
+	 * @param idRole
+	 * @return
+	 */
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_ROLE, method = RequestMethod.POST)
 	public String showItemDeleteRole(Model model,@PathVariable Long idUser, Long idRole) {
 
@@ -358,6 +398,13 @@ public class UserController extends ViewBaseController<User> {
 		return redirect;
 	}
 
+	/**
+	 *
+	 * @param model
+	 * @param idUser
+	 * @param idRole
+	 * @return
+	 */
 	@RequestMapping(path = "{idUser}" + PATH + ADD_ROLE, method = RequestMethod.POST)
 	public String showItemPostRole(Model model,@PathVariable Long idUser, Long idRole) {
 
@@ -379,7 +426,6 @@ public class UserController extends ViewBaseController<User> {
 		if (!idsBig.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
 			for (BigInteger id : idsBig) {
 				ids.add(id.longValue());
-
 			}
 			roleList = (ArrayList<RoleCGI>) roleCrud.findAll(ids);
 		}
