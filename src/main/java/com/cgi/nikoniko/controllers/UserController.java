@@ -41,6 +41,7 @@ public class UserController extends ViewBaseController<User> {
 	public final static String BASE_URL = PATH + BASE_USER;
 
 	public final static String SHOW_PATH = "show";
+	public final static String MENU_PATH = "menu";
 
 	public final static String SHOW_NIKONIKO = "showNikoNikos";
 	public final static String SHOW_TEAM = "showTeam";
@@ -130,6 +131,9 @@ public class UserController extends ViewBaseController<User> {
 	 *
 	 * Page de creation d'un nikoniko pour un user
 	 */
+	
+	/////////////////////// MODIF FUNCTION DAMIEN FOR TEST (STATUS : WORK)/////////////////////////
+	
 	@RequestMapping(path = "{userId}/add", method = RequestMethod.GET)
 	public String createItemGet(Model model, @PathVariable Long userId) {
 		User user = super.getItem(userId);
@@ -142,6 +146,32 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("create_item", CREATE_ACTION);
 		return "nikoniko/addNikoNiko";
 	}
+	
+	// TODO : ADD A NIKONIKO FOR A USER
+	
+	@RequestMapping(path = "{idUser}/add", method = RequestMethod.POST)
+	public String createItemPost(Model model, @PathVariable Long idUser, Integer mood, String comment) {
+		return this.addNikoNiko(idUser, mood, comment);
+	}
+	
+	
+	// TODO : FONCTION TO ADD A NIKONIKO (FOR POST ACTION)
+	
+	public String addNikoNiko(Long idUser, int mood, String comment){
+		
+		Date date = new Date();
+		User user = new User();
+		
+		user = userCrud.findOne(idUser);
+		
+		NikoNiko niko = new NikoNiko(user,mood,date,comment);
+		nikonikoCrud.save(niko);
+		
+		return REDIRECT + PATH + MENU_PATH;
+	}
+	
+	//////////////////////////////////////////////////////////////////
+	
 
 	/**
 	 *
@@ -157,7 +187,7 @@ public class UserController extends ViewBaseController<User> {
 		} catch (Exception e) {
 			 e.printStackTrace();
 		}
-		return "redirect:/user/1/link";
+		return "redirect:/user/"+ userId +"/link";
 	}
 	
 	/**
