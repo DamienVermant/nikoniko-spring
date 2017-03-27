@@ -5,7 +5,7 @@
 </head>
 
 <body>
-	<h1>ROLE HAS FUNCTIONS : ${page}  </h1>
+	<h1>ADD USERS TO : ${page}  </h1>
 		<table class="table table-bordered table-hover">
 			<tr>
 				<#list items as item>
@@ -30,7 +30,6 @@
 									<td>${item[key]?string("yyyy:MM:dd HH:mm:ss")}</td>
 								<#else>
 									<td>${item[key]}</td>
-									
 								</#if>
 							</#if>
 						</#list>
@@ -38,13 +37,12 @@
 					<td>
 						<form action = "" method = "POST">
 						<#include "../includable/security/securityToken.ftl">
-							<input type="hidden" name = "idFunction" value = "${item["id"]}">
-							<input type="submit" value="Enlever"><br>
+							<input type="hidden" name = "idUser" value = "${item["id"]}">
+							<input type="submit" value="add"><br>
 						</form>
 					</td>
 				</tr>
 			</#list>
 		</table>
-	<a href = "${add}"> Add function </a> <br>
 	<a href="${back}"> Back <a>		
 </body>

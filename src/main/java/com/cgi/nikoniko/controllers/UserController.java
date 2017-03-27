@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +21,6 @@ import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
 import com.cgi.nikoniko.models.tables.NikoNiko;
 import com.cgi.nikoniko.models.tables.RoleCGI;
 import com.cgi.nikoniko.models.tables.User;
-
 import com.cgi.nikoniko.dao.IRoleCrudRepository;
 import com.cgi.nikoniko.dao.ITeamCrudRepository;
 import com.cgi.nikoniko.dao.IUserCrudRepository;
@@ -92,7 +93,7 @@ public class UserController extends ViewBaseController<User> {
 	*/
 
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_PATH, method = RequestMethod.GET)
-	public String showItem(Model model,@PathVariable Long idUser) {
+	public String showAll(Model model,@PathVariable Long idUser) {
 
 		User userBuffer = new User();
 		userBuffer = userCrud.findOne(idUser);
@@ -101,7 +102,6 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
 		model.addAttribute("item",DumpFields.fielder(super.getItem(idUser)));
 		model.addAttribute("show_nikonikos", DOT + PATH + SHOW_NIKONIKO);
-//		model.addAttribute("show_nikonikos", DOT + PATH + SHOW_LINK);
 		model.addAttribute("show_teams", DOT + PATH + SHOW_TEAM);
 		model.addAttribute("show_roles", DOT + PATH + SHOW_ROLE);
 		model.addAttribute("go_delete", DELETE_ACTION);
@@ -135,7 +135,7 @@ public class UserController extends ViewBaseController<User> {
 	/////////////////////// MODIF FUNCTION DAMIEN FOR TEST (STATUS : WORK)/////////////////////////
 	
 	@RequestMapping(path = "{userId}/add", method = RequestMethod.GET)
-	public String createItemGet(Model model, @PathVariable Long userId) {
+	public String addNikoNikoForUserGet(Model model, @PathVariable Long userId) {
 		User user = super.getItem(userId);
 		NikoNiko niko = new NikoNiko();
 
@@ -154,15 +154,15 @@ public class UserController extends ViewBaseController<User> {
 		return this.addNikoNiko(idUser, mood, comment);
 	}
 	
-	
-	// TODO : FONCTION TO ADD A NIKONIKO (FOR POST ACTION)
-	
 	public String addNikoNiko(Long idUser, Integer mood, String comment){
+		
+		userCrud.nikoChangeDates(idNiko, idUser)
 		
 		Date date = new Date();
 		User user = new User();
 		
 		if (mood ==  null) {
+			// TODO : Redirect vers la page de visu ou POPUP sur la page (Javascript)
 			return REDIRECT + PATH + MENU_PATH;
 		}
 		else {
