@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -51,7 +49,10 @@ public class UserController extends ViewBaseController<User> {
 	public final static String ADD_TEAM = "addTeams";
 	public final static String ADD_ROLE = "addRoles";
 	public final static String REDIRECT = "redirect:";
-
+	
+	// TODO : CHANGE TIME (IN MINUTE FOR THE MOMENT FOR TEST)
+	public final static int TIME = 2;
+	
 	@Autowired
 	INikoNikoCrudRepository nikonikoCrud;
 
@@ -76,8 +77,6 @@ public class UserController extends ViewBaseController<User> {
 
 	protected UserController(Class<User> clazz, String baseURL) {
 		super(clazz, baseURL);
-
-
 	}
 	
 	/**
@@ -86,12 +85,12 @@ public class UserController extends ViewBaseController<User> {
 	 * 
 	 */
 
-
 	/**
-	 *
-	 * Recupération de tous les nikoniko liés à un user
-	*/
-
+	 * LIST OF NIKONIKO FOR A USER
+	 * @param model
+	 * @param idUser
+	 * @return
+	 */
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_PATH, method = RequestMethod.GET)
 	public String showAll(Model model,@PathVariable Long idUser) {
 
@@ -126,14 +125,13 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("items", DumpFields.listFielder(listOfNiko));
 		return "user/showAllRelation";
 	}
-
+	
 	/**
-	 *
-	 * Page de creation d'un nikoniko pour un user
+	 * ADD A NIKONIKO TO A USER
+	 * @param model
+	 * @param userId
+	 * @return
 	 */
-	
-	/////////////////////// MODIF FUNCTION DAMIEN FOR TEST (STATUS : WORK)/////////////////////////
-	
 	@RequestMapping(path = "{userId}/add", method = RequestMethod.GET)
 	public String addNikoNikoForUserGet(Model model, @PathVariable Long userId) {
 		User user = super.getItem(userId);
@@ -147,39 +145,109 @@ public class UserController extends ViewBaseController<User> {
 		return "nikoniko/addNikoNiko";
 	}
 	
-	// TODO : ADD A NIKONIKO FOR A USER
-	
 	@RequestMapping(path = "{idUser}/add", method = RequestMethod.POST)
 	public String createItemPost(Model model, @PathVariable Long idUser, Integer mood, String comment) {
 		return this.addNikoNiko(idUser, mood, comment);
 	}
 	
-	public String addNikoNiko(Long idUser, Integer mood, String comment){
+	
+	/**
+	 * CHECK FOR NEW NIKONIKO OR UPDATE 
+	 */
+	
+	// TODO : CREATE A FUNCTION THAT CAN SET A NIKO AFTER J+1 IF USER DOES NOT SET HIS NIKONIKO
+	// TODO : IF A USER FORGET TO POST HIS SATISFACTION, RECALL HIM AFTER (ONE DAY ?) TO VOTE FOR HIS PREVIOUS VOTE
+	
+	public Boolean checkDateNikoNiko(Long idUser){
 		
-		userCrud.nikoChangeDates(idNiko, idUser)
+		Boolean updateNiko = null;
+		Date todayDate = new Date();
+		
+		Long idMaxNiko = userCrud.getLastNikoNikoUser(idUser);
+		
+		if (idMaxNiko == null) {
+			updateNiko = false;
+		}
+		
+		else {
+			
+			NikoNiko lastNiko = nikonikoCrud.findOne(idMaxNiko);
+			Date entryDate = lastNiko.getEntry_date();
+			
+			java.util.Date eDate = new java.util.Date(entryDate.getTime());
+			
+			// TODO : FIND GOOD CONDITION (USE A CALENDAR)
+			
+			if ((Boolean) null) {
+					
+					updateNiko = true;
+				}
+			
+				else {
+					
+					updateNiko = false;
+				}
+			}
+				
+		return updateNiko;
+	}	
+	
+	/**
+	 * ADD A NEW NIKONIKO
+	 * @param idUser
+	 * @param mood
+	 * @param comment
+	 * @return
+	 */
+	public String addNikoNiko(Long idUser, Integer mood, String comment){
 		
 		Date date = new Date();
 		User user = new User();
 		
-		if (mood ==  null) {
-			// TODO : Redirect vers la page de visu ou POPUP sur la page (Javascript)
-			return REDIRECT + PATH + MENU_PATH;
-		}
-		else {
-			user = userCrud.findOne(idUser);
-			NikoNiko niko = new NikoNiko(user,mood,date,comment);
-			nikonikoCrud.save(niko);
-			return REDIRECT + PATH + MENU_PATH;
+		user = userCrud.findOne(idUser);
+		
+		if (this.checkDateNikoNiko(idUser) == true) {
+			
+			if (mood ==  null) {
+				
+				return REDIRECT + PATH + MENU_PATH;
+			}
+			
+			else {
+				
+				Long idMax = userCrud.getLastNikoNikoUser(idUser);
+				NikoNiko nikoUpdate = nikonikoCrud.findOne(idMax);
+				
+				nikoUpdate.setChange_date(date);
+				
+				nikonikoCrud.save(nikoUpdate);
+				
+				return REDIRECT + PATH + MENU_PATH;
+			}
 		}
 		
+		else {
+			
+			if (mood ==  null) {
+				
+				return REDIRECT + PATH + MENU_PATH;
+			}
+			
+			else {
+				
+				NikoNiko niko = new NikoNiko(user,mood,date,comment);
+				nikonikoCrud.save(niko);
+				return REDIRECT + PATH + MENU_PATH;
+			}
+		}
 	}
 	
-	//////////////////////////////////////////////////////////////////
-	
-
 	/**
-	 *
-	 * Creation d'un nikoniko
+	 * CREATE A NIKONIKO
+	 * @param model
+	 * @param niko
+	 * @param userId
+	 * @return
 	 */
 	@RequestMapping(path = "{userId}/create", method = RequestMethod.POST)
 	public String createItemPost(Model model, NikoNiko niko, @PathVariable Long userId) {
@@ -224,6 +292,10 @@ public class UserController extends ViewBaseController<User> {
 
 	/**
 	 * SHOW POST THAT UPDATE USER RELATION WITH TEAM WHEN A USER QUIT A TEAM
+	 * @param model
+	 * @param idUser
+	 * @param idTeam
+	 * @return
 	 */
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_TEAM, method = RequestMethod.POST)
 	public String showItemPost(Model model,@PathVariable Long idUser, Long idTeam) {
@@ -365,6 +437,12 @@ public class UserController extends ViewBaseController<User> {
 	 * 
 	 */
 	
+	/**
+	 * LIST OF ROLES FOR A USER
+	 * @param model
+	 * @param idUser
+	 * @return
+	 */
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_ROLE, method = RequestMethod.GET)
 	public String showItemGetRole(Model model,@PathVariable Long idUser) {
 
@@ -392,6 +470,13 @@ public class UserController extends ViewBaseController<User> {
 		return redirect;
 	}
 
+	/**
+	 * ADD ROLE TO A USER
+	 * @param model
+	 * @param idUser
+	 * @param idRole
+	 * @return
+	 */
 	@RequestMapping(path = "{idUser}" + PATH + ADD_ROLE, method = RequestMethod.POST)
 	public String showItemPostRole(Model model,@PathVariable Long idUser, Long idRole) {
 
