@@ -41,4 +41,7 @@
                 </tr>
             </#list>
         </table>
+
+    <a href="${back}"> Back <a>
+
 </body>

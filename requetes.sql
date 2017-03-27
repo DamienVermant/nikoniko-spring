@@ -7,19 +7,19 @@ VALUES	(1, "Rennes", "Dev"),
         (4, "Rennes", "Stagiaire");
 
 
-INSERT INTO user(id, login, password, firstname, lastname, registration_number, sex, verticale_id)
-VALUES  (1,"login1", "password1", "prenom1", "nom", "XLE1522",'F',1),
-    (2,"login2", "password2", "prenom2", "nom", "XLE1523",'F',1),
-    (3,"login3", "password3", "prenom3", "nom", "XLE1524",'F',2),
-    (4,"login4", "password4", "prenom4", "nom", "XLE1525",'F',2),
-    (5,"login5", "password5", "prenom5", "nom", "XLE1526",'F',3),
-    (6,"login6", "password6", "prenom6", "nom", "XLE1527",'F',3),
-    (7,"login7", "password7", "prenom7", "nom", "XLE1528",'F',4),
-    (8,"login8", "password8", "prenom8", "nom", "XLE1529",'F',4),
-    (9,"login9", "password9", "prenom9", "nom", "XLE1530",'F',4),
-    (10,"login10", "password10", "prenom10", "nom", "XLE1531",'F',4),
-    (11,"login11", "password11", "prenom11", "nom", "XLE1532",'F',4),
-    (12,"login12", "password12", "prenom12", "nom", "XLE1533",'F',4);
+INSERT INTO user(id, login, password, firstname, lastname, registration_number, sex, verticale_id, enable)
+VALUES  (1,"login1", "password1", "prenom1", "nom", "XLE1522",'F',1, 1),
+    (2,"login2", "password2", "prenom2", "nom", "XLE1523",'F',1,1),
+    (3,"login3", "password3", "prenom3", "nom", "XLE1524",'F',2, 1),
+    (4,"login4", "password4", "prenom4", "nom", "XLE1525",'F',2, 1),
+    (5,"login5", "password5", "prenom5", "nom", "XLE1526",'F',3, 1),
+    (6,"login6", "password6", "prenom6", "nom", "XLE1527",'F',3, 1),
+    (7,"login7", "password7", "prenom7", "nom", "XLE1528",'F',4, 1),
+    (8,"login8", "password8", "prenom8", "nom", "XLE1529",'F',4, 1),
+    (9,"login9", "password9", "prenom9", "nom", "XLE1530",'F',4, 1),
+    (10,"login10", "password10", "prenom10", "nom", "XLE1531",'F',4, 1),
+    (11,"login11", "password11", "prenom11", "nom", "XLE1532",'F',4, 1),
+    (12,"login12", "password12", "prenom12", "nom", "XLE1533",'F',4, 1);
 
 INSERT INTO nikoniko (id, nikoniko_comment, entry_date, mood, user_id)
 VALUES  (1,"coucou","2017-03-20 12:59:59",2,1),

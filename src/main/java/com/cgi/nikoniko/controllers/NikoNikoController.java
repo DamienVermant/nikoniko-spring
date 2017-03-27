@@ -29,6 +29,7 @@ public class NikoNikoController extends ViewBaseController<NikoNiko> {
 
 	public final static String DOT = ".";
 	public final static String PATH = "/";
+	public final static String USER = "/user";
 	public final static String BASE_NIKONIKO = "nikoniko";
 	public static final String SHOW_PATH = "show";
 	public final static String SHOW_CHANGE_DATES = "showChangeDates";
@@ -49,10 +50,12 @@ public class NikoNikoController extends ViewBaseController<NikoNiko> {
 
 		NikoNiko nikoBuffer = new NikoNiko();
 		nikoBuffer = nikoCrud.findOne(idNiko);
+		Long iduser = nikoBuffer.getUser().getId();
 
 		model.addAttribute("page",  "NikoNiko : " + nikoBuffer.getEntry_date());
 		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
 		model.addAttribute("item",DumpFields.fielder(super.getItem(idNiko)));
+		model.addAttribute("show_user", USER + PATH + iduser + PATH + SHOW_PATH);
 		model.addAttribute("show_changes_dates", DOT + PATH + SHOW_CHANGE_DATES);
 		model.addAttribute("go_delete", DELETE_ACTION);
 		model.addAttribute("go_update", UPDATE_ACTION);
@@ -73,6 +76,7 @@ public class NikoNikoController extends ViewBaseController<NikoNiko> {
 		model.addAttribute("page", niko.getId() + " nikonikos");
 		model.addAttribute("sortedFields", ChangeDates.FIELDS);
 		model.addAttribute("items", DumpFields.listFielder(listOfChang));
+		model.addAttribute("back", DOT + PATH + SHOW_PATH);
 		return "nikoniko/showAllRelation";
 	}
 

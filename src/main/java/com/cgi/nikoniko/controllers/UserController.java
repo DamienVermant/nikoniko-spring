@@ -38,6 +38,7 @@ public class UserController extends ViewBaseController<User> {
 	public final static String DOT = ".";
 	public final static String PATH = "/";
 	public final static String BASE_USER = "user";
+	public final static String VERTICALE = "verticale";
 	public final static String BASE_URL = PATH + BASE_USER;
 
 	public final static String SHOW_PATH = "show";
@@ -89,9 +90,14 @@ public class UserController extends ViewBaseController<User> {
 		User userBuffer = new User();
 		userBuffer = userCrud.findOne(idUser);
 
+
 		model.addAttribute("page",  "USER : " + userBuffer.getRegistration_cgi());
 		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
 		model.addAttribute("item",DumpFields.fielder(super.getItem(idUser)));
+		if (userBuffer.getVerticale()!= null) {
+			Long idverticale = userBuffer.getVerticale().getId();
+			model.addAttribute("show_verticale", PATH + VERTICALE + PATH + idverticale + PATH + SHOW_PATH);
+		}
 		model.addAttribute("show_nikonikos", DOT + PATH + SHOW_NIKONIKO);
 		model.addAttribute("show_teams", DOT + PATH + SHOW_TEAM);
 		model.addAttribute("show_roles", DOT + PATH + SHOW_ROLE);
@@ -115,6 +121,7 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("page", user.getFirstname() + " nikonikos");
 		model.addAttribute("sortedFields", NikoNiko.FIELDS);
 		model.addAttribute("items", DumpFields.listFielder(listOfNiko));
+		model.addAttribute("back", DOT + PATH + SHOW_PATH);
 		return "user/showAllRelation";
 	}
 
