@@ -75,8 +75,6 @@ public class UserController extends ViewBaseController<User> {
 
 	protected UserController(Class<User> clazz, String baseURL) {
 		super(clazz, baseURL);
-
-
 	}
 
 	/**
@@ -85,7 +83,8 @@ public class UserController extends ViewBaseController<User> {
 	 *
 	 */
 
-	/**
+	/**NAME : showUserActionsGET
+	 *
 	 * SHOW USER ACTIONS FOR A SPECIFIC PROFILE
 	 *
 	 * @param model
@@ -94,7 +93,7 @@ public class UserController extends ViewBaseController<User> {
 	 */
 	@Secured({"ROLE_USER","ROLE_ADMIN"})
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_PATH, method = RequestMethod.GET)
-	public String showItem(Model model,@PathVariable Long idUser) {
+	public String showUserActionsGET(Model model,@PathVariable Long idUser) {
 
 		User userBuffer = new User();
 		userBuffer = userCrud.findOne(idUser);
@@ -103,7 +102,7 @@ public class UserController extends ViewBaseController<User> {
 		//SERVIRA A DETERMINER QUEL ENVIRONNEMENT ON AFFICHE
 		//ATTENTION : LE ROLE EST DETERMINE PAR RAPPORT AU USER QU'ON AFFICHE
 		//			  ET PAS LE DETENTEUR DE LA SESSION
-		for (RoleCGI roleName : this.setRolesForUserGet(idUser)) {
+		for (RoleCGI roleName : this.getAllRolesForUser(idUser)) {
 			String varTest = roleName.getName();
 			if (varTest.equals("ROLE_ADMIN")) {
 				model.addAttribute("myRole", roleName.getName());
@@ -135,7 +134,8 @@ public class UserController extends ViewBaseController<User> {
 		return BASE_USER + PATH + SHOW_PATH;//LATER THIS ROUTE WILL LEAD TO A DEFAULT VIEW FOR NON USERS
 	}
 
-	/**
+	/**NAME : getNikoNikosForUser
+	 *
 	 * LINK USER -> NIKONIKO (SELECT ALL NIKONIKOS FOR A USER)
 	 * @param model
 	 * @param userId
@@ -155,12 +155,16 @@ public class UserController extends ViewBaseController<User> {
 		return "user/showNikoNikos";
 	}
 
-	/**
+	/**NAME : newNikoNikoForUserGET
 	 *
 	 * Page de creation d'un nikoniko pour un user
+	 *
+	 * @param model
+	 * @param userId
+	 * @return
 	 */
 	@RequestMapping(path = "{userId}/add", method = RequestMethod.GET)
-	public String createItemGet(Model model, @PathVariable Long userId) {
+	public String newNikoNikoForUserGET(Model model, @PathVariable Long userId) {
 		User user = super.getItem(userId);
 		NikoNiko niko = new NikoNiko();
 
@@ -172,22 +176,28 @@ public class UserController extends ViewBaseController<User> {
 		return "nikoniko/addNikoNiko";
 	}
 
-	// TODO : ADD A NIKONIKO FOR A USER
-
+	/**NAME : newNikoNikoForUserPOST
+	 *
+	 *
+	 * @param model
+	 * @param idUser
+	 * @param mood
+	 * @param comment
+	 * @return
+	 */
 	@RequestMapping(path = "{idUser}/add", method = RequestMethod.POST)
-	public String createItemPost(Model model, @PathVariable Long idUser, Integer mood, String comment) {
-		return this.addNikoNiko(idUser, mood, comment);
+	public String newNikoNikoForUserPOST(Model model, @PathVariable Long idUser, Integer mood, String comment) {
+		return this.addNikoNikoInDB(idUser, mood, comment);
 	}
 
-
-	// TODO : FONCTION TO ADD A NIKONIKO (FOR POST ACTION)
-	/**
-	 * FUNCTION THAT SAVE THE NIKONIKO
+	/**NAME : addNikoNikoInDB // saveNikoNikoInDB
+	 *
+	 * FUNCTION THAT SAVE THE NIKONIKO IN DB
 	 *
 	 * @param idUser, mood, comment
 	 * @return
 	 */
-	public String addNikoNiko(Long idUser, int mood, String comment){
+	public String addNikoNikoInDB(Long idUser, int mood, String comment){
 
 		Date date = new Date();//optionnal, can be place directly in the new niko construct
 		User user = new User();//TODO : merge this line and the onde with findOne(idUser)
@@ -200,48 +210,29 @@ public class UserController extends ViewBaseController<User> {
 		return REDIRECT + PATH + MENU_PATH;//TODO : change this path to prevent infinite niko creation/day
 	}
 
-	//////////////////////////////////////////////////////////////////
-
-
-	/**
-	 *
-	 * Creation d'un nikoniko
-	 */
-	@RequestMapping(path = "{userId}/create", method = RequestMethod.POST)
-	public String createItemPost(Model model, NikoNiko niko, @PathVariable Long userId) {
-
-		try {
-			User user = super.getItem(userId);
-			niko.setUser(user);
-			nikonikoCrud.save(niko);
-		} catch (Exception e) {
-			 e.printStackTrace();
-		}
-		return "redirect:/user/" + userId + "/showNikoNikos";
-//		return "redirect:/user/" + userId + "/link";
-	}
-
 	/**
 	 *
 	 * ASSOCIATION USER --> TEAM
 	 *
 	 */
 
-	/**
+	/**NAME : showTeamsForUserGET
+	 *
 	 * RELATION USER HAS TEAM
+	 *
 	 * @param model
 	 * @param id
 	 * @return
 	 */
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_TEAM, method = RequestMethod.GET)
-	public String showItemGet(Model model,@PathVariable Long idUser) {
+	public String showTeamsForUserGET(Model model,@PathVariable Long idUser) {
 
 		User userBuffer = new User();
 		userBuffer = userCrud.findOne(idUser);
 
 		model.addAttribute("page",userBuffer.getRegistration_cgi());
 		model.addAttribute("sortedFields",Team.FIELDS);
-		model.addAttribute("items",this.UserInTeam(idUser));
+		model.addAttribute("items",this.getTeamsForUser(idUser));
 		model.addAttribute("show_teams", DOT + PATH + SHOW_TEAM);
 		model.addAttribute("back", DOT + PATH + SHOW_PATH);
 		model.addAttribute("add", "addTeams");
@@ -249,22 +240,31 @@ public class UserController extends ViewBaseController<User> {
 		return BASE_USER + PATH + SHOW_TEAM;
 	}
 
-	/**
+	/**NAME : quiTeamPOST
+	 *
+	 * Delete the selected relation team-user and redirect to the userhasteams view (by using quitTeam())
 	 * SHOW POST THAT UPDATE USER RELATION WITH TEAM WHEN A USER QUIT A TEAM
+	 *
+	 * @param model
+	 * @param idUser
+	 * @param idTeam
+	 * @return
 	 */
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_TEAM, method = RequestMethod.POST)
-	public String showItemPost(Model model,@PathVariable Long idUser, Long idTeam) {
+	public String quiTeamPOST(Model model,@PathVariable Long idUser, Long idTeam) {
 		return quitTeam(idUser, idTeam);
 	}
 
-	/**
+	/**NAME : addUserInTeamGET
+	 *
 	 * ADD USER FOR CURRENT TEAM
+	 *
 	 * @param model
 	 * @param idUser
 	 * @return
 	 */
 	@RequestMapping(path = "{idUser}" + PATH + ADD_TEAM, method = RequestMethod.GET)
-	public <T> String addUsersGet(Model model, @PathVariable Long idUser) {
+	public <T> String addUserInTeamGET(Model model, @PathVariable Long idUser) {
 
 		Object userBuffer = new Object();
 		userBuffer = userCrud.findOne(idUser);
@@ -280,24 +280,28 @@ public class UserController extends ViewBaseController<User> {
 		return BASE_USER + PATH + ADD_TEAM;
 	}
 
-	/**
+	/**NAME : addUserInTeamPOST
+	 *
 	 * ADD USER FOR CURRENT TEAM
+	 *
 	 * @param model
 	 * @param idUser
 	 * @param idTeam
 	 * @return
 	 */
 	@RequestMapping(path = "{idUser}" + PATH + ADD_TEAM, method = RequestMethod.POST)
-	public <T> String addUsersPost(Model model, @PathVariable Long idUser, Long idTeam) {
-		return setUsersForTeamPost(idTeam, idUser);
+	public <T> String addUserInTeamPOST(Model model, @PathVariable Long idUser, Long idTeam) {
+		return setUsersForTeam(idTeam, idUser);
 	}
 
-	/**
+	/**NAME : findAllTeamsForUser
 	 *
-	 * @param teamId
-	 * @return userList (list of user associated to a team)
+	 * Find all teams related to a user by checking relation table user_has_team
+	 *
+	 * @param idValue
+	 * @return teamList (list of user associated to a team)
 	 */
-	public ArrayList<Team> setTeamsForUserGet(Long idValue) {
+	public ArrayList<Team> findAllTeamsForUser(Long idValue) {
 
 		List<Long> ids = new ArrayList<Long>();
 		ArrayList<Team> teamList = new ArrayList<Team>();
@@ -307,7 +311,6 @@ public class UserController extends ViewBaseController<User> {
 		if (!idsBig.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
 			for (BigInteger id : idsBig) {
 				ids.add(id.longValue());
-
 			}
 			teamList = (ArrayList<Team>) teamCrud.findAll(ids);
 		}
@@ -315,39 +318,32 @@ public class UserController extends ViewBaseController<User> {
 		return teamList;
 	}
 
-	/**
-	 * CREATE A FUNCTION THAT SET NEW TEAM FOR A USER (JUST AFFECT A TEAM ALREADY CREATE)
+	/**NAME : setUsersForTeam
+	 *
+	 * Put an user in a new team by creating a new  association in user_has_team (or modify if exists)
+	 *
 	 * @param idTeam
 	 * @param idUser
 	 * @return
 	 */
-	public String setUsersForTeamPost(Long idTeam,Long idUser){
+	public String setUsersForTeam(Long idTeam,Long idUser){
+
+		userTeamCrud.save(new UserHasTeam(userCrud.findOne(idUser), teamCrud.findOne(idTeam), new Date()));
 
 		String redirect = REDIRECT + PATH + BASE_USER + PATH + idUser + PATH + SHOW_TEAM;
-
-		Team team = new Team();
-		team = teamCrud.findOne(idTeam);
-
-		User user = new User();
-		user = userCrud.findOne(idUser);
-
-		UserHasTeam userHasTeamBuffer = new UserHasTeam(user, team, new Date());
-
-		userTeamCrud.save(userHasTeamBuffer);
 
 		return redirect;
-
 	}
 
-	/**
-	 * UPDATE USER_HAS_TEAM (leaving_date) WHEN A USER QUIT A TEAM
+	/**NAME : quitTeam
+	 *
+	 * Set the leaving date in user_has_team table when a user leave a team
+	 *
 	 * @param idUser
 	 * @param idTeam
-	 * @return
+	 * @return redirect (path redirection after action)
 	 */
 	public String quitTeam(Long idUser, Long idTeam){
-
-		String redirect = REDIRECT + PATH + BASE_USER + PATH + idUser + PATH + SHOW_TEAM;
 
 		Date date = new Date();
 
@@ -356,22 +352,26 @@ public class UserController extends ViewBaseController<User> {
 
 		userTeamCrud.save(userHasTeamBuffer);
 
+		String redirect = REDIRECT + PATH + BASE_USER + PATH + idUser + PATH + SHOW_TEAM;
+
 		return redirect;
 	}
 
-	/**
+	/** NAME : getTeamsForUser
+	 *
 	 * FUNCTION RETURNING ALL TEAM RELATED WITH ONE USER WITH leaving_date = null
+	 *
 	 * @param idUser
 	 * @return
 	 */
-	public ArrayList<Map<String, Object>> UserInTeam(Long idUser){
+	public ArrayList<Map<String, Object>> getTeamsForUser(Long idUser){
 
 		ArrayList<Long> ids = new ArrayList<Long>();
 		ArrayList<Team> teamList = new ArrayList<Team>();
 		ArrayList<UserHasTeam> userHasTeamList = new ArrayList<UserHasTeam>();
 		ArrayList<UserHasTeam> userHasTeamListClean = new ArrayList<UserHasTeam>();
 
-		teamList = setTeamsForUserGet(idUser);
+		teamList = findAllTeamsForUser(idUser);
 
 		for (int i = 0; i < teamList.size(); i++) {
 			userHasTeamList.add(userTeamCrud.findAssociatedUserTeamALL(idUser, teamList.get(i).getId()));
@@ -392,21 +392,23 @@ public class UserController extends ViewBaseController<User> {
 	 *
 	 */
 
-	/**
+	/**NAME : showRolesForUserGET // showAllRolesForOneUserGET
+	 *
+	 *
 	 *
 	 * @param model
 	 * @param idUser
 	 * @return
 	 */
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_ROLE, method = RequestMethod.GET)
-	public String showItemGetRole(Model model,@PathVariable Long idUser) {
+	public String showRolesForUserGET(Model model,@PathVariable Long idUser) {
 
 		User userBuffer = new User();
 		userBuffer = userCrud.findOne(idUser);
 
 		model.addAttribute("page",userBuffer.getRegistration_cgi());
 		model.addAttribute("sortedFields",Team.FIELDS);
-		model.addAttribute("items", DumpFields.listFielder(this.setRolesForUserGet(idUser)));
+		model.addAttribute("items", DumpFields.listFielder(this.getAllRolesForUser(idUser)));
 		//model.addAttribute("items",DumpFields.listFielder((List<RoleCGI>) roleCrud.findAll()));
 		model.addAttribute("show_roles", DOT + PATH + SHOW_ROLE);
 		model.addAttribute("back", DOT + PATH + SHOW_PATH);
@@ -415,7 +417,9 @@ public class UserController extends ViewBaseController<User> {
 		return BASE_USER + PATH + SHOW_ROLE;
 	}
 
-	/***
+	/**NAME : revokeRoleToUserPOST // revokeRoleToOneUserPOST
+	 *
+	 *Revoke the selected role for the selected user
 	 *
 	 * @param model
 	 * @param idUser
@@ -423,7 +427,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @return
 	 */
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_ROLE, method = RequestMethod.POST)
-	public String showItemDeleteRole(Model model,@PathVariable Long idUser, Long idRole) {
+	public String revokeRoleToUserPOST(Model model,@PathVariable Long idUser, Long idRole) {
 
 		String redirect = REDIRECT + PATH + BASE_USER + PATH + idUser + PATH + SHOW_ROLE;
 		UserHasRole userHasRole = new UserHasRole(userCrud.findOne(idUser), roleCrud.findOne(idRole));
@@ -431,7 +435,9 @@ public class UserController extends ViewBaseController<User> {
 		return redirect;
 	}
 
-	/**
+	/**NAME : addRoleToUserPOST // addRoleToOneUserPOST
+	 *
+	 * Add the selected role to the selected user
 	 *
 	 * @param model
 	 * @param idUser
@@ -439,7 +445,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @return
 	 */
 	@RequestMapping(path = "{idUser}" + PATH + ADD_ROLE, method = RequestMethod.POST)
-	public String showItemPostRole(Model model,@PathVariable Long idUser, Long idRole) {
+	public String addRoleToUserPOST(Model model,@PathVariable Long idUser, Long idRole) {
 
 		String redirect = REDIRECT + PATH + BASE_USER + PATH + idUser + PATH + SHOW_ROLE;
 		UserHasRole userHasRole = new UserHasRole(userCrud.findOne(idUser), roleCrud.findOne(idRole));
@@ -448,8 +454,14 @@ public class UserController extends ViewBaseController<User> {
 		return redirect;
 	}
 
-
-	public ArrayList<RoleCGI> setRolesForUserGet(Long idUser) {
+	/**NAME : getAllRolesForUser // getAllRolesForOneUser
+	 *
+	 * Return all roles of the selected user
+	 *
+	 * @param idUser
+	 * @return
+	 */
+	public ArrayList<RoleCGI> getAllRolesForUser(Long idUser) {
 
 		List<Long> ids = new ArrayList<Long>();
 		ArrayList<RoleCGI> roleList = new ArrayList<RoleCGI>();
@@ -465,9 +477,16 @@ public class UserController extends ViewBaseController<User> {
 		return roleList;
 	}
 
-
+	/**NAME : addRoleforUserGET
+	 *
+	 * Show the page to add a role to an User
+	 *
+	 * @param model
+	 * @param idUser
+	 * @return
+	 */
 	@RequestMapping(path = "{idUser}" + PATH + ADD_ROLE, method = RequestMethod.GET)
-	public <T> String addUsersGetRole(Model model, @PathVariable Long idUser) {
+	public <T> String addRoleforUserGET(Model model, @PathVariable Long idUser) {
 
 		Object userBuffer = new Object();
 		userBuffer = userCrud.findOne(idUser);
