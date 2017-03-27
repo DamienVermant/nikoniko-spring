@@ -159,7 +159,7 @@ public class UserController extends ViewBaseController<User> {
 	 *
 	 * Page de creation d'un nikoniko pour un user
 	 */
-	@RequestMapping(path = "{userId}/addNikoNiko", method = RequestMethod.GET)
+	@RequestMapping(path = "{userId}/add", method = RequestMethod.GET)
 	public String createItemGet(Model model, @PathVariable Long userId) {
 		User user = super.getItem(userId);
 		NikoNiko niko = new NikoNiko();
@@ -181,18 +181,23 @@ public class UserController extends ViewBaseController<User> {
 
 
 	// TODO : FONCTION TO ADD A NIKONIKO (FOR POST ACTION)
-
+	/**
+	 * FUNCTION THAT SAVE THE NIKONIKO
+	 *
+	 * @param idUser, mood, comment
+	 * @return
+	 */
 	public String addNikoNiko(Long idUser, int mood, String comment){
 
-		Date date = new Date();
-		User user = new User();
+		Date date = new Date();//optionnal, can be place directly in the new niko construct
+		User user = new User();//TODO : merge this line and the onde with findOne(idUser)
 
 		user = userCrud.findOne(idUser);
 
 		NikoNiko niko = new NikoNiko(user,mood,date,comment);
 		nikonikoCrud.save(niko);
 
-		return REDIRECT + PATH + MENU_PATH;
+		return REDIRECT + PATH + MENU_PATH;//TODO : change this path to prevent infinite niko creation/day
 	}
 
 	//////////////////////////////////////////////////////////////////
