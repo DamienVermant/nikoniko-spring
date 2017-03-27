@@ -51,13 +51,15 @@ public class RoleHasFunction extends AssociationItem {
 	public RoleHasFunction() {
 		super(RoleHasFunction.TABLE,RoleHasFunction.FIELDS);
 	}
-
+	
+	// TODO : CHECK WHY IT DOES NOT WORK
+	
 	public RoleHasFunction (RoleCGI role, FunctionCGI function) {
 		super(RoleHasFunction.TABLE,RoleHasFunction.FIELDS, role, function);
 		this.function = function;
 		//this.function.getRoles().add(this);
 		this.role = role;
-		this.role.getFunctionCGI().add(this);
+		//this.role.getFunctionCGI().add(this);
 	}
 
 }

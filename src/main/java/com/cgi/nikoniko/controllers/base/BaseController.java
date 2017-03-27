@@ -3,13 +3,10 @@ package com.cgi.nikoniko.controllers.base;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.cgi.nikoniko.dao.base.IBaseCrudRepository;
-import com.cgi.nikoniko.models.tables.User;
 import com.cgi.nikoniko.models.tables.modelbase.DatabaseItem;
-import com.cgi.nikoniko.utils.DumpFields;
 
 public abstract class BaseController <T extends DatabaseItem> {
 
@@ -101,36 +98,6 @@ public abstract class BaseController <T extends DatabaseItem> {
 		ArrayList<T> items = null;
 		items = (ArrayList<T>) baseCrud.findAll();
 		return items;
-	}
-
-	// Fonction permettant de s'authentifier en tant que user (retourne un PATH vers le show de user)
-	// A modifier
-	public String authentification(String login, String password){
-
-		// Création d'un chemin de redirection
-		String road = "";
-
-		// Création d'un nouvel utilisateur
-		User user = new User();
-
-		// Récupération de tous les utilisateurs
-		ArrayList<T> items = null;
-		items = (ArrayList<T>) baseCrud.findAll();
-
-		// Condition pour avoir le bon mot de passe de password
-		for (T object : items) {
-			if (((User) object).getLogin().equals(login) && ((User) object).getPassword().equals(password) ) {
-				user = (User) object;
-				user.getId();
-				// Création de PATH pour la redirection vers la page USER
-				road = REDIRECT + "/user" + PATH + user.getId() + PATH + SHOW_ACTION;
-			}
-			else {
-				System.err.println("Mauvais mot de passe ou login");
-			}
-		}
-		// On retourne le chemin de redirection
-		return road;
 	}
 
 

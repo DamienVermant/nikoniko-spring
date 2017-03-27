@@ -46,12 +46,14 @@
 					<td>
 						<#if item["id"]??>
 							<form action = "${item["id"]}/${go_delete}" method = "POST">
+							<#include "../includable/security/securityToken.ftl">
 								<input type="hidden" name = "id" value = "${item["id"]}">
 								<input type="submit" value="Delete">
 							</form>
 
 						<#else>
 							<form action = "${item["idLeft"]}/${item["idRight"]}/${go_delete}" method = "POST">
+							<#include "../includable/security/securityToken.ftl">
 								<input type="hidden" name = "idl" value = "${item["idLeft"]}">
 								<input type="hidden" name = "idr" value = "${item["idRight"]}">
 								<input type="submit" value="Delete">
@@ -61,4 +63,5 @@
 				</tr>
 			</#list>
 		</table>
+		<a href="/menu/">Back</a>
 </body>

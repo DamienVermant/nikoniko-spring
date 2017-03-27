@@ -15,7 +15,6 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 	private String baseName;
 
 	private String listView;
-	private String listRedirect;
 	private String baseView;
 
 	private String updateView;
@@ -28,12 +27,6 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 	private String createRedirect;
 
 	private String showView;
-	private String showRedirect;
-
-	private String loginView;
-	private String loginRedirect;
-
-	private String baseNameClass;
 
 
 	public ViewBaseController (Class<T> clazz, String baseURL) {
@@ -46,14 +39,10 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 		this.deleteView = this.baseView + PATH_DELETE_FILE;
 		this.createView = this.baseView + PATH_CREATE_FILE;
 		this.showView = this.baseView + PATH_SHOW_FILE;
-		this.loginView = this.baseView + PATH_LOGIN;
 
-		this.listRedirect = REDIRECT + baseURL + PATH_LIST_FILE;
 		this.updateRedirect = REDIRECT + baseURL + PATH_LIST_FILE;
 		this.deleteRedirect = REDIRECT + baseURL + PATH_LIST_FILE;
 		this.createRedirect = REDIRECT + baseURL + PATH_LIST_FILE;
-		this.showRedirect = REDIRECT + baseURL + PATH_LIST_FILE;
-		this.loginRedirect = REDIRECT + baseURL + PATH_LOGIN;
 	}
 
 	// TODO : Gérer la généricité des différentes fonctions (certaines ne peuvent plus être générics)
@@ -122,7 +111,6 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 		return updateRedirect;
 	}
 
-	// COMMENT FOR TEST WITH TEAM
 	@RequestMapping(path = ROUTE_SHOW, method = RequestMethod.GET)
 	public String showItemGet(Model model,@PathVariable Long id) {
 		model.addAttribute("page",this.baseName + " " + SHOW_ACTION.toUpperCase());
@@ -132,12 +120,6 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 		model.addAttribute("go_delete", DELETE_ACTION);
 		model.addAttribute("go_update", UPDATE_ACTION);
 		return showView;
-	}
-
-	// TODO : Gérér corectement le PATH de login
-	@RequestMapping(path = ROUTE_LOGIN, method = RequestMethod.GET)
-	public String loginGet(Model model) {
-		return loginView;
 	}
 
 }

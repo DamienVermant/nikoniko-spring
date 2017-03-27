@@ -20,16 +20,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 
 		http
-			.authorizeRequests()
-			.anyRequest()
-			.authenticated()
-		.and()
-			.formLogin()
-				.loginPage("/login")
-				.usernameParameter("username")
-				.passwordParameter("password")
-				.permitAll();
+				.authorizeRequests()
+				.anyRequest()
+				.authenticated()
+			.and()
+				.formLogin()
+					.loginPage("/login")
+					.usernameParameter("login")
+					.passwordParameter("password")
+					.permitAll();
 	}
-
 
 }

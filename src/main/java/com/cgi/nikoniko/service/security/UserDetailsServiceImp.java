@@ -6,8 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,8 +13,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.cgi.nikoniko.controllers.UserController;
 import com.cgi.nikoniko.dao.IRoleCrudRepository;
 import com.cgi.nikoniko.dao.IUserCrudRepository;
 import com.cgi.nikoniko.dao.IUserHasRoleCrudRepository;
@@ -30,31 +28,29 @@ public class UserDetailsServiceImp implements UserDetailsService {
 	private IUserCrudRepository userCrud;
 
 	@Autowired
-	IUserHasRoleCrudRepository userRoleCrud;
+	private IRoleCrudRepository roleCrud;
 
 	@Autowired
-	IRoleCrudRepository roleCrud;
+	private IUserHasRoleCrudRepository userRoleCrud;
 
 	@Override
-	@org.springframework.transaction.annotation.Transactional(readOnly = true)
+	@Transactional(readOnly = true)
 	public UserDetails loadUserByUsername(String login)
 			throws UsernameNotFoundException {
 		User user = userCrud.findByLogin(login);
 
-		Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
+		Set<GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
 
 		if (user.getEnable()) {
-			for (RoleCGI role : this.setRolesForUserGet(user.getId())){
+			for (RoleCGI role : this.setRolesForUserGet(user.getId())) {
 				grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
 			}
 		}
-
-		return new org.springframework.security.core.userdetails.User(user.getLogin(),
-												user.getPassword(), grantedAuthorities);
+		return new org.springframework.security.core.userdetails
+					.User(user.getLogin(),user.getPassword(),grantedAuthorities);
 	}
 
-
-	public ArrayList<RoleCGI> setRolesForUserGet(Long idUser) {
+	public ArrayList<RoleCGI> setRolesForUserGet(Long idUser) {//find a more appropriate name later
 
 		List<Long> ids = new ArrayList<Long>();
 		ArrayList<RoleCGI> roleList = new ArrayList<RoleCGI>();

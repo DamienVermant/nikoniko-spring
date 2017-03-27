@@ -18,6 +18,7 @@ public class LoginController {
 	private IBaseCrudRepository<User> baseCrud;
 
 	public final static String BASE_URL = "/login";
+
 	public final static String PATH = "/";
 
 		@RequestMapping(path = PATH, method = RequestMethod.GET)

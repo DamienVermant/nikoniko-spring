@@ -31,6 +31,7 @@ public class User extends SecurityUser {
 	public static final String[] FIELDS = { "id", "lastname", "firstname", "sex", "registration_cgi",
 											"login", "password", "enable", "verticale_id"};
 
+
 	@Column(name = "lastname", nullable = false)
 	private String lastname;
 

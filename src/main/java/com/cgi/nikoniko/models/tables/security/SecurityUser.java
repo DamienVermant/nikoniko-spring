@@ -39,6 +39,7 @@ public abstract class SecurityUser extends DatabaseItem {
 		return password;
 	}
 
+
 	/**
 	 * @param password : the password to set
 	 */
@@ -46,20 +47,14 @@ public abstract class SecurityUser extends DatabaseItem {
 		this.password = password;
 	}
 
-	/**
-	 * @return the enable
-	 */
+
 	public Boolean getEnable() {
 		return enable;
 	}
 
-	/**
-	 * @param enable the enable to set
-	 */
 	public void setEnable(Boolean enable) {
 		this.enable = enable;
 	}
-
 
 	public SecurityUser(String table, String[] fields, String login, String password) {
 		super(table, fields);
