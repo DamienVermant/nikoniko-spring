@@ -42,6 +42,10 @@ public class NikoNikoController extends ViewBaseController<NikoNiko> {
 		super(NikoNiko.class,BASE_URL);
 	}
 
+
+	/**
+	 * ALL
+	 */
 	@Override
 	@RequestMapping(path = "{idNiko}" + PATH + SHOW_PATH, method = RequestMethod.GET)
 	public String showItemGet(Model model,@PathVariable Long idNiko) {
@@ -62,7 +66,7 @@ public class NikoNikoController extends ViewBaseController<NikoNiko> {
 	}
 
 	/**
-	 *
+	 *	ADMIN
 	 * Recupération de tous les changedate liés à un nikoniko
 	 */
 	@RequestMapping("{nikonikoId}/showChangeDates")
@@ -79,7 +83,7 @@ public class NikoNikoController extends ViewBaseController<NikoNiko> {
 	}
 
 	/**
-	 *
+	 *	ALL
 	 * Page de creation d'un nikoniko pour un user
 	 */
 	@RequestMapping(path = "{changId}/add", method = RequestMethod.GET)
@@ -96,7 +100,7 @@ public class NikoNikoController extends ViewBaseController<NikoNiko> {
 	}
 
 	/**
-	 *
+	 *	ALL
 	 * Creation d'un nikoniko
 	 */
 	@RequestMapping(path = "{nikonikoId}/create", method = RequestMethod.POST)

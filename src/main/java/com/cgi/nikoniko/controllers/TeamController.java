@@ -54,6 +54,9 @@ public class TeamController extends ViewBaseController<Team> {
 	}
 
 		/**
+		 * ADMIN,
+		 * VP,
+		 * GESTIONNAIRE
 		 * SHOW ALL USERS OF A TEAM WITH A GIVEN ID
 		 */
 		@RequestMapping(path = ROUTE_SHOW, method = RequestMethod.GET)
@@ -78,6 +81,9 @@ public class TeamController extends ViewBaseController<Team> {
 	}
 
 		/**
+		 * ADMIN,
+		 * VP,
+		 * GESTIONNAIRE
 		 * RELATIONS (TEAM HAS USER)
 		 * @param model
 		 * @param id
@@ -103,6 +109,9 @@ public class TeamController extends ViewBaseController<Team> {
 		}
 
 		/**
+		 * ADMIN,
+		 * VP,
+		 * GESTIONNAIRE
 		 * SHOW POST THAT UPDATE USER RELATION WITH TEAM WHEN A USER QUIT A TEAM
 		 */
 		@RequestMapping(path = "{idTeam}" + PATH + SHOW_USER, method = RequestMethod.POST)
@@ -111,6 +120,9 @@ public class TeamController extends ViewBaseController<Team> {
 		}
 
 		/**
+		 * ADMIN,
+		 * VP,
+		 * GESTIONNAIRE
 		 * ADD USER FOR CURRENT TEAM
 		 * @param model
 		 * @param idTeam
@@ -135,6 +147,9 @@ public class TeamController extends ViewBaseController<Team> {
 		}
 
 		/**
+		 * ADMIN,
+		 * VP,
+		 * GESTIONNAIRE
 		 * ADD USER FOR CURRENT TEAM
 		 * @param model
 		 * @param idTeam
@@ -147,6 +162,9 @@ public class TeamController extends ViewBaseController<Team> {
 		}
 
 		/**
+		 * ADMIN,
+		 * VP,
+		 * GESTIONNAIRE
 		 *	RETURN LIST OF ALL USERS IN A TEAM WITH A GIVEN ID
 		 * @param teamId
 		 * @return userList (list of user associated to a team)
@@ -170,6 +188,9 @@ public class TeamController extends ViewBaseController<Team> {
 		}
 
 		/**
+		 * ADMIN,
+		 * VP,
+		 * GESTIONNAIRE
 		 * FUNCTION THAT SET NEW USER IN TEAM (JUST AFFECT A USER ALREADY CREATE)
 		 * @param idTeam
 		 * @param idUser
@@ -195,6 +216,7 @@ public class TeamController extends ViewBaseController<Team> {
 
 
 		/**
+		 * ADMIN
 		 * UPDATE USER_HAS_TEAM (leaving_date) WHEN A TEAM DELETE AN USER FROM HIS OWN
 		 * @param idUser
 		 * @param idTeam
@@ -215,6 +237,7 @@ public class TeamController extends ViewBaseController<Team> {
 		}
 
 		/**
+		 * ADMIN
 		 * FUNCTION RETURNING ALL TEAM RELATED WITH ONE USER WITH leaving_date = null
 		 * @param idUser
 		 * @return
