@@ -55,10 +55,9 @@ public class UserController extends ViewBaseController<User> {
 	public final static String ADD_TEAM = "addTeams";
 	public final static String ADD_ROLE = "addRoles";
 	public final static String REDIRECT = "redirect:";
-
-	// TODO : CHANGE TIME (IN MINUTE FOR THE MOMENT FOR TEST)
-	public final static int TIME = 2;
-
+	
+	public final static int TIME = 1;
+	
 	@Autowired
 	INikoNikoCrudRepository nikonikoCrud;
 
@@ -106,7 +105,6 @@ public class UserController extends ViewBaseController<User> {
 		userBuffer = userCrud.findOne(idUser);
 		Long idverticale = userBuffer.getVerticale().getId();
 
-
 		for (RoleCGI roleName : this.getAllRolesForUser(idUser)) {
 			String varTest = roleName.getName();
 				model.addAttribute("myRole", roleName.getName());
@@ -120,7 +118,6 @@ public class UserController extends ViewBaseController<User> {
 				model.addAttribute("show_roles", DOT + PATH + SHOW_ROLE);
 				model.addAttribute("go_delete", DELETE_ACTION);
 				model.addAttribute("go_update", UPDATE_ACTION);
-
 		}
 
 		return BASE_USER + PATH + SHOW_PATH;
@@ -182,7 +179,7 @@ public class UserController extends ViewBaseController<User> {
 	public String newNikoNikoForUserPOST(Model model, @PathVariable Long idUser, Integer mood, String comment) {
 		return this.addNikoNikoInDB(idUser, mood, comment);
 	}
-
+	
 	/**
 	 * CHECK FOR NEW NIKONIKO OR UPDATE
 	 */
@@ -213,12 +210,7 @@ public class UserController extends ViewBaseController<User> {
 
 			Days diff = Days.daysBetween(eDateClean, todayDateClean);
 
-			// TODO : TEST DIFF WITH MUNITES
-			todayDateClean.getHourOfDay();
-			eDateClean.getHourOfDay();
-			int diffMin = todayDateClean.getMinuteOfDay() - eDateClean.getMinuteOfDay();
-
-			if (diffMin < 1) {
+			if (diff.getDays() <= TIME) {
 
 					updateNiko = true;
 				}
@@ -259,7 +251,8 @@ public class UserController extends ViewBaseController<User> {
 				NikoNiko nikoUpdate = nikonikoCrud.findOne(idMax);
 
 				nikoUpdate.setChange_date(date);
-
+				nikoUpdate.setComment(comment);
+				
 				nikonikoCrud.save(nikoUpdate);
 
 				return REDIRECT + PATH + MENU_PATH;
@@ -281,7 +274,6 @@ public class UserController extends ViewBaseController<User> {
 			}
 		}
 	}
-
 
 //	/**
 //	 * CREATE A NIKONIKO
@@ -487,8 +479,6 @@ public class UserController extends ViewBaseController<User> {
 
 	/**NAME : showRolesForUserGET // showAllRolesForOneUserGET
 	 *
-	 *
-	 *
 	 * @param model
 	 * @param idUser
 	 * @return
@@ -502,7 +492,6 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("page",userBuffer.getRegistration_cgi());
 		model.addAttribute("sortedFields",Team.FIELDS);
 		model.addAttribute("items", DumpFields.listFielder(this.getAllRolesForUser(idUser)));
-		//model.addAttribute("items",DumpFields.listFielder((List<RoleCGI>) roleCrud.findAll()));
 		model.addAttribute("show_roles", DOT + PATH + SHOW_ROLE);
 		model.addAttribute("back", DOT + PATH + SHOW_PATH);
 		model.addAttribute("add", "addRoles");
@@ -531,7 +520,6 @@ public class UserController extends ViewBaseController<User> {
 	/**NAME : addRoleToUserPOST // addRoleToOneUserPOST
 	 *
 	 * Add the selected role to the selected user
-	 *
 	 * @param model
 	 * @param idUser
 	 * @param idRole
@@ -547,7 +535,7 @@ public class UserController extends ViewBaseController<User> {
 		return redirect;
 	}
 
-	/**NAME : getAllRolesForUser // getAllRolesForOneUser
+	/**NAME : getAllRolesForUser
 	 *
 	 * Return all roles of the selected user
 	 *
@@ -595,6 +583,20 @@ public class UserController extends ViewBaseController<User> {
 
 		return BASE_USER + PATH + ADD_ROLE;
 	}
+	
+	/**
+	 * 
+	 * GRAPH GESTION
+	 * 
+	 * 
+	 */
+	
+	/**
+	 * ALL NIKONIKO GRAPH FOR AN USER
+	 * @param model
+	 * @param idUser
+	 * @return
+	 */
 
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_GRAPH, method = RequestMethod.GET)
 	public String showPie(Model model, @PathVariable Long idUser) {
@@ -624,6 +626,12 @@ public class UserController extends ViewBaseController<User> {
 		return "graphs" + PATH + "pie";
 	}
 
+	/**
+	 * ALL NIKONIKOS GRAPH
+	 * @param model
+	 * @param idUser
+	 * @return
+	 */
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_GRAPH_ALL, method = RequestMethod.GET)
 	public String showAllPie(Model model, @PathVariable Long idUser) {
 
@@ -649,6 +657,4 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("back", PATH + MENU_PATH);
 		return "graphs" + PATH + "pie";
 	}
-
-
 }

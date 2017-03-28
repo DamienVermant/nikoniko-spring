@@ -56,8 +56,6 @@ public class MenuController  {
 	@RequestMapping(path = "/menu", method = RequestMethod.GET)
 	public String index(Model model, String login) {
 
-
-
 		model.addAttribute("page","MENU");
 
 		model.addAttribute("roles",this.getConnectUserRole());

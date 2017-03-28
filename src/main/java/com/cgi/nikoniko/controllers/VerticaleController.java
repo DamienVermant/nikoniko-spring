@@ -41,6 +41,8 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	}
 
 	/**
+	 * ADMIN
+	 * VP
 	 * SHOW ALL VERTICALE WITH A GIVEN ID
 	 */
 	@RequestMapping(path = ROUTE_SHOW, method = RequestMethod.GET)
@@ -61,6 +63,14 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	return BASE_VERTICALE + PATH + SHOW_PATH;
 }
 
+
+	/**
+	 * ADMIN,
+	 * VP
+	 * @param model
+	 * @param verticaleId
+	 * @return
+	 */
 	@RequestMapping("{verticaleId}/showUser")
 	public String getUsersForVerticale(Model model, @PathVariable Long verticaleId) {
 		Verticale verticale = super.getItem(verticaleId);
@@ -75,6 +85,13 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 		return "verticale/showAllRelation";
 	}
 
+	/**
+	 * ADMIN,
+	 * VP
+	 * @param model
+	 * @param verticaleId
+	 * @return
+	 */
 	@RequestMapping("{verticaleId}/showTeam")
 	public String getTeamsForVerticale(Model model, @PathVariable Long verticaleId) {
 		Verticale verticale = super.getItem(verticaleId);
