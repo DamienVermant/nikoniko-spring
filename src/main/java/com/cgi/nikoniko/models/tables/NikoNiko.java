@@ -3,6 +3,7 @@ package com.cgi.nikoniko.models.tables;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,8 +11,11 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
 import com.cgi.nikoniko.models.tables.modelbase.DatabaseItem;
 
 @Entity
@@ -123,6 +127,19 @@ public class NikoNiko extends DatabaseItem {
             user.getNikoNikos().add(this);
             }
 	}
+	
+	
+	@PrePersist
+	public void saveTime(){
+		this.entry_date = new Date();
+	}
+	
+	@PreUpdate
+	public void updateTime(){
+		this.change_date = new Date();
+	}
+	
+	
 
 	public NikoNiko() {
 		super(NikoNiko.TABLE, NikoNiko.FIELDS);

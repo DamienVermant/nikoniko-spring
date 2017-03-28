@@ -28,7 +28,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 					.loginPage("/login")
 					.usernameParameter("login")
 					.passwordParameter("password")
-					.permitAll();
+					.permitAll()
+					
+			// TODO : REMOVE THIS
+		
+//			.and()
+//				.httpBasic()
+//				.and()
+//				.authorizeRequests().anyRequest().anonymous()
+//				.antMatchers("/demo","/demo/**")
+//				.permitAll()
+				;
 	}
 
 }
+
+
+

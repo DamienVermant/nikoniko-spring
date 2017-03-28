@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.Days;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -176,9 +179,17 @@ public class UserController extends ViewBaseController<User> {
 			
 			java.util.Date eDate = new java.util.Date(entryDate.getTime());
 			
-			// TODO : FIND GOOD CONDITION (USE A CALENDAR)
+			DateTime eDateClean = new DateTime(eDate,DateTimeZone.forID( "Europe/Paris" ));
+			DateTime todayDateClean = new DateTime(todayDate,DateTimeZone.forID( "Europe/Paris" ));
 			
-			if ((Boolean) null) {
+			Days diff = Days.daysBetween(eDateClean, todayDateClean);
+			
+			// TODO : TEST DIFF WITH MUNITES
+			todayDateClean.getHourOfDay();
+			eDateClean.getHourOfDay();
+			int diffMin = todayDateClean.getMinuteOfDay() - eDateClean.getMinuteOfDay();
+	
+			if (diffMin < 1) {
 					
 					updateNiko = true;
 				}
