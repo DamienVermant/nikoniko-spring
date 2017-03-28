@@ -7,8 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.Days;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -54,6 +56,9 @@ public class UserController extends ViewBaseController<User> {
 	public final static String ADD_ROLE = "addRoles";
 	public final static String REDIRECT = "redirect:";
 
+	// TODO : CHANGE TIME (IN MINUTE FOR THE MOMENT FOR TEST)
+	public final static int TIME = 2;
+
 	@Autowired
 	INikoNikoCrudRepository nikonikoCrud;
 
@@ -78,8 +83,6 @@ public class UserController extends ViewBaseController<User> {
 
 	protected UserController(Class<User> clazz, String baseURL) {
 		super(clazz, baseURL);
-
-
 	}
 
 	/**
@@ -88,7 +91,8 @@ public class UserController extends ViewBaseController<User> {
 	 *
 	 */
 
-	/**
+	/**NAME : showUserActionsGET
+	 *
 	 * SHOW USER ACTIONS FOR A SPECIFIC PROFILE
 	 *
 	 * @param model
@@ -96,17 +100,14 @@ public class UserController extends ViewBaseController<User> {
 	 * @return
 	 */
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_PATH, method = RequestMethod.GET)
-	public String showItem(Model model,@PathVariable Long idUser) {
+	public String showUserActionsGET(Model model,@PathVariable Long idUser) {
 
 		User userBuffer = new User();
 		userBuffer = userCrud.findOne(idUser);
 		Long idverticale = userBuffer.getVerticale().getId();
 
-		//BOUCLE VERIF SI UN ROLE SPECIFIQUE EST ASSOCIE A UN USER
-		//SERVIRA A DETERMINER QUEL ENVIRONNEMENT ON AFFICHE
-		//ATTENTION : LE ROLE EST DETERMINE PAR RAPPORT AU USER QU'ON AFFICHE
-		//			  ET PAS LE DETENTEUR DE LA SESSION
-		for (RoleCGI roleName : this.setRolesForUserGet(idUser)) {
+
+		for (RoleCGI roleName : this.getAllRolesForUser(idUser)) {
 			String varTest = roleName.getName();
 				model.addAttribute("myRole", roleName.getName());
 				model.addAttribute("page",  "USER : " + userBuffer.getRegistration_cgi());
@@ -120,20 +121,18 @@ public class UserController extends ViewBaseController<User> {
 				model.addAttribute("go_delete", DELETE_ACTION);
 				model.addAttribute("go_update", UPDATE_ACTION);
 
-				return BASE_USER + PATH + SHOW_PATH;//LATER THIS ROUTE WILL LEAD TO A SPECIFIC FTL FILE
-
 		}
 
-		return BASE_USER + PATH + SHOW_PATH;//LATER THIS ROUTE WILL LEAD TO A DEFAULT VIEW FOR NON USERS
+		return BASE_USER + PATH + SHOW_PATH;
 	}
 
-	/**
+	/**NAME : getNikoNikosForUser
+	 *
 	 * LINK USER -> NIKONIKO (SELECT ALL NIKONIKOS FOR A USER)
 	 * @param model
 	 * @param userId
 	 * @return
 	 */
-	@Secured("ROLE_ADMIN")//IMPORTANT : indique quels seront les profils autorisés à utiliser la fonction
 	@RequestMapping("{userId}/showNikoNikos")
 	public String getNikoNikosForUser(Model model, @PathVariable Long userId) {
 		User user = super.getItem(userId);
@@ -148,12 +147,17 @@ public class UserController extends ViewBaseController<User> {
 		return "user/showNikoNikos";
 	}
 
-	/**
+	/**NAME : newNikoNikoForUserGET
 	 *
 	 * Page de creation d'un nikoniko pour un user
+	 *
+	 * @param model
+	 * @param userId
+	 * @return
 	 */
 	@RequestMapping(path = "{userId}/add", method = RequestMethod.GET)
-	public String createItemGet(Model model, @PathVariable Long userId) {
+	public String newNikoNikoForUserGET(Model model, @PathVariable Long userId) {
+
 		User user = super.getItem(userId);
 		NikoNiko niko = new NikoNiko();
 
@@ -165,54 +169,139 @@ public class UserController extends ViewBaseController<User> {
 		return "nikoniko/addNikoNiko";
 	}
 
-	// TODO : ADD A NIKONIKO FOR A USER
-
-	@RequestMapping(path = "{idUser}/add", method = RequestMethod.POST)
-	public String createItemPost(Model model, @PathVariable Long idUser, Integer mood, String comment) {
-		return this.addNikoNiko(idUser, mood, comment);
-	}
-
-
-	// TODO : FONCTION TO ADD A NIKONIKO (FOR POST ACTION)
-	/**
-	 * FUNCTION THAT SAVE THE NIKONIKO
+	/**NAME : newNikoNikoForUserPOST
 	 *
-	 * @param idUser, mood, comment
+	 *
+	 * @param model
+	 * @param idUser
+	 * @param mood
+	 * @param comment
 	 * @return
 	 */
-	public String addNikoNiko(Long idUser, int mood, String comment){
+	@RequestMapping(path = "{idUser}/add", method = RequestMethod.POST)
+	public String newNikoNikoForUserPOST(Model model, @PathVariable Long idUser, Integer mood, String comment) {
+		return this.addNikoNikoInDB(idUser, mood, comment);
+	}
 
-		Date date = new Date();//optionnal, can be place directly in the new niko construct
-		User user = new User();//TODO : merge this line and the onde with findOne(idUser)
+	/**
+	 * CHECK FOR NEW NIKONIKO OR UPDATE
+	 */
+
+	// TODO : CREATE A FUNCTION THAT CAN SET A NIKO AFTER J+1 IF USER DOES NOT SET HIS NIKONIKO
+	// TODO : IF A USER FORGET TO POST HIS SATISFACTION, RECALL HIM AFTER (ONE DAY ?) TO VOTE FOR HIS PREVIOUS VOTE
+
+	public Boolean checkDateNikoNiko(Long idUser){
+
+		Boolean updateNiko = null;
+		Date todayDate = new Date();
+
+		Long idMaxNiko = userCrud.getLastNikoNikoUser(idUser);
+
+		if (idMaxNiko == null) {
+			updateNiko = false;
+		}
+
+		else {
+
+			NikoNiko lastNiko = nikonikoCrud.findOne(idMaxNiko);
+			Date entryDate = lastNiko.getEntry_date();
+
+			java.util.Date eDate = new java.util.Date(entryDate.getTime());
+
+			DateTime eDateClean = new DateTime(eDate,DateTimeZone.forID( "Europe/Paris" ));
+			DateTime todayDateClean = new DateTime(todayDate,DateTimeZone.forID( "Europe/Paris" ));
+
+			Days diff = Days.daysBetween(eDateClean, todayDateClean);
+
+			// TODO : TEST DIFF WITH MUNITES
+			todayDateClean.getHourOfDay();
+			eDateClean.getHourOfDay();
+			int diffMin = todayDateClean.getMinuteOfDay() - eDateClean.getMinuteOfDay();
+
+			if (diffMin < 1) {
+
+					updateNiko = true;
+				}
+
+				else {
+
+					updateNiko = false;
+				}
+			}
+
+		return updateNiko;
+	}
+
+	/**NAME : addNikoNikoInDB
+	*
+	* FUNCTION THAT SAVE THE NIKONIKO IN DB
+	*
+	* @param idUser, mood, comment
+	* @return
+	*/
+	public String addNikoNikoInDB(Long idUser, Integer mood, String comment){
+
+		Date date = new Date();
+		User user = new User();
 
 		user = userCrud.findOne(idUser);
 
-		NikoNiko niko = new NikoNiko(user,mood,date,comment);
-		nikonikoCrud.save(niko);
+		if (this.checkDateNikoNiko(idUser) == true) {
 
-		return REDIRECT + PATH + MENU_PATH;//TODO : change this path to prevent infinite niko creation/day
-	}
+			if (mood ==  null) {
 
-	//////////////////////////////////////////////////////////////////
+				return REDIRECT + PATH + MENU_PATH;
+			}
 
+			else {
 
-	/**
-	 *
-	 * Creation d'un nikoniko
-	 */
-	@RequestMapping(path = "{userId}/create", method = RequestMethod.POST)
-	public String createItemPost(Model model, NikoNiko niko, @PathVariable Long userId) {
+				Long idMax = userCrud.getLastNikoNikoUser(idUser);
+				NikoNiko nikoUpdate = nikonikoCrud.findOne(idMax);
 
-		try {
-			User user = super.getItem(userId);
-			niko.setUser(user);
-			nikonikoCrud.save(niko);
-		} catch (Exception e) {
-			 e.printStackTrace();
+				nikoUpdate.setChange_date(date);
+
+				nikonikoCrud.save(nikoUpdate);
+
+				return REDIRECT + PATH + MENU_PATH;
+			}
 		}
-		return "redirect:/user/" + userId + "/showNikoNikos";
-//		return "redirect:/user/" + userId + "/link";
+
+		else {
+
+			if (mood ==  null) {
+
+				return REDIRECT + PATH + MENU_PATH;
+			}
+
+			else {
+
+				NikoNiko niko = new NikoNiko(user,mood,date,comment);
+				nikonikoCrud.save(niko);
+				return REDIRECT + PATH + MENU_PATH;
+			}
+		}
 	}
+
+
+//	/**
+//	 * CREATE A NIKONIKO
+//	 * @param model
+//	 * @param niko
+//	 * @param userId
+//	 * @return
+//	 */
+//	@RequestMapping(path = "{userId}/create", method = RequestMethod.POST)
+//	public String createItemPost(Model model, NikoNiko niko, @PathVariable Long userId) {
+//
+//		try {
+//			User user = super.getItem(userId);
+//			niko.setUser(user);
+//			nikonikoCrud.save(niko);
+//		} catch (Exception e) {
+//			 e.printStackTrace();
+//		}
+//		return "redirect:/user/" + userId + "/showNikoNikos";
+//	}
 
 	/**
 	 *
@@ -220,21 +309,23 @@ public class UserController extends ViewBaseController<User> {
 	 *
 	 */
 
-	/**
+	/**NAME : showTeamsForUserGET
+	 *
 	 * RELATION USER HAS TEAM
+	 *
 	 * @param model
 	 * @param id
 	 * @return
 	 */
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_TEAM, method = RequestMethod.GET)
-	public String showItemGet(Model model,@PathVariable Long idUser) {
+	public String showTeamsForUserGET(Model model,@PathVariable Long idUser) {
 
 		User userBuffer = new User();
 		userBuffer = userCrud.findOne(idUser);
 
 		model.addAttribute("page",userBuffer.getRegistration_cgi());
 		model.addAttribute("sortedFields",Team.FIELDS);
-		model.addAttribute("items",this.UserInTeam(idUser));
+		model.addAttribute("items",this.getTeamsForUser(idUser));
 		model.addAttribute("show_teams", DOT + PATH + SHOW_TEAM);
 		model.addAttribute("back", DOT + PATH + SHOW_PATH);
 		model.addAttribute("add", "addTeams");
@@ -242,22 +333,31 @@ public class UserController extends ViewBaseController<User> {
 		return BASE_USER + PATH + SHOW_TEAM;
 	}
 
-	/**
+	/**NAME : quiTeamPOST
+	 *
+	 * Delete the selected relation team-user and redirect to the userhasteams view (by using quitTeam())
 	 * SHOW POST THAT UPDATE USER RELATION WITH TEAM WHEN A USER QUIT A TEAM
+	 *
+	 * @param model
+	 * @param idUser
+	 * @param idTeam
+	 * @return
 	 */
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_TEAM, method = RequestMethod.POST)
-	public String showItemPost(Model model,@PathVariable Long idUser, Long idTeam) {
+	public String quiTeamPOST(Model model,@PathVariable Long idUser, Long idTeam) {
 		return quitTeam(idUser, idTeam);
 	}
 
-	/**
+	/**NAME : addUserInTeamGET
+	 *
 	 * ADD USER FOR CURRENT TEAM
+	 *
 	 * @param model
 	 * @param idUser
 	 * @return
 	 */
 	@RequestMapping(path = "{idUser}" + PATH + ADD_TEAM, method = RequestMethod.GET)
-	public <T> String addUsersGet(Model model, @PathVariable Long idUser) {
+	public <T> String addUserInTeamGET(Model model, @PathVariable Long idUser) {
 
 		Object userBuffer = new Object();
 		userBuffer = userCrud.findOne(idUser);
@@ -273,24 +373,28 @@ public class UserController extends ViewBaseController<User> {
 		return BASE_USER + PATH + ADD_TEAM;
 	}
 
-	/**
+	/**NAME : addUserInTeamPOST
+	 *
 	 * ADD USER FOR CURRENT TEAM
+	 *
 	 * @param model
 	 * @param idUser
 	 * @param idTeam
 	 * @return
 	 */
 	@RequestMapping(path = "{idUser}" + PATH + ADD_TEAM, method = RequestMethod.POST)
-	public <T> String addUsersPost(Model model, @PathVariable Long idUser, Long idTeam) {
-		return setUsersForTeamPost(idTeam, idUser);
+	public <T> String addUserInTeamPOST(Model model, @PathVariable Long idUser, Long idTeam) {
+		return setUsersForTeam(idTeam, idUser);
 	}
 
-	/**
+	/**NAME : findAllTeamsForUser
 	 *
-	 * @param teamId
-	 * @return userList (list of user associated to a team)
+	 * Find all teams related to a user by checking relation table user_has_team
+	 *
+	 * @param idValue
+	 * @return teamList (list of user associated to a team)
 	 */
-	public ArrayList<Team> setTeamsForUserGet(Long idValue) {
+	public ArrayList<Team> findAllTeamsForUser(Long idValue) {
 
 		List<Long> ids = new ArrayList<Long>();
 		ArrayList<Team> teamList = new ArrayList<Team>();
@@ -300,7 +404,6 @@ public class UserController extends ViewBaseController<User> {
 		if (!idsBig.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
 			for (BigInteger id : idsBig) {
 				ids.add(id.longValue());
-
 			}
 			teamList = (ArrayList<Team>) teamCrud.findAll(ids);
 		}
@@ -308,39 +411,32 @@ public class UserController extends ViewBaseController<User> {
 		return teamList;
 	}
 
-	/**
-	 * CREATE A FUNCTION THAT SET NEW TEAM FOR A USER (JUST AFFECT A TEAM ALREADY CREATE)
+	/**NAME : setUsersForTeam
+	 *
+	 * Put an user in a new team by creating a new  association in user_has_team (or modify if exists)
+	 *
 	 * @param idTeam
 	 * @param idUser
 	 * @return
 	 */
-	public String setUsersForTeamPost(Long idTeam,Long idUser){
+	public String setUsersForTeam(Long idTeam,Long idUser){
+
+		userTeamCrud.save(new UserHasTeam(userCrud.findOne(idUser), teamCrud.findOne(idTeam), new Date()));
 
 		String redirect = REDIRECT + PATH + BASE_USER + PATH + idUser + PATH + SHOW_TEAM;
-
-		Team team = new Team();
-		team = teamCrud.findOne(idTeam);
-
-		User user = new User();
-		user = userCrud.findOne(idUser);
-
-		UserHasTeam userHasTeamBuffer = new UserHasTeam(user, team, new Date());
-
-		userTeamCrud.save(userHasTeamBuffer);
 
 		return redirect;
-
 	}
 
-	/**
-	 * UPDATE USER_HAS_TEAM (leaving_date) WHEN A USER QUIT A TEAM
+	/**NAME : quitTeam
+	 *
+	 * Set the leaving date in user_has_team table when a user leave a team
+	 *
 	 * @param idUser
 	 * @param idTeam
-	 * @return
+	 * @return redirect (path redirection after action)
 	 */
 	public String quitTeam(Long idUser, Long idTeam){
-
-		String redirect = REDIRECT + PATH + BASE_USER + PATH + idUser + PATH + SHOW_TEAM;
 
 		Date date = new Date();
 
@@ -349,22 +445,26 @@ public class UserController extends ViewBaseController<User> {
 
 		userTeamCrud.save(userHasTeamBuffer);
 
+		String redirect = REDIRECT + PATH + BASE_USER + PATH + idUser + PATH + SHOW_TEAM;
+
 		return redirect;
 	}
 
-	/**
+	/** NAME : getTeamsForUser
+	 *
 	 * FUNCTION RETURNING ALL TEAM RELATED WITH ONE USER WITH leaving_date = null
+	 *
 	 * @param idUser
 	 * @return
 	 */
-	public ArrayList<Map<String, Object>> UserInTeam(Long idUser){
+	public ArrayList<Map<String, Object>> getTeamsForUser(Long idUser){
 
 		ArrayList<Long> ids = new ArrayList<Long>();
 		ArrayList<Team> teamList = new ArrayList<Team>();
 		ArrayList<UserHasTeam> userHasTeamList = new ArrayList<UserHasTeam>();
 		ArrayList<UserHasTeam> userHasTeamListClean = new ArrayList<UserHasTeam>();
 
-		teamList = setTeamsForUserGet(idUser);
+		teamList = findAllTeamsForUser(idUser);
 
 		for (int i = 0; i < teamList.size(); i++) {
 			userHasTeamList.add(userTeamCrud.findAssociatedUserTeamALL(idUser, teamList.get(i).getId()));
@@ -385,21 +485,23 @@ public class UserController extends ViewBaseController<User> {
 	 *
 	 */
 
-	/**
+	/**NAME : showRolesForUserGET // showAllRolesForOneUserGET
+	 *
+	 *
 	 *
 	 * @param model
 	 * @param idUser
 	 * @return
 	 */
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_ROLE, method = RequestMethod.GET)
-	public String showItemGetRole(Model model,@PathVariable Long idUser) {
+	public String showRolesForUserGET(Model model,@PathVariable Long idUser) {
 
 		User userBuffer = new User();
 		userBuffer = userCrud.findOne(idUser);
 
 		model.addAttribute("page",userBuffer.getRegistration_cgi());
 		model.addAttribute("sortedFields",Team.FIELDS);
-		model.addAttribute("items", DumpFields.listFielder(this.setRolesForUserGet(idUser)));
+		model.addAttribute("items", DumpFields.listFielder(this.getAllRolesForUser(idUser)));
 		//model.addAttribute("items",DumpFields.listFielder((List<RoleCGI>) roleCrud.findAll()));
 		model.addAttribute("show_roles", DOT + PATH + SHOW_ROLE);
 		model.addAttribute("back", DOT + PATH + SHOW_PATH);
@@ -408,7 +510,9 @@ public class UserController extends ViewBaseController<User> {
 		return BASE_USER + PATH + SHOW_ROLE;
 	}
 
-	/***
+	/**NAME : revokeRoleToUserPOST // revokeRoleToOneUserPOST
+	 *
+	 *Revoke the selected role for the selected user
 	 *
 	 * @param model
 	 * @param idUser
@@ -416,7 +520,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @return
 	 */
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_ROLE, method = RequestMethod.POST)
-	public String showItemDeleteRole(Model model,@PathVariable Long idUser, Long idRole) {
+	public String revokeRoleToUserPOST(Model model,@PathVariable Long idUser, Long idRole) {
 
 		String redirect = REDIRECT + PATH + BASE_USER + PATH + idUser + PATH + SHOW_ROLE;
 		UserHasRole userHasRole = new UserHasRole(userCrud.findOne(idUser), roleCrud.findOne(idRole));
@@ -424,7 +528,9 @@ public class UserController extends ViewBaseController<User> {
 		return redirect;
 	}
 
-	/**
+	/**NAME : addRoleToUserPOST // addRoleToOneUserPOST
+	 *
+	 * Add the selected role to the selected user
 	 *
 	 * @param model
 	 * @param idUser
@@ -432,7 +538,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @return
 	 */
 	@RequestMapping(path = "{idUser}" + PATH + ADD_ROLE, method = RequestMethod.POST)
-	public String showItemPostRole(Model model,@PathVariable Long idUser, Long idRole) {
+	public String addRoleToUserPOST(Model model,@PathVariable Long idUser, Long idRole) {
 
 		String redirect = REDIRECT + PATH + BASE_USER + PATH + idUser + PATH + SHOW_ROLE;
 		UserHasRole userHasRole = new UserHasRole(userCrud.findOne(idUser), roleCrud.findOne(idRole));
@@ -441,8 +547,14 @@ public class UserController extends ViewBaseController<User> {
 		return redirect;
 	}
 
-
-	public ArrayList<RoleCGI> setRolesForUserGet(Long idUser) {
+	/**NAME : getAllRolesForUser // getAllRolesForOneUser
+	 *
+	 * Return all roles of the selected user
+	 *
+	 * @param idUser
+	 * @return
+	 */
+	public ArrayList<RoleCGI> getAllRolesForUser(Long idUser) {
 
 		List<Long> ids = new ArrayList<Long>();
 		ArrayList<RoleCGI> roleList = new ArrayList<RoleCGI>();
@@ -458,9 +570,16 @@ public class UserController extends ViewBaseController<User> {
 		return roleList;
 	}
 
-
+	/**NAME : addRoleforUserGET
+	 *
+	 * Show the page to add a role to an User
+	 *
+	 * @param model
+	 * @param idUser
+	 * @return
+	 */
 	@RequestMapping(path = "{idUser}" + PATH + ADD_ROLE, method = RequestMethod.GET)
-	public <T> String addUsersGetRole(Model model, @PathVariable Long idUser) {
+	public <T> String addRoleforUserGET(Model model, @PathVariable Long idUser) {
 
 		Object userBuffer = new Object();
 		userBuffer = userCrud.findOne(idUser);

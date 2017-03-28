@@ -32,6 +32,6 @@ public class SecurityController {
 	
 	@RequestMapping(path = "/login", method = RequestMethod.POST)
 	public String menu(){
-		return "redirect:/menu/mainMenu";
+		return "redirect:/menu/mainMenu/zfhjzgfbjh";
 	}
 }

@@ -3,6 +3,7 @@ package com.cgi.nikoniko.models.tables;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,8 +11,11 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
 import com.cgi.nikoniko.models.tables.modelbase.DatabaseItem;
 
 @Entity
@@ -22,13 +26,16 @@ public class NikoNiko extends DatabaseItem {
 	public static final String TABLE = "nikoniko";
 
 	@Transient
-	public static final String[] FIELDS = { "id", "entry_date", "mood", "comment", "user_id"};
+	public static final String[] FIELDS = { "id", "entry_date","change_date", "mood", "comment", "user_id"};
 
 	@Column(name = "mood", nullable = false)
 	private int mood;
 
 	@Column(name = "entry_date", nullable = false)
 	private Date entry_date;
+	
+	@Column(name = "change_date", nullable = true)
+	private Date change_date;
 
 	@Column(name = "nikoniko_comment", nullable = true)
 	private String comment;
@@ -120,9 +127,30 @@ public class NikoNiko extends DatabaseItem {
             user.getNikoNikos().add(this);
             }
 	}
+	
+	
+	@PrePersist
+	public void saveTime(){
+		this.entry_date = new Date();
+	}
+	
+	@PreUpdate
+	public void updateTime(){
+		this.change_date = new Date();
+	}
+	
+	
 
 	public NikoNiko() {
 		super(NikoNiko.TABLE, NikoNiko.FIELDS);
+	}
+
+	public Date getChange_date() {
+		return change_date;
+	}
+
+	public void setChange_date(Date change_date) {
+		this.change_date = change_date;
 	}
 
 	public NikoNiko(User user, int mood, Date entry_date) {
@@ -141,6 +169,13 @@ public class NikoNiko extends DatabaseItem {
 		this(user, mood, entry_date);
 		this.comment = comment;
 	}
+	
+	public NikoNiko(User user, int mood, Date entry_date, String comment, Date change_date) {
+		this(user, mood, entry_date);
+		this.comment = comment;
+		this.change_date = change_date;
+	}
+	
 
 	//Class to check if given satisfaction is valid with our configuration
 	private static class NikoNikoSatisfaction {

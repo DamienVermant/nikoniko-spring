@@ -78,7 +78,7 @@
 <div class="welcome"> Graphique
     <div class="piechart" id="piechart" style="width: 700px; height: 400px;"></div>
 </div>
-<button href="${back}"> Back </button>
+<a href="${back}"> Back <a>
 
 
 <hr>
