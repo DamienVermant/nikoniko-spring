@@ -64,7 +64,7 @@
                 <div class="col-lg-12">
                     <div class="align">
                     <button onclick="location.href='changer_mdp.html'" class="password"> Préférences (KO) </button>
-                    <button onclick="location.href='vote.html'" class="vote"> Modifier vote (KO) </button>
+                    <button onclick="location.href='${back}'" class="vote"> Retour </button>
                     <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
                     </div>
                 </div>
@@ -75,12 +75,23 @@
 
 <hr>
 
-<div class="welcome"> Graphique
+<#if false>
+<div class="welcome"> Vos résultats
     <div class="piechart" id="piechart" style="width: 700px; height: 400px;"></div>
 </div>
-<a href="${back}"> Back <a>
+<#else>
+<div class="welcome"> Pas de résultats disponibles...
+    <div style="margin-top:20px"><img src="http://www.tagtele.com/img/videos/thumbs640x360/b/f/b/55318_default.jpg" alt="canard"/></div>
+</div>
+</#if>
 
-
-<hr>
+<!-- FOOTER -->
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="col-lg-12">
+			<div class="copyright">&copy; Niko-Niko CGI 2017</div>
+		</div>
+	</div>
+</div>
 
 

@@ -102,11 +102,14 @@ public class UserController extends ViewBaseController<User> {
 	/**
 	 * ONLY ADMIN VP
 	 */
+	@Override
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_PATH, method = RequestMethod.GET)
-	public String showUserActionsGET(Model model,@PathVariable Long idUser) {
+	public String showItemGet(Model model,@PathVariable Long idUser) {
 
 		User userBuffer = new User();
 		userBuffer = userCrud.findOne(idUser);
+		
+		// TODO : WHEN CREATE A USER ASIGN A VERTICAL
 		Long idverticale = userBuffer.getVerticale().getId();
 
 		for (RoleCGI roleName : this.getAllRolesForUser(idUser)) {

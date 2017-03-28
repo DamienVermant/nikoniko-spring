@@ -1,4 +1,6 @@
 <html>
+<head>
+</head>
 	<body>
 	<#if roles == "admin">
 		<#include "adminMenu.ftl">
@@ -6,7 +8,7 @@
 		<#if status == true>
 			<#include "employeeMenu.ftl">
 		<#else>
-			<#include "../nikoniko/addNikoNiko.ftl">
+			<meta http-equiv="refresh" content="0; URL=/user/${id}/add">
 		</#if>
 	<#elseif roles == "vp">
 		<#include "vpMenu.ftl">
