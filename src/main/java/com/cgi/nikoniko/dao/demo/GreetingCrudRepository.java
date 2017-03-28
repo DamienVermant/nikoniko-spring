@@ -6,6 +6,4 @@
 //
 //public interface GreetingCrudRepository extends CrudRepository<Greetings, Long>{
 //
-//
-//
 //}

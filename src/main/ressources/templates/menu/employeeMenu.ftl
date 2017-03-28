@@ -55,3 +55,5 @@
 <hr>
 
 <div class="text"> <a href="${add_nikoniko}"> Donner votre satisfaction ! </a> </div>
+
+<a href="${pie_chart}"> Graph <a>

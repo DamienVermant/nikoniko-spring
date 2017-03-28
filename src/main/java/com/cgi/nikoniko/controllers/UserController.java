@@ -500,7 +500,7 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("good", listOfNiko.size());
 		model.addAttribute("medium", medium);
 		model.addAttribute("bad", bad);
-		model.addAttribute("back", DOT + PATH + SHOW_PATH);
+		model.addAttribute("back", PATH + MENU_PATH);
 		return "graphs" + PATH + "pie";
 	}
 

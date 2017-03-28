@@ -37,6 +37,8 @@ public class MenuController  {
 
 	public final static String REDIRECT = "redirect:";
 
+	public final static String SHOW_GRAPH = "showGraph";
+
 	public final static String GO_USERS = PATH + "user" + PATH;
 	public final static String GO_TEAMS = PATH + "team" + PATH;
 	public final static String GO_VERTICALE = PATH + "verticale" + PATH;
@@ -54,12 +56,15 @@ public class MenuController  {
 	@RequestMapping(path = "/menu", method = RequestMethod.GET)
 	public String index(Model model, String login) {
 
+
+
 		model.addAttribute("page","MENU");
 
 		model.addAttribute("roles",this.getConnectUserRole());
 		model.addAttribute("auth",this.getUserInformations().getFirstname());
 		model.addAttribute("go_own_nikoniko", PATH + "user" + PATH + this.getUserInformations().getId() + PATH + "link");
 		model.addAttribute("add_nikoniko", PATH + "user" + PATH + this.getUserInformations().getId() + PATH + "add");
+		model.addAttribute("pie_chart", PATH + "user" + PATH + this.getUserInformations().getId() + PATH + SHOW_GRAPH);
 
 		model.addAttribute("go_users", GO_USERS);
 		model.addAttribute("go_nikonikos", GO_NIKOS);
