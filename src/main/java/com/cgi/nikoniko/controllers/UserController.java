@@ -98,6 +98,10 @@ public class UserController extends ViewBaseController<User> {
 	 * @param idUser
 	 * @return
 	 */
+	
+	/**
+	 * ONLY ADMIN VP
+	 */
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_PATH, method = RequestMethod.GET)
 	public String showUserActionsGET(Model model,@PathVariable Long idUser) {
 
@@ -130,6 +134,10 @@ public class UserController extends ViewBaseController<User> {
 	 * @param userId
 	 * @return
 	 */
+	
+	/**
+	 * ONLY USER VP ADMIN
+	 */
 	@RequestMapping("{userId}/showNikoNikos")
 	public String getNikoNikosForUser(Model model, @PathVariable Long userId) {
 		User user = super.getItem(userId);
@@ -151,6 +159,10 @@ public class UserController extends ViewBaseController<User> {
 	 * @param model
 	 * @param userId
 	 * @return
+	 */
+	
+	/**
+	 * ONLY ALL
 	 */
 	@RequestMapping(path = "{userId}/add", method = RequestMethod.GET)
 	public String newNikoNikoForUserGET(Model model, @PathVariable Long userId) {
@@ -174,6 +186,10 @@ public class UserController extends ViewBaseController<User> {
 	 * @param mood
 	 * @param comment
 	 * @return
+	 */
+	
+	/**
+	 * ONLY ADMIN ALL
 	 */
 	@RequestMapping(path = "{idUser}/add", method = RequestMethod.POST)
 	public String newNikoNikoForUserPOST(Model model, @PathVariable Long idUser, Integer mood, String comment) {
@@ -309,6 +325,10 @@ public class UserController extends ViewBaseController<User> {
 	 * @param id
 	 * @return
 	 */
+	
+	/**
+	 * ONLY ADMIN VP
+	 */
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_TEAM, method = RequestMethod.GET)
 	public String showTeamsForUserGET(Model model,@PathVariable Long idUser) {
 
@@ -335,6 +355,10 @@ public class UserController extends ViewBaseController<User> {
 	 * @param idTeam
 	 * @return
 	 */
+	
+	/**
+	 * ONLY ADMIN VP
+	 */
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_TEAM, method = RequestMethod.POST)
 	public String quiTeamPOST(Model model,@PathVariable Long idUser, Long idTeam) {
 		return quitTeam(idUser, idTeam);
@@ -347,6 +371,10 @@ public class UserController extends ViewBaseController<User> {
 	 * @param model
 	 * @param idUser
 	 * @return
+	 */
+	
+	/**
+	 * ONLY ADMIN GESTIONNAIRE
 	 */
 	@RequestMapping(path = "{idUser}" + PATH + ADD_TEAM, method = RequestMethod.GET)
 	public <T> String addUserInTeamGET(Model model, @PathVariable Long idUser) {
@@ -373,6 +401,10 @@ public class UserController extends ViewBaseController<User> {
 	 * @param idUser
 	 * @param idTeam
 	 * @return
+	 */
+	
+	/**
+	 * ONLY ADMIN GESTIONNAIRE
 	 */
 	@RequestMapping(path = "{idUser}" + PATH + ADD_TEAM, method = RequestMethod.POST)
 	public <T> String addUserInTeamPOST(Model model, @PathVariable Long idUser, Long idTeam) {
@@ -477,12 +509,17 @@ public class UserController extends ViewBaseController<User> {
 	 *
 	 */
 
-	/**NAME : showRolesForUserGET // showAllRolesForOneUserGET
+	/**NAME : showRolesForUserGET
 	 *
 	 * @param model
 	 * @param idUser
 	 * @return
 	 */
+	
+	/**
+	 * ONLY ADMIN VP
+	 */
+	
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_ROLE, method = RequestMethod.GET)
 	public String showRolesForUserGET(Model model,@PathVariable Long idUser) {
 
@@ -508,6 +545,11 @@ public class UserController extends ViewBaseController<User> {
 	 * @param idRole
 	 * @return
 	 */
+	
+	/**
+	 * ONLY ADMIN VP
+	 */
+	
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_ROLE, method = RequestMethod.POST)
 	public String revokeRoleToUserPOST(Model model,@PathVariable Long idUser, Long idRole) {
 
@@ -517,7 +559,7 @@ public class UserController extends ViewBaseController<User> {
 		return redirect;
 	}
 
-	/**NAME : addRoleToUserPOST // addRoleToOneUserPOST
+	/**NAME : addRoleToUserPOST
 	 *
 	 * Add the selected role to the selected user
 	 * @param model
@@ -525,6 +567,11 @@ public class UserController extends ViewBaseController<User> {
 	 * @param idRole
 	 * @return
 	 */
+	
+	/**
+	 * ONLY ADMIN VP
+	 */
+	
 	@RequestMapping(path = "{idUser}" + PATH + ADD_ROLE, method = RequestMethod.POST)
 	public String addRoleToUserPOST(Model model,@PathVariable Long idUser, Long idRole) {
 
@@ -566,6 +613,11 @@ public class UserController extends ViewBaseController<User> {
 	 * @param idUser
 	 * @return
 	 */
+	
+	/**
+	 * ONLY ADMIN VP
+	 */
+	
 	@RequestMapping(path = "{idUser}" + PATH + ADD_ROLE, method = RequestMethod.GET)
 	public <T> String addRoleforUserGET(Model model, @PathVariable Long idUser) {
 
@@ -598,6 +650,10 @@ public class UserController extends ViewBaseController<User> {
 	 * @return
 	 */
 
+	/**
+	 * ONLY ALL
+	 */
+	
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_GRAPH, method = RequestMethod.GET)
 	public String showPie(Model model, @PathVariable Long idUser) {
 
@@ -632,6 +688,11 @@ public class UserController extends ViewBaseController<User> {
 	 * @param idUser
 	 * @return
 	 */
+	
+	/**
+	 * ONLY ADMIN VP
+	 */
+	
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_GRAPH_ALL, method = RequestMethod.GET)
 	public String showAllPie(Model model, @PathVariable Long idUser) {
 

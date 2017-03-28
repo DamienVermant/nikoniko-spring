@@ -58,6 +58,10 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 
 	@Autowired
 	IUserHasRoleCrudRepository userRoleCrud;
+	
+	/**
+	 * ONLY ADMIN VP
+	 */
 
 	@RequestMapping(path = ROUTE_SHOW, method = RequestMethod.GET)
 	public String showItemGet(Model model,@PathVariable Long id) {
@@ -83,6 +87,11 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 	 * @param idRole
 	 * @return
 	 */
+	
+	/**
+	 * ONLY ADMIN VP
+	 */
+	
 	@RequestMapping(path = "{idRole}" + PATH + SHOW_FUNC, method = RequestMethod.GET)
 	public <T> String showLinksGet(Model model, @PathVariable Long idRole) {
 
@@ -107,6 +116,11 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 	 * @param idRole
 	 * @return
 	 */
+	
+	/**
+	 * ONLY ADMIN VP
+	 */
+	
 	@RequestMapping(path = "{idRole}" + PATH + SHOW_USERS, method = RequestMethod.GET)
 	public <T> String showLinksGetUser(Model model, @PathVariable Long idRole) {
 
@@ -133,6 +147,11 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 	 * @param idFunction
 	 * @return
 	 */
+	
+	/**
+	 * ONLY ADMIN VP
+	 */
+	
 	@RequestMapping(path = "{idRole}" + PATH + SHOW_FUNC, method = RequestMethod.POST)
 	public String showItemDeleteFunction(Model model,@PathVariable Long idRole, Long idFunction) {
 
@@ -149,6 +168,11 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 	 * @param idFunction
 	 * @return
 	 */
+	
+	/**
+	 * ONLY ADMIN
+	 */
+	
 	@RequestMapping(path = "{idRole}" + PATH + SHOW_USERS, method = RequestMethod.POST)
 	public String showItemDeleteUrt(Model model,@PathVariable Long idRole, Long idUser) {
 
@@ -165,6 +189,11 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 	 * @param idRole
 	 * @return
 	 */
+	
+	/**
+	 * ONLY ADMIN
+	 */
+	
 	@RequestMapping(path = "{idRole}" + PATH + ADD_FUNC, method = RequestMethod.GET)
 	public <T> String addFunctionsGet(Model model, @PathVariable Long idRole) {
 
@@ -190,6 +219,11 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 	 * @param idFunction
 	 * @return
 	 */
+	
+	/**
+	 * ONLY ADMIN VP
+	 */
+	
 	@RequestMapping(path = "{idRole}" + PATH + ADD_FUNC, method = RequestMethod.POST)
 	public String showItemPostRole(Model model,@PathVariable Long idRole, Long idFunction) {
 
@@ -206,6 +240,11 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 	 * @param idRole
 	 * @return
 	 */
+	
+	/**
+	 * ONLY ADMIN
+	 */
+	
 	@RequestMapping(path = "{idRole}" + PATH + ADD_USER, method = RequestMethod.GET)
 	public <T> String addUsersGet(Model model, @PathVariable Long idRole) {
 
@@ -231,6 +270,11 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 	 * @param idFunction
 	 * @return
 	 */
+	
+	/**
+	 * ONLY ADMIN
+	 */
+	
 	@RequestMapping(path = "{idRole}" + PATH + ADD_USER, method = RequestMethod.POST)
 	public String relationUserRole(Model model,@PathVariable Long idRole, Long idUser) {
 
