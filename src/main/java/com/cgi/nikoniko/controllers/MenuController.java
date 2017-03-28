@@ -52,6 +52,10 @@ public class MenuController  {
 
 
 	// TODO : GESTION DES PATHS ET DES @SECURED
+	
+	/**
+	 * ONLY ALL
+	 */
 
 	@RequestMapping(path = "/menu", method = RequestMethod.GET)
 	public String index(Model model, String login) {
