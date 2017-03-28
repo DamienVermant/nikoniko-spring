@@ -3,7 +3,11 @@
 	<#if roles == "admin">
 		<#include "adminMenu.ftl">
 	<#elseif roles == "employee">
-		<#include "employeeMenu.ftl">
+		<#if status == true>
+			<#include "employeeMenu.ftl">
+		<#else>
+			<#include "../nikoniko/addNikoNiko.ftl">
+		</#if>
 	<#elseif roles == "vp">
 		<#include "vpMenu.ftl">
 	<#elseif roles == "chefProjet">

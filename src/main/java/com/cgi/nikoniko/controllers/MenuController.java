@@ -59,9 +59,15 @@ public class MenuController  {
 
 	@RequestMapping(path = "/menu", method = RequestMethod.GET)
 	public String index(Model model, String login) {
+		
+		UserController userControler = new UserController();
 
 		model.addAttribute("page","MENU");
+		
+		//model.addAttribute("status", false);
+		model.addAttribute("status", userControler.checkDateNikoNiko(this.getUserInformations().getId()));
 
+		
 		model.addAttribute("roles",this.getConnectUserRole());
 		model.addAttribute("auth",this.getUserInformations().getFirstname());
 		model.addAttribute("go_own_nikoniko", PATH + "user" + PATH + this.getUserInformations().getId() + PATH + "link");

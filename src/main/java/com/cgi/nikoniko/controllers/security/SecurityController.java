@@ -28,10 +28,4 @@ public class SecurityController {
 		return "redirect:/login?logout";
 	}
 	
-	// TODO : Good redirection after login successful
-	
-	@RequestMapping(path = "/login", method = RequestMethod.POST)
-	public String menu(){
-		return "redirect:/menu/mainMenu/zfhjzgfbjh";
-	}
 }
