@@ -28,10 +28,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 					.loginPage("/login")
 					.usernameParameter("login")
 					.passwordParameter("password")
-					.permitAll()
-					
+					.permitAll();
+//					.defaultSuccessUrl("/menu", true);
+
 			// TODO : REMOVE THIS
-		
+
 //			.and()
 //				.httpBasic()
 //				.and()
