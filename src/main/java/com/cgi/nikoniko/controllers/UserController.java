@@ -46,6 +46,7 @@ public class UserController extends ViewBaseController<User> {
 
 	public final static String SHOW_NIKONIKO = "showNikoNikos";
 	public final static String SHOW_GRAPH = "showGraph";
+	public final static String SHOW_GRAPH_ALL = "showGraphAll";
 	public final static String SHOW_TEAM = "showTeam";
 	public final static String SHOW_ROLE = "showRole";
 	public final static String SHOW_LINK = "link";
@@ -497,11 +498,38 @@ public class UserController extends ViewBaseController<User> {
 			}
 		}
 
-		model.addAttribute("good", listOfNiko.size());
+		model.addAttribute("good", good);
 		model.addAttribute("medium", medium);
 		model.addAttribute("bad", bad);
 		model.addAttribute("back", PATH + MENU_PATH);
 		return "graphs" + PATH + "pie";
 	}
+
+	@RequestMapping(path = "{idUser}" + PATH + SHOW_GRAPH_ALL, method = RequestMethod.GET)
+	public String showAllPie(Model model, @PathVariable Long idUser) {
+
+		List<NikoNiko> listOfNiko = (List<NikoNiko>) nikonikoCrud.findAll();
+
+		int good = 0;
+		int medium = 0;
+		int bad = 0;
+
+		for (int i = 0; i < listOfNiko.size(); i++) {
+			if (listOfNiko.get(i).getMood() == 3) {
+				good++;
+			}else if(listOfNiko.get(i).getMood() == 2){
+				medium++;
+			}else{
+				bad++;
+			}
+		}
+
+		model.addAttribute("good", good);
+		model.addAttribute("medium", medium);
+		model.addAttribute("bad", bad);
+		model.addAttribute("back", PATH + MENU_PATH);
+		return "graphs" + PATH + "pie";
+	}
+
 
 }
