@@ -45,6 +45,7 @@ public class UserController extends ViewBaseController<User> {
 	public final static String MENU_PATH = "menu";
 
 	public final static String SHOW_NIKONIKO = "showNikoNikos";
+	public final static String SHOW_GRAPH = "showGraph";
 	public final static String SHOW_TEAM = "showTeam";
 	public final static String SHOW_ROLE = "showRole";
 	public final static String SHOW_LINK = "link";
@@ -93,12 +94,12 @@ public class UserController extends ViewBaseController<User> {
 	 * @param idUser
 	 * @return
 	 */
-	@Secured({"ROLE_USER","ROLE_ADMIN"})
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_PATH, method = RequestMethod.GET)
 	public String showItem(Model model,@PathVariable Long idUser) {
 
 		User userBuffer = new User();
 		userBuffer = userCrud.findOne(idUser);
+		Long idverticale = userBuffer.getVerticale().getId();
 
 		//BOUCLE VERIF SI UN ROLE SPECIFIQUE EST ASSOCIE A UN USER
 		//SERVIRA A DETERMINER QUEL ENVIRONNEMENT ON AFFICHE
@@ -106,36 +107,21 @@ public class UserController extends ViewBaseController<User> {
 		//			  ET PAS LE DETENTEUR DE LA SESSION
 		for (RoleCGI roleName : this.setRolesForUserGet(idUser)) {
 			String varTest = roleName.getName();
-			if (varTest.equals("ROLE_ADMIN")) {
 				model.addAttribute("myRole", roleName.getName());
 				model.addAttribute("page",  "USER : " + userBuffer.getRegistration_cgi());
 				model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
 				model.addAttribute("item",DumpFields.fielder(super.getItem(idUser)));
 				model.addAttribute("show_nikonikos", DOT + PATH + SHOW_NIKONIKO);
+				model.addAttribute("show_graphique", DOT + PATH + SHOW_GRAPH);
+				model.addAttribute("show_verticale", PATH + VERTICALE + PATH + idverticale + PATH + SHOW_PATH);
 				model.addAttribute("show_teams", DOT + PATH + SHOW_TEAM);
 				model.addAttribute("show_roles", DOT + PATH + SHOW_ROLE);
 				model.addAttribute("go_delete", DELETE_ACTION);
 				model.addAttribute("go_update", UPDATE_ACTION);
 
 				return BASE_USER + PATH + SHOW_PATH;//LATER THIS ROUTE WILL LEAD TO A SPECIFIC FTL FILE
-			} else {
-				model.addAttribute("myRole", null);
-			}
-		}
 
-		model.addAttribute("page",  "USER : " + userBuffer.getRegistration_cgi());
-		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
-		model.addAttribute("item",DumpFields.fielder(super.getItem(idUser)));
-		if (userBuffer.getVerticale()!= null) {
-			Long idverticale = userBuffer.getVerticale().getId();
-			model.addAttribute("show_verticale", PATH + VERTICALE + PATH + idverticale + PATH + SHOW_PATH);
 		}
-		model.addAttribute("show_nikonikos", DOT + PATH + SHOW_NIKONIKO);
-//		model.addAttribute("show_nikonikos", DOT + PATH + SHOW_LINK);
-		model.addAttribute("show_teams", DOT + PATH + SHOW_TEAM);
-		model.addAttribute("show_roles", DOT + PATH + SHOW_ROLE);
-		model.addAttribute("go_delete", DELETE_ACTION);
-		model.addAttribute("go_update", UPDATE_ACTION);
 
 		return BASE_USER + PATH + SHOW_PATH;//LATER THIS ROUTE WILL LEAD TO A DEFAULT VIEW FOR NON USERS
 	}
@@ -156,6 +142,7 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("sortedFields", NikoNiko.FIELDS);
 		model.addAttribute("items", DumpFields.listFielder(listOfNiko));
 		model.addAttribute("back", DOT + PATH + SHOW_PATH);
+
 		model.addAttribute("add", "addNikoNiko");
 		return "user/showNikoNikos";
 	}
@@ -489,5 +476,32 @@ public class UserController extends ViewBaseController<User> {
 		return BASE_USER + PATH + ADD_ROLE;
 	}
 
+	@RequestMapping(path = "{idUser}" + PATH + SHOW_GRAPH, method = RequestMethod.GET)
+	public String showPie(Model model, @PathVariable Long idUser) {
+
+		User user = super.getItem(idUser);
+		Set<NikoNiko> niko =  user.getNikoNikos();
+		List<NikoNiko> listOfNiko = new ArrayList<NikoNiko>(niko);
+
+		int good = 0;
+		int medium = 0;
+		int bad = 0;
+
+		for (int i = 0; i < listOfNiko.size(); i++) {
+			if (listOfNiko.get(i).getMood() == 3) {
+				good++;
+			}else if(listOfNiko.get(i).getMood() == 2){
+				medium++;
+			}else{
+				bad++;
+			}
+		}
+
+		model.addAttribute("good", listOfNiko.size());
+		model.addAttribute("medium", medium);
+		model.addAttribute("bad", bad);
+		model.addAttribute("back", DOT + PATH + SHOW_PATH);
+		return "graphs" + PATH + "pie";
+	}
 
 }

@@ -41,12 +41,6 @@
                 </tr>
             </#list>
         </table>
-<<<<<<< HEAD:src/main/ressources/templates/user/showAllRelation.ftl
-
-    <a href="${back}"> Back <a>
-
-=======
 <a href = "${add}"> Add NikoNiko </a> <br>
 <a href = "${back}"> Back <a>
->>>>>>> 04a082e45b29ae7793640eb72b47f7a7feaba518:src/main/ressources/templates/user/showNikoNikos.ftl
 </body>

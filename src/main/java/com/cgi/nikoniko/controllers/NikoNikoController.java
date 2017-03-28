@@ -66,7 +66,7 @@ public class NikoNikoController extends ViewBaseController<NikoNiko> {
 	 * Recupération de tous les changedate liés à un nikoniko
 	 */
 	@RequestMapping("{nikonikoId}/showChangeDates")
-	public String getChangsForNikoNiko(Model model, @PathVariable Long nikonikoId) {
+	public String getChangeDatesFromNikoNiko(Model model, @PathVariable Long nikonikoId) {
 		NikoNiko niko = super.getItem(nikonikoId);
 		Set<ChangeDates> chang =  niko.getChangeDates();
 		List<ChangeDates> listOfChang = new ArrayList<ChangeDates>(chang);
