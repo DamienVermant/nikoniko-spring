@@ -28,6 +28,7 @@
 			</#if>
 		</#list>
 	</table>
+	<a href="${show_user}"> Show user </a> <br>
     <a href="${show_changes_dates}"> Show dates </a> <br>
 	<a href="${go_update}">Update</a> <br>
 	<a href="${go_delete}">Delete</a> <br>

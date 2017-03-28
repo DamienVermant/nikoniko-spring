@@ -9,14 +9,14 @@
 
 	<!-- Redirection ???? -->
 	<link rel="stylesheet" href="menu/">
-	
+
 	<!-- Fonts -->
-	<link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet"> 
-	<link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet"> 
+	<link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
 
 	<!-- Title -->
 	<title>Se connecter</title>
-	
+
 </head>
 <body>
 <style>
@@ -60,7 +60,7 @@
 			<div class="row-fluid">
 				<div class="text"> Administration des tables simples </div>
 				<ul>
-					<li> <a href="${go_users}"> Users </a> </li> 
+					<li> <a href="${go_users}"> Users </a> </li>
 					<li> <a href="${go_nikonikos}"> Niko Niko </a> </li>
 					<li> <a href="${go_teams}"> Teams </a> </li>
 					<li> <a href="${go_verticales}"> Verticales </a> </li>
@@ -81,7 +81,7 @@
 </div>
 
 <hr>
-				
+
 <!-- FOOTER -->
 <div class="container-fluid">
 	<div class="row-fluid">

@@ -6,17 +6,17 @@
 
 	<!-- Bootstrap -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-		
+
 	<!-- Redirection ???? -->
 	<link rel="stylesheet" href="menu/">
-	
+
 	<!-- Fonts -->
-	<link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet"> 
-	<link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet"> 
+	<link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
 
 	<!-- Title -->
 	<title>Se connecter</title>
-	
+
 </head>
 <body>
 <style>
@@ -36,8 +36,8 @@
 			<div class="row-fluid">
 				<div class="col-lg-12">
 					<div class="align">
-					<button onclick="location.href=''" class="password"> Préférences (KO) </button> 
-					<button onclick="location.href=''" class="vote"> Modifier vote (KO) </button>
+					<button onclick="location.href='changer_mdp.html'" class="password"> Préférences (KO) </button>
+					<button onclick="location.href='vote.html'" class="vote"> Modifier vote (KO) </button>
 					<button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
 					</div>
 				</div>
@@ -53,3 +53,5 @@
 <hr>
 
 <div class="text"> <a href="${add_nikoniko}"> Donner votre satisfaction ! </a> </div>
+
+<a href="${pie_chart}"> Graph <a>

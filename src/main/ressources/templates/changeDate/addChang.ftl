@@ -38,6 +38,7 @@
 						<form action = "" method = "POST">
 							<input type="hidden" name = "idUser" value = "${item["id"]}">
 							<input type="submit" value="add"><br>
+							<#include "../includable/security/securityToken.ftl">
 						</form>
 					</td>
 				</tr>
