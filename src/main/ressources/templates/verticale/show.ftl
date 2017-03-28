@@ -29,7 +29,7 @@
 		</#list>
 	</table>
 	<a href="${show_users}"> Show users </a> <br>
-    <a href="${show_verticale}"> Show verticale </a> <br>
+    <a href="${show_team}"> Show team </a> <br>
 	<a href="${go_update}">Update</a> <br>
 	<a href="${go_delete}">Delete</a> <br>
 	<#if item["id"]??>

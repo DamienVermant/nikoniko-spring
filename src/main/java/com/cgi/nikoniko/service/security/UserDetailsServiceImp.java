@@ -50,8 +50,7 @@ public class UserDetailsServiceImp implements UserDetailsService {
 					.User(user.getLogin(),user.getPassword(),grantedAuthorities);
 	}
 
-
-	public ArrayList<RoleCGI> setRolesForUserGet(Long idUser) {
+	public ArrayList<RoleCGI> setRolesForUserGet(Long idUser) {//find a more appropriate name later
 
 		List<Long> ids = new ArrayList<Long>();
 		ArrayList<RoleCGI> roleList = new ArrayList<RoleCGI>();

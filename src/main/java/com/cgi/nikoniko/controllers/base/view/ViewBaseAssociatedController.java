@@ -14,7 +14,6 @@ public class ViewBaseAssociatedController <T extends AssociationItem> extends Ba
 	private String baseName;
 
 	private String listView;
-	private String listRedirect;
 	private String baseView;
 
 	private String updateView;
@@ -27,7 +26,6 @@ public class ViewBaseAssociatedController <T extends AssociationItem> extends Ba
 	private String createRedirect;
 
 	private String showView;
-	private String showRedirect;
 
 	public ViewBaseAssociatedController (Class<T> clazz, String baseURL) {
 		super(clazz);
@@ -40,11 +38,9 @@ public class ViewBaseAssociatedController <T extends AssociationItem> extends Ba
 		this.createView = this.baseView + PATH_CREATE_FILE;
 		this.showView = this.baseView + PATH_SHOW_FILE;
 
-		this.listRedirect = REDIRECT + baseURL + PATH_LIST_FILE;
 		this.updateRedirect = REDIRECT + baseURL + PATH_LIST_FILE;
 		this.deleteRedirect = REDIRECT + baseURL + PATH_LIST_FILE;
 		this.createRedirect = REDIRECT + baseURL + PATH_LIST_FILE;
-		this.showRedirect = REDIRECT + baseURL + PATH_LIST_FILE;
 
 	}
 

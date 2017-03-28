@@ -30,21 +30,21 @@
 									<td>${item[key]?string("yyyy:MM:dd HH:mm:ss")}</td>
 								<#else>
 									<td>${item[key]}</td>
-									
+
 								</#if>
 							</#if>
 						</#list>
 					</#list>
 					<td>
 						<form action = "" method = "POST">
-							<#include "../includable/security/securityToken.ftl">
 							<input type="hidden" name = "idRole" value = "${item["id"]}">
 							<input type="submit" value="Supprimer"><br>
+							<#include "../includable/security/securityToken.ftl">
 						</form>
 					</td>
 				</tr>
 			</#list>
 		</table>
 	<a href = "${add}"> Add role </a> <br>
-	<a href="${back}"> Back <a>		
+	<a href = "${back}"> Back <a>
 </body>

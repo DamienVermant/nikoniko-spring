@@ -10,8 +10,8 @@
 	<link rel="stylesheet" href="vote.css">
 
 	<!-- Fonts -->
-	<link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet"> 
-	<link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet"> 
+	<link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
 
 	<!-- Title -->
 	<title>Satisfaction</title>
@@ -34,7 +34,7 @@
 			<div class="row-fluid">
 				<div class="col-lg-12">
 					<div class="align">
-					<button onclick="location.href='changer_mdp.html'" class="password"> Préférences (KO) </button> 
+					<button onclick="location.href='changer_mdp.html'" class="password"> Préférences (KO) </button>
 					<button onclick="location.href='menu_employe.html'" class="vote"> Voter plus tard (KO)</button>
 					<button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
 					</div>
@@ -54,7 +54,7 @@
 			<div class="col-md-4 col-sl-4 col-xs-12"">
         		<center>
 					<div id="crouge"></div>
-					<input type="radio" name="mood" value="1" > 
+					<input type="radio" name="mood" value="1" >
 					<div class="bad_day"> Vous avez passé une très très mauvaise journée...</div>
 			</center>
 				</center>
@@ -85,7 +85,7 @@
 		<div class="col-lg-12">
 			<center>
 				<#include "../includable/security/securityToken.ftl">
-				<TEXTAREA style="margin-top: 30px" name="comment" rows=5 cols=60>Ecrire votre commentaire...</TEXTAREA> <br>
+				<TEXTAREA style="margin-top: 30px" name="comment" rows=5 cols=60 placeholder="Ecrire votre commentaire..."></TEXTAREA> <br>
 				<button class="buttons" onclick="location.href='/menu'"> Valider </button>
 				</form>
 			</center>
@@ -103,7 +103,7 @@
 </div>
 </body>
 </html>
- 
+
 <!-- COMMENT TO TEST
 <head>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -127,13 +127,13 @@
                 </#if>
             </#list>
         </table>
-        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         <input type="submit" value="create"><br>
+        <#include "../includable/security/securityToken.ftl">
     </form>
     <#if item["id"]??>
-        <a href="${go_index}">Back</a><br>
+        <a href="${back}">Back</a><br>
     <#else>
-        <a href="${go_index}">Back</a><br>
+        <a href="${back}">Back</a><br>
     </#if>
 </body>
 -->

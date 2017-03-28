@@ -40,12 +40,14 @@ public class UserController extends ViewBaseController<User> {
 	public final static String DOT = ".";
 	public final static String PATH = "/";
 	public final static String BASE_USER = "user";
+	public final static String VERTICALE = "verticale";
 	public final static String BASE_URL = PATH + BASE_USER;
 
 	public final static String SHOW_PATH = "show";
 	public final static String MENU_PATH = "menu";
 
 	public final static String SHOW_NIKONIKO = "showNikoNikos";
+	public final static String SHOW_GRAPH = "showGraph";
 	public final static String SHOW_TEAM = "showTeam";
 	public final static String SHOW_ROLE = "showRole";
 	public final static String SHOW_LINK = "link";
@@ -81,11 +83,11 @@ public class UserController extends ViewBaseController<User> {
 	protected UserController(Class<User> clazz, String baseURL) {
 		super(clazz, baseURL);
 	}
-	
+
 	/**
-	 * 
-	 * GESTION ASSOCIATION WITH NIKONIKO
-	 * 
+	 *
+	 * ASSOCIATION USER --> NIKONIKO
+	 *
 	 */
 
 	/**
@@ -99,21 +101,29 @@ public class UserController extends ViewBaseController<User> {
 
 		User userBuffer = new User();
 		userBuffer = userCrud.findOne(idUser);
+		Long idverticale = userBuffer.getVerticale().getId();
 
-		model.addAttribute("page",  "USER : " + userBuffer.getRegistration_cgi());
-		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
-		model.addAttribute("item",DumpFields.fielder(super.getItem(idUser)));
-		model.addAttribute("show_nikonikos", DOT + PATH + SHOW_NIKONIKO);
-		model.addAttribute("show_teams", DOT + PATH + SHOW_TEAM);
-		model.addAttribute("show_roles", DOT + PATH + SHOW_ROLE);
-		model.addAttribute("go_delete", DELETE_ACTION);
-		model.addAttribute("go_update", UPDATE_ACTION);
-
+		for (RoleCGI roleName : this.setRolesForUserGet(idUser)) {
+			String varTest = roleName.getName();
+				model.addAttribute("myRole", roleName.getName());
+				model.addAttribute("page",  "USER : " + userBuffer.getRegistration_cgi());
+				model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
+				model.addAttribute("item",DumpFields.fielder(super.getItem(idUser)));
+				model.addAttribute("show_nikonikos", DOT + PATH + SHOW_NIKONIKO);
+				model.addAttribute("show_graphique", DOT + PATH + SHOW_GRAPH);
+				model.addAttribute("show_verticale", PATH + VERTICALE + PATH + idverticale + PATH + SHOW_PATH);
+				model.addAttribute("show_teams", DOT + PATH + SHOW_TEAM);
+				model.addAttribute("show_roles", DOT + PATH + SHOW_ROLE);
+				model.addAttribute("go_delete", DELETE_ACTION);
+				model.addAttribute("go_update", UPDATE_ACTION);
+				
+		}
+		
 		return BASE_USER + PATH + SHOW_PATH;
 	}
 
 	/**
-	 * LINK WITH USER -> NIKONIKO (SELECT ALL NIKONIKOS FOR A USER)
+	 * LINK USER -> NIKONIKO (SELECT ALL NIKONIKOS FOR A USER)
 	 * @param model
 	 * @param userId
 	 * @return
@@ -126,7 +136,10 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("page", user.getFirstname() + " nikonikos");
 		model.addAttribute("sortedFields", NikoNiko.FIELDS);
 		model.addAttribute("items", DumpFields.listFielder(listOfNiko));
-		return "user/showAllRelation";
+		model.addAttribute("back", DOT + PATH + SHOW_PATH);
+
+		model.addAttribute("add", "addNikoNiko");
+		return "user/showNikoNikos";
 	}
 	
 	/**
@@ -143,16 +156,17 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("page",user.getFirstname() + " " + CREATE_ACTION.toUpperCase());
 		model.addAttribute("sortedFields",NikoNiko.FIELDS);
 		model.addAttribute("item",DumpFields.createContentsEmpty(niko.getClass()));
-		model.addAttribute("go_index", LIST_ACTION);
+		model.addAttribute("back", DOT + PATH + SHOW_PATH);
 		model.addAttribute("create_item", CREATE_ACTION);
 		return "nikoniko/addNikoNiko";
 	}
+
+	// TODO : ADD A NIKONIKO FOR A USER
 	
 	@RequestMapping(path = "{idUser}/add", method = RequestMethod.POST)
 	public String createItemPost(Model model, @PathVariable Long idUser, Integer mood, String comment) {
 		return this.addNikoNiko(idUser, mood, comment);
 	}
-	
 	
 	/**
 	 * CHECK FOR NEW NIKONIKO OR UPDATE 
@@ -253,6 +267,7 @@ public class UserController extends ViewBaseController<User> {
 		}
 	}
 	
+
 	/**
 	 * CREATE A NIKONIKO
 	 * @param model
@@ -270,13 +285,13 @@ public class UserController extends ViewBaseController<User> {
 		} catch (Exception e) {
 			 e.printStackTrace();
 		}
-		return "redirect:/user/"+ userId +"/link";
+		return "redirect:/user/" + userId + "/showNikoNikos";
 	}
-	
+
 	/**
-	 * 
-	 * GESTION ASSOCIATION WITH TEAM
-	 * 
+	 *
+	 * ASSOCIATION USER --> TEAM
+	 *
 	 */
 
 	/**
@@ -441,11 +456,11 @@ public class UserController extends ViewBaseController<User> {
 		}
 		return DumpFields.listFielder((List<Team>) teamCrud.findAll(ids));
 	}
-	
+
 	/**
-	 * 
-	 * GESTION ASSOCIATION WITH ROLE
-	 * 
+	 *
+	 * ASSOCIATION USER --> ROLE
+	 *
 	 */
 	
 	/**
@@ -471,7 +486,13 @@ public class UserController extends ViewBaseController<User> {
 		return BASE_USER + PATH + SHOW_ROLE;
 	}
 
-
+	/***
+	 *
+	 * @param model
+	 * @param idUser
+	 * @param idRole
+	 * @return
+	 */
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_ROLE, method = RequestMethod.POST)
 	public String showItemDeleteRole(Model model,@PathVariable Long idUser, Long idRole) {
 
@@ -509,7 +530,6 @@ public class UserController extends ViewBaseController<User> {
 		if (!idsBig.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
 			for (BigInteger id : idsBig) {
 				ids.add(id.longValue());
-
 			}
 			roleList = (ArrayList<RoleCGI>) roleCrud.findAll(ids);
 		}
@@ -535,5 +555,32 @@ public class UserController extends ViewBaseController<User> {
 		return BASE_USER + PATH + ADD_ROLE;
 	}
 
+	@RequestMapping(path = "{idUser}" + PATH + SHOW_GRAPH, method = RequestMethod.GET)
+	public String showPie(Model model, @PathVariable Long idUser) {
+
+		User user = super.getItem(idUser);
+		Set<NikoNiko> niko =  user.getNikoNikos();
+		List<NikoNiko> listOfNiko = new ArrayList<NikoNiko>(niko);
+
+		int good = 0;
+		int medium = 0;
+		int bad = 0;
+
+		for (int i = 0; i < listOfNiko.size(); i++) {
+			if (listOfNiko.get(i).getMood() == 3) {
+				good++;
+			}else if(listOfNiko.get(i).getMood() == 2){
+				medium++;
+			}else{
+				bad++;
+			}
+		}
+
+		model.addAttribute("good", listOfNiko.size());
+		model.addAttribute("medium", medium);
+		model.addAttribute("bad", bad);
+		model.addAttribute("back", PATH + MENU_PATH);
+		return "graphs" + PATH + "pie";
+	}
 
 }

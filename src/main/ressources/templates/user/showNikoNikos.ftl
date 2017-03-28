@@ -36,9 +36,11 @@
                         </#list>
                     </#list>
                     <td>
-                            <a href="/${"nikoniko"}/${item["id"]}/${"show"}">Select</a>
+                    	<a href="/${"nikoniko"}/${item["id"]}/${"show"}">Select</a>
                     </td>
                 </tr>
             </#list>
         </table>
+<a href = "${add}"> Add NikoNiko </a> <br>
+<a href = "${back}"> Back <a>
 </body>

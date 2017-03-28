@@ -38,10 +38,11 @@
 						<form action = "" method = "POST">
 							<input type="hidden" name = "idTeam" value = "${item["id"]}">
 							<input type="submit" value="add"><br>
+							<#include "../includable/security/securityToken.ftl">
 						</form>
 					</td>
 				</tr>
 			</#list>
 		</table>
-	<a href="${back}"> Back <a>		
+	<a href="${back}"> Back <a>
 </body>
