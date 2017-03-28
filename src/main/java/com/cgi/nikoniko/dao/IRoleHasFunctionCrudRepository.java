@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.test.context.jdbc.Sql;
 
 import com.cgi.nikoniko.dao.base.IBaseAssociatedCrudRepository;
 import com.cgi.nikoniko.models.association.RoleHasFunction;

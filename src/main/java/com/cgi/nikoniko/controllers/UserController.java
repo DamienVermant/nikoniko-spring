@@ -7,8 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.Days;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,18 +40,23 @@ public class UserController extends ViewBaseController<User> {
 	public final static String DOT = ".";
 	public final static String PATH = "/";
 	public final static String BASE_USER = "user";
+	public final static String VERTICALE = "verticale";
 	public final static String BASE_URL = PATH + BASE_USER;
 
 	public final static String SHOW_PATH = "show";
 	public final static String MENU_PATH = "menu";
 
 	public final static String SHOW_NIKONIKO = "showNikoNikos";
+	public final static String SHOW_GRAPH = "showGraph";
 	public final static String SHOW_TEAM = "showTeam";
 	public final static String SHOW_ROLE = "showRole";
 	public final static String SHOW_LINK = "link";
 	public final static String ADD_TEAM = "addTeams";
 	public final static String ADD_ROLE = "addRoles";
 	public final static String REDIRECT = "redirect:";
+
+	// TODO : CHANGE TIME (IN MINUTE FOR THE MOMENT FOR TEST)
+	public final static int TIME = 2;
 
 	@Autowired
 	INikoNikoCrudRepository nikonikoCrud;
@@ -91,47 +98,31 @@ public class UserController extends ViewBaseController<User> {
 	 * @param idUser
 	 * @return
 	 */
-	@Secured({"ROLE_USER","ROLE_ADMIN"})
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_PATH, method = RequestMethod.GET)
 	public String showUserActionsGET(Model model,@PathVariable Long idUser) {
 
 		User userBuffer = new User();
 		userBuffer = userCrud.findOne(idUser);
+		Long idverticale = userBuffer.getVerticale().getId();
 
-		//BOUCLE VERIF SI UN ROLE SPECIFIQUE EST ASSOCIE A UN USER
-		//SERVIRA A DETERMINER QUEL ENVIRONNEMENT ON AFFICHE
-		//ATTENTION : LE ROLE EST DETERMINE PAR RAPPORT AU USER QU'ON AFFICHE
-		//			  ET PAS LE DETENTEUR DE LA SESSION
+
 		for (RoleCGI roleName : this.getAllRolesForUser(idUser)) {
 			String varTest = roleName.getName();
-			if (varTest.equals("ROLE_ADMIN")) {
 				model.addAttribute("myRole", roleName.getName());
 				model.addAttribute("page",  "USER : " + userBuffer.getRegistration_cgi());
 				model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
 				model.addAttribute("item",DumpFields.fielder(super.getItem(idUser)));
 				model.addAttribute("show_nikonikos", DOT + PATH + SHOW_NIKONIKO);
+				model.addAttribute("show_graphique", DOT + PATH + SHOW_GRAPH);
+				model.addAttribute("show_verticale", PATH + VERTICALE + PATH + idverticale + PATH + SHOW_PATH);
 				model.addAttribute("show_teams", DOT + PATH + SHOW_TEAM);
 				model.addAttribute("show_roles", DOT + PATH + SHOW_ROLE);
 				model.addAttribute("go_delete", DELETE_ACTION);
 				model.addAttribute("go_update", UPDATE_ACTION);
 
-				return BASE_USER + PATH + SHOW_PATH;//LATER THIS ROUTE WILL LEAD TO A SPECIFIC FTL FILE
-			} else {
-				model.addAttribute("myRole", null);
-			}
 		}
 
-		model.addAttribute("page",  "USER : " + userBuffer.getRegistration_cgi());
-		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
-		model.addAttribute("item",DumpFields.fielder(super.getItem(idUser)));
-		model.addAttribute("show_nikonikos", DOT + PATH + SHOW_NIKONIKO);
-//		model.addAttribute("show_nikonikos", DOT + PATH + SHOW_LINK);
-		model.addAttribute("show_teams", DOT + PATH + SHOW_TEAM);
-		model.addAttribute("show_roles", DOT + PATH + SHOW_ROLE);
-		model.addAttribute("go_delete", DELETE_ACTION);
-		model.addAttribute("go_update", UPDATE_ACTION);
-
-		return BASE_USER + PATH + SHOW_PATH;//LATER THIS ROUTE WILL LEAD TO A DEFAULT VIEW FOR NON USERS
+		return BASE_USER + PATH + SHOW_PATH;
 	}
 
 	/**NAME : getNikoNikosForUser
@@ -141,7 +132,6 @@ public class UserController extends ViewBaseController<User> {
 	 * @param userId
 	 * @return
 	 */
-	@Secured("ROLE_ADMIN")//IMPORTANT : indique quels seront les profils autorisés à utiliser la fonction
 	@RequestMapping("{userId}/showNikoNikos")
 	public String getNikoNikosForUser(Model model, @PathVariable Long userId) {
 		User user = super.getItem(userId);
@@ -151,6 +141,7 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("sortedFields", NikoNiko.FIELDS);
 		model.addAttribute("items", DumpFields.listFielder(listOfNiko));
 		model.addAttribute("back", DOT + PATH + SHOW_PATH);
+
 		model.addAttribute("add", "addNikoNiko");
 		return "user/showNikoNikos";
 	}
@@ -165,6 +156,7 @@ public class UserController extends ViewBaseController<User> {
 	 */
 	@RequestMapping(path = "{userId}/add", method = RequestMethod.GET)
 	public String newNikoNikoForUserGET(Model model, @PathVariable Long userId) {
+
 		User user = super.getItem(userId);
 		NikoNiko niko = new NikoNiko();
 
@@ -190,25 +182,125 @@ public class UserController extends ViewBaseController<User> {
 		return this.addNikoNikoInDB(idUser, mood, comment);
 	}
 
-	/**NAME : addNikoNikoInDB // saveNikoNikoInDB
-	 *
-	 * FUNCTION THAT SAVE THE NIKONIKO IN DB
-	 *
-	 * @param idUser, mood, comment
-	 * @return
+	/**
+	 * CHECK FOR NEW NIKONIKO OR UPDATE
 	 */
-	public String addNikoNikoInDB(Long idUser, int mood, String comment){
 
-		Date date = new Date();//optionnal, can be place directly in the new niko construct
-		User user = new User();//TODO : merge this line and the onde with findOne(idUser)
+	// TODO : CREATE A FUNCTION THAT CAN SET A NIKO AFTER J+1 IF USER DOES NOT SET HIS NIKONIKO
+	// TODO : IF A USER FORGET TO POST HIS SATISFACTION, RECALL HIM AFTER (ONE DAY ?) TO VOTE FOR HIS PREVIOUS VOTE
+
+	public Boolean checkDateNikoNiko(Long idUser){
+
+		Boolean updateNiko = null;
+		Date todayDate = new Date();
+
+		Long idMaxNiko = userCrud.getLastNikoNikoUser(idUser);
+
+		if (idMaxNiko == null) {
+			updateNiko = false;
+		}
+
+		else {
+
+			NikoNiko lastNiko = nikonikoCrud.findOne(idMaxNiko);
+			Date entryDate = lastNiko.getEntry_date();
+
+			java.util.Date eDate = new java.util.Date(entryDate.getTime());
+
+			DateTime eDateClean = new DateTime(eDate,DateTimeZone.forID( "Europe/Paris" ));
+			DateTime todayDateClean = new DateTime(todayDate,DateTimeZone.forID( "Europe/Paris" ));
+
+			Days diff = Days.daysBetween(eDateClean, todayDateClean);
+
+			// TODO : TEST DIFF WITH MUNITES
+			todayDateClean.getHourOfDay();
+			eDateClean.getHourOfDay();
+			int diffMin = todayDateClean.getMinuteOfDay() - eDateClean.getMinuteOfDay();
+
+			if (diffMin < 1) {
+
+					updateNiko = true;
+				}
+
+				else {
+
+					updateNiko = false;
+				}
+			}
+
+		return updateNiko;
+	}
+
+	/**NAME : addNikoNikoInDB
+	*
+	* FUNCTION THAT SAVE THE NIKONIKO IN DB
+	*
+	* @param idUser, mood, comment
+	* @return
+	*/
+	public String addNikoNikoInDB(Long idUser, Integer mood, String comment){
+
+		Date date = new Date();
+		User user = new User();
 
 		user = userCrud.findOne(idUser);
 
-		NikoNiko niko = new NikoNiko(user,mood,date,comment);
-		nikonikoCrud.save(niko);
+		if (this.checkDateNikoNiko(idUser) == true) {
 
-		return REDIRECT + PATH + MENU_PATH;//TODO : change this path to prevent infinite niko creation/day
+			if (mood ==  null) {
+
+				return REDIRECT + PATH + MENU_PATH;
+			}
+
+			else {
+
+				Long idMax = userCrud.getLastNikoNikoUser(idUser);
+				NikoNiko nikoUpdate = nikonikoCrud.findOne(idMax);
+
+				nikoUpdate.setChange_date(date);
+
+				nikonikoCrud.save(nikoUpdate);
+
+				return REDIRECT + PATH + MENU_PATH;
+			}
+		}
+
+		else {
+
+			if (mood ==  null) {
+
+				return REDIRECT + PATH + MENU_PATH;
+			}
+
+			else {
+
+				NikoNiko niko = new NikoNiko(user,mood,date,comment);
+				nikonikoCrud.save(niko);
+				return REDIRECT + PATH + MENU_PATH;
+			}
+		}
 	}
+
+
+//	/**
+//	 * CREATE A NIKONIKO
+//	 * @param model
+//	 * @param niko
+//	 * @param userId
+//	 * @return
+//	 */
+//	@RequestMapping(path = "{userId}/create", method = RequestMethod.POST)
+//	public String createItemPost(Model model, NikoNiko niko, @PathVariable Long userId) {
+//
+//		try {
+//			User user = super.getItem(userId);
+//			niko.setUser(user);
+//			nikonikoCrud.save(niko);
+//		} catch (Exception e) {
+//			 e.printStackTrace();
+//		}
+//		return "redirect:/user/" + userId + "/showNikoNikos";
+//	}
 
 	/**
 	 *
@@ -503,5 +595,32 @@ public class UserController extends ViewBaseController<User> {
 		return BASE_USER + PATH + ADD_ROLE;
 	}
 
+	@RequestMapping(path = "{idUser}" + PATH + SHOW_GRAPH, method = RequestMethod.GET)
+	public String showPie(Model model, @PathVariable Long idUser) {
+
+		User user = super.getItem(idUser);
+		Set<NikoNiko> niko =  user.getNikoNikos();
+		List<NikoNiko> listOfNiko = new ArrayList<NikoNiko>(niko);
+
+		int good = 0;
+		int medium = 0;
+		int bad = 0;
+
+		for (int i = 0; i < listOfNiko.size(); i++) {
+			if (listOfNiko.get(i).getMood() == 3) {
+				good++;
+			}else if(listOfNiko.get(i).getMood() == 2){
+				medium++;
+			}else{
+				bad++;
+			}
+		}
+
+		model.addAttribute("good", listOfNiko.size());
+		model.addAttribute("medium", medium);
+		model.addAttribute("bad", bad);
+		model.addAttribute("back", PATH + MENU_PATH);
+		return "graphs" + PATH + "pie";
+	}
 
 }

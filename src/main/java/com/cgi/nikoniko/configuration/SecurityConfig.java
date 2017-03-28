@@ -30,6 +30,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 					.passwordParameter("password")
 					.permitAll();
 //					.defaultSuccessUrl("/menu", true);
+
+			// TODO : REMOVE THIS
+
+//			.and()
+//				.httpBasic()
+//				.and()
+//				.authorizeRequests().anyRequest().anonymous()
+//				.antMatchers("/demo","/demo/**")
+//				.permitAll()
+				;
 	}
 
 }
+
+
+

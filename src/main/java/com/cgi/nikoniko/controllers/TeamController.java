@@ -35,6 +35,7 @@ public class TeamController extends ViewBaseController<Team> {
 	public static final String SHOW_PATH = "show";
 
 	public final static String SHOW_USER = "showUser";
+	public final static String VERTICALE = "verticale";
 	public final static String ADD_USER = "addUsers";
 
 	public final static String REDIRECT = "redirect:";
@@ -65,6 +66,10 @@ public class TeamController extends ViewBaseController<Team> {
 			model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
 			model.addAttribute("item",DumpFields.fielder(super.getItem(id)));
 			model.addAttribute("show_users", DOT + PATH + SHOW_USER);
+			if (teamBuffer.getVerticale()!= null) {
+				Long idverticale = teamBuffer.getVerticale().getId();
+				model.addAttribute("show_verticale", PATH + VERTICALE + PATH + idverticale + PATH + SHOW_PATH);
+			}
 			model.addAttribute("go_index", LIST_ACTION);
 			model.addAttribute("go_delete", DELETE_ACTION);
 			model.addAttribute("go_update", UPDATE_ACTION);
