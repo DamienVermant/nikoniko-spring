@@ -7,9 +7,6 @@
 	<!-- Bootstrap -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
-	<!-- Redirection ???? -->
-	<link rel="stylesheet" href="menu/">
-
 	<!-- Fonts -->
 	<link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
@@ -19,9 +16,15 @@
 
 </head>
 <body>
+<#if roles == "chefProjet">
+<style>
+	<#include "static/chefprojet.css">
+</style>
+<#else>
 <style>
 	<#include "static/employee.css">
 </style>
+</#if>
 
 <!-- HEAD -->
 <div class="container-fluid">
@@ -36,12 +39,15 @@
 			<div class="row-fluid">
 				<div class="col-lg-12">
 					<div class="align">
-					<button onclick="location.href='changer_mdp.html'" class="password"> Préférences (KO) </button>
+					<button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
+					<#if roles == "chefProjet" >
+						<button onclick="location.href=''" class="password"> Préférences </button>
+					<#else>
+					</#if>
 					<#if mood != 0>
 						<button onclick="location.href='${add_nikoniko}'" class="vote"> Modifier vote </button>
 					<#else>
 					</#if>
-					<button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
 					</div>
 				</div>
 			</div>
@@ -58,6 +64,21 @@
 <div class="container-fluid">
 	<div class="row-fluid">
 		<div class="col-lg-12">
+			
+			<#if roles == "vp">
+				<h2> Gestion </h2>
+				- <a href=""> Menu graphes </a> <br>
+			<#else>
+			</#if>
+			
+			<#if roles == "gestionTeam">
+				<h2> Gestion </h2>
+				- <a href="/team/"> Gérer équipe </a> <br>
+			<#else>
+			</#if>
+			
+			<h2> Niko Niko </h2>
+			
 			- <a href="${pie_chart}"> Voir vos résultats <a> <br>
 			<#if mood != 0>
 			<#else>
@@ -75,4 +96,5 @@
 		</div>
 	</div>
 </div>
+
 

@@ -10,12 +10,8 @@
 		<#else>
 			<meta http-equiv="refresh" content="0; URL=/user/${id}/add">
 		</#if>
-	<#elseif roles == "vp">
-		<#include "vpMenu.ftl">
-	<#elseif roles == "chefProjet">
-		<#include "chefProjetMenu.ftl">
 	<#else>
-		<#include "gestionTeam.ftl">
+		<#include "employeeMenu.ftl">
 	</#if>
 	</body>
 </html>

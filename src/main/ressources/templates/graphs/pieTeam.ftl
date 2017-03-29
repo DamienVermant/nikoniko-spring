@@ -92,7 +92,6 @@
                 <button onclick="location.href='../showGraph'" class="myresults"> My Results </button>
                 <button onclick="location.href='../showGraphAll'" class="allresults"> ALL Results </button>
                 <button onclick="location.href='../showGraphVerticale'" class="resultsverticale"> Results Verticale </button>
-                <button onclick="location.href='showGraphTeam/0'" class="resultsteam"> Results team </button>
                 </div>
             </div>
         </div>
@@ -101,7 +100,13 @@
         <div class="row-fluid">
             <div class="col-lg-12">
                 <div class="align">
-
+                    <#list nameteam>
+                        <table>
+                            <#items as nameteam>
+                                    <td><button onclick="location.href='./${nameteam?counter-1}'" class="myresults"> ${nameteam} </button></td>
+                            </#items>
+                        </table>
+                    </#list>
                 </div>
             </div>
         </div>

@@ -6,18 +6,14 @@
 
 	<!-- Bootstrap -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-	
-	
-	<!-- Redirection ???? -->
-	<link rel="stylesheet" href="menu/">
-	
+
 	<!-- Fonts -->
-	<link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet"> 
-	<link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet"> 
+	<link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
 
 	<!-- Title -->
 	<title>Se connecter</title>
-	
+
 </head>
 <body>
 <style>
@@ -51,7 +47,7 @@
 
 <hr>
 <center>
-<img src="http://www.les2cantons.fr/construction.png"> 
+<img src="http://www.les2cantons.fr/construction.png">
 </center>
 
 <hr>

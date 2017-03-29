@@ -2,13 +2,13 @@ body{
 	background-image: url(http://eskipaper.com/images/cloud-background-7.jpg);
 }
 
-hr {
-	border: 0;
-	height: 2px;
-	background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(245, 0, 0, 0.75), rgba(0, 0, 0, 0));
+hr { 
+	border: 0; 
+	height: 2px; 
+	background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(245, 0, 0, 0.75), rgba(0, 0, 0, 0)); 
 }
 
-/* LOGO CGI*/
+/* LOGO CGI*/	
 
 .logo{
 	margin-top: 20px;
@@ -37,6 +37,7 @@ hr {
 }
 
 .password{
+	margin-top : 5px;
 	margin-bottom: 5px;
 	height: 30px;
 	font-size: 10px;
@@ -44,7 +45,6 @@ hr {
 }
 
 .vote{
-	margin-top: 5px;
 	height: 30px;
 	font-size: 10px;
 	margin-bottom: 5px;
@@ -56,7 +56,7 @@ hr {
 .welcome{
 	text-decoration: underline;
 	text-align: center;
-
+	
 }
 
 .align{
@@ -81,41 +81,4 @@ hr {
 	text-align: center;
 	font-weight: bold;
 	font-size: 20px;
-}
-
-/* GRAPH */
-
-.piechart{
-    margin: 0 auto;
-    display: block;
-}
-
-/* BUTTON GRAPHS */
-
-.alignleft{
-    text-align: left;
-}
-
-.myresults{
-    height: 30px;
-    width: 100px;
-    font-size: 10px;
-}
-
-.allresults{
-    height: 30px;
-    width: 100px;
-    font-size: 10px;
-}
-
-.resultsverticale{
-    height: 30px;
-    width: 100px;
-    font-size: 10px;
-}
-
-.resultsteam{
-    height: 30px;
-    width: 100px;
-    font-size: 10px;
 }

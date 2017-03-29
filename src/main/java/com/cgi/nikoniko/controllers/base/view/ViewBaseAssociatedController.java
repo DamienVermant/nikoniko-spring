@@ -1,5 +1,6 @@
 package com.cgi.nikoniko.controllers.base.view;
 
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,6 +45,12 @@ public class ViewBaseAssociatedController <T extends AssociationItem> extends Ba
 
 	}
 
+	/**
+	 *
+	 * @param model
+	 * @return
+	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 	@RequestMapping(path = {PATH, ROUTE_LIST}, method = RequestMethod.GET)
 	public String index(Model model) {
 		model.addAttribute("page",this.baseName + " " + LIST_ACTION.toUpperCase());
@@ -55,6 +62,12 @@ public class ViewBaseAssociatedController <T extends AssociationItem> extends Ba
 		return listView;
 	}
 
+	/**
+	 *
+	 * @param model
+	 * @return
+	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 	@RequestMapping(path = ROUTE_CREATE, method = RequestMethod.GET)
 	public String createItemGet(Model model) {
 		model.addAttribute("page",this.baseName + " " + CREATE_ACTION.toUpperCase());
@@ -65,6 +78,13 @@ public class ViewBaseAssociatedController <T extends AssociationItem> extends Ba
 		return createView;
 	}
 
+	/**
+	 *
+	 * @param model
+	 * @param item
+	 * @return
+	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 	@RequestMapping(path = ROUTE_CREATE, method = RequestMethod.POST)
 	public String createItemPost(Model model, T item) {
 		try {
@@ -75,6 +95,14 @@ public class ViewBaseAssociatedController <T extends AssociationItem> extends Ba
 		return createRedirect;
 	}
 
+	/**
+	 *
+	 * @param model
+	 * @param idl
+	 * @param idr
+	 * @return
+	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 	@RequestMapping(path = ROUTE_DELETE, method = RequestMethod.GET)
 	public String deleteItemGet(Model model,@PathVariable Long idl,@PathVariable Long idr) {
 		model.addAttribute("page",this.baseName + " " + DELETE_ACTION.toUpperCase());
@@ -85,12 +113,28 @@ public class ViewBaseAssociatedController <T extends AssociationItem> extends Ba
 		return deleteView;
 	}
 
+	/**
+	 *
+	 * @param model
+	 * @param idl
+	 * @param idr
+	 * @return
+	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 	@RequestMapping(path = ROUTE_DELETE, method = RequestMethod.POST)
 	public String deleteItemPost(Model model,@PathVariable Long idl,@PathVariable Long idr) {
 		super.deleteItem(super.getItem(idl,idr));
 		return deleteRedirect;
 	}
 
+	/**
+	 *
+	 * @param model
+	 * @param idl
+	 * @param idr
+	 * @return
+	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 	@RequestMapping(path = ROUTE_UPDATE, method = RequestMethod.GET)
 	public String updateItemGet(Model model,@PathVariable Long idl,@PathVariable Long idr) {
 
@@ -102,12 +146,27 @@ public class ViewBaseAssociatedController <T extends AssociationItem> extends Ba
 		return updateView;
 	}
 
+	/**
+	 *
+	 * @param model
+	 * @param item
+	 * @return
+	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 	@RequestMapping(path = ROUTE_UPDATE, method = RequestMethod.POST)
 	public String updateItemPost(Model model, T item) {
 		updateItem(item);
 		return updateRedirect;
 	}
 
+	/**
+	 *
+	 * @param model
+	 * @param idl
+	 * @param idr
+	 * @return
+	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 	@RequestMapping(path = ROUTE_SHOW, method = RequestMethod.GET)
 	public String showItem(Model model,@PathVariable Long idl,@PathVariable Long idr) {
 		model.addAttribute("page",this.baseName + " " + SHOW_ACTION.toUpperCase());

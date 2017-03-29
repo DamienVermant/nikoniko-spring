@@ -13,11 +13,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class SecurityController {
 
+	/**
+	 *
+	 * @return
+	 */
 	@RequestMapping(path = "/login", method = RequestMethod.GET)
 	public String login(){
 		return "security/login";
 	}
 
+	/**
+	 *
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@RequestMapping(path = "/logout", method = RequestMethod.GET)
 	public String logout(HttpServletRequest request, HttpServletResponse response) {
 
@@ -27,5 +37,5 @@ public class SecurityController {
 		}
 		return "redirect:/login?logout";
 	}
-	
+
 }

@@ -15,13 +15,13 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.Days;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
 import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
@@ -35,7 +35,6 @@ import com.cgi.nikoniko.dao.IUserHasRoleCrudRepository;
 import com.cgi.nikoniko.dao.IUserHasTeamCrudRepository;
 import com.cgi.nikoniko.dao.IVerticaleCrudRepository;
 import com.cgi.nikoniko.models.tables.Team;
-import com.cgi.nikoniko.models.tables.modelbase.DatabaseItem;
 import com.cgi.nikoniko.models.association.UserHasRole;
 import com.cgi.nikoniko.models.association.UserHasTeam;
 import com.cgi.nikoniko.models.association.base.AssociationItemId;
@@ -108,40 +107,49 @@ public class UserController extends ViewBaseController<User> {
 
 	/**NAME : showUserActionsGET
 	 *
+	 * RETIRER VP DANS LES DROITS D'ACCES???
+	 *
 	 * SHOW USER ACTIONS FOR A SPECIFIC PROFILE
 	 *
 	 * @param model
 	 * @param idUser
 	 * @return
 	 */
-
-	/**
-	 * ONLY ADMIN VP
-	 */
 	@Override
+	@Secured({"ROLE_ADMIN","ROLE_VP"})
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_PATH, method = RequestMethod.GET)
 	public String showItemGet(Model model,@PathVariable Long idUser) {
+
+		Long idverticale = null;
 
 		User userBuffer = new User();
 		userBuffer = userCrud.findOne(idUser);
 
 		// TODO : WHEN CREATE A USER ASIGN A VERTICAL
-		Long idverticale = userBuffer.getVerticale().getId();
 
-		for (RoleCGI roleName : this.getAllRolesForUser(idUser)) {
-			String varTest = roleName.getName();
-				model.addAttribute("myRole", roleName.getName());
-				model.addAttribute("page",  "USER : " + userBuffer.getRegistration_cgi());
-				model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
-				model.addAttribute("item",DumpFields.fielder(super.getItem(idUser)));
-				model.addAttribute("show_nikonikos", DOT + PATH + SHOW_NIKONIKO);
-				model.addAttribute("show_graphique", DOT + PATH + SHOW_GRAPH);
-				model.addAttribute("show_verticale", PATH + VERTICALE + PATH + idverticale + PATH + SHOW_PATH);
-				model.addAttribute("show_teams", DOT + PATH + SHOW_TEAM);
-				model.addAttribute("show_roles", DOT + PATH + SHOW_ROLE);
-				model.addAttribute("go_delete", DELETE_ACTION);
-				model.addAttribute("go_update", UPDATE_ACTION);
+		//Long idverticale = userBuffer.getVerticale().getId();
+
+		// ADD A DEFAUT VERTICALE
+		if (userBuffer.getVerticale() == null) {
+			idverticale = 3L;
+
+			userBuffer.setVerticale(verticaleCrud.findOne(3L));
 		}
+		else {
+			 idverticale = userBuffer.getVerticale().getId();
+		}
+
+		model.addAttribute("page",  "USER : " + userBuffer.getRegistration_cgi());
+		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
+		model.addAttribute("item",DumpFields.fielder(super.getItem(idUser)));
+		model.addAttribute("show_nikonikos", DOT + PATH + SHOW_NIKONIKO);
+		model.addAttribute("show_graphique", DOT + PATH + SHOW_GRAPH);
+		model.addAttribute("show_verticale", PATH + VERTICALE + PATH + idverticale + PATH + SHOW_PATH);
+		model.addAttribute("show_teams", DOT + PATH + SHOW_TEAM);
+		model.addAttribute("show_roles", DOT + PATH + SHOW_ROLE);
+		model.addAttribute("go_delete", DELETE_ACTION);
+		model.addAttribute("go_update", UPDATE_ACTION);
+
 
 		return BASE_USER + PATH + SHOW_PATH;
 	}
@@ -153,10 +161,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @param userId
 	 * @return
 	 */
-
-	/**
-	 * ONLY USER VP ADMIN
-	 */
+	@Secured({"ROLE_ADMIN","ROLE_VP","ROLE_USER"})
 	@RequestMapping("{userId}/showNikoNikos")
 	public String getNikoNikosForUser(Model model, @PathVariable Long userId) {
 		User user = super.getItem(userId);
@@ -182,10 +187,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @return
 	 * @throws IOException
 	 */
-
-	/**
-	 * ONLY ALL
-	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
 	@RequestMapping(path = "{userId}/add", method = RequestMethod.GET)
 	public String newNikoNikoForUserGET(Model model,@PathVariable Long userId,
 						HttpServletResponse response) throws IOException {
@@ -193,11 +195,11 @@ public class UserController extends ViewBaseController<User> {
 		User user = super.getItem(userId);
 		NikoNiko niko = new NikoNiko();
 
-		if (this.checkSessionId()!= userId) {
+		if (userCrud.findByLogin(super.checkSession().getName()).getId()!= userId) {
 			response.sendError(HttpStatus.BAD_REQUEST.value(),("Don't try to hack url!").toUpperCase());
 		}
 
-		model.addAttribute("mood" , this.getUserLastMood(this.checkSessionId()));
+		model.addAttribute("mood" , this.getUserLastMood(userCrud.findByLogin(super.checkSession().getName()).getId()));
 		model.addAttribute("page",user.getFirstname() + " " + CREATE_ACTION.toUpperCase());
 		model.addAttribute("sortedFields",NikoNiko.FIELDS);
 		model.addAttribute("item",DumpFields.createContentsEmpty(niko.getClass()));
@@ -238,9 +240,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @return
 	 */
 
-	/**
-	 * ONLY ADMIN ALL
-	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
 	@RequestMapping(path = "{idUser}/add", method = RequestMethod.POST)
 	public String newNikoNikoForUserPOST(Model model, @PathVariable Long idUser, Integer mood, String comment) {
 		return this.addNikoNikoInDB(idUser, mood, comment);
@@ -377,9 +377,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @return
 	 */
 
-	/**
-	 * ONLY ADMIN VP
-	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP"})
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_TEAM, method = RequestMethod.GET)
 	public String showTeamsForUserGET(Model model,@PathVariable Long idUser) {
 
@@ -407,9 +405,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @return
 	 */
 
-	/**
-	 * ONLY ADMIN VP
-	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP"})
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_TEAM, method = RequestMethod.POST)
 	public String quiTeamPOST(Model model,@PathVariable Long idUser, Long idTeam) {
 		return quitTeam(idUser, idTeam);
@@ -424,9 +420,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @return
 	 */
 
-	/**
-	 * ONLY ADMIN GESTIONNAIRE
-	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 	@RequestMapping(path = "{idUser}" + PATH + ADD_TEAM, method = RequestMethod.GET)
 	public <T> String addUserInTeamGET(Model model, @PathVariable Long idUser) {
 
@@ -454,9 +448,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @return
 	 */
 
-	/**
-	 * ONLY ADMIN GESTIONNAIRE
-	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 	@RequestMapping(path = "{idUser}" + PATH + ADD_TEAM, method = RequestMethod.POST)
 	public <T> String addUserInTeamPOST(Model model, @PathVariable Long idUser, Long idTeam) {
 		return setUsersForTeam(idTeam, idUser);
@@ -566,11 +558,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @param idUser
 	 * @return
 	 */
-
-	/**
-	 * ONLY ADMIN VP
-	 */
-
+	@Secured({"ROLE_ADMIN","ROLE_VP"})
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_ROLE, method = RequestMethod.GET)
 	public String showRolesForUserGET(Model model,@PathVariable Long idUser) {
 
@@ -597,10 +585,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @return
 	 */
 
-	/**
-	 * ONLY ADMIN VP
-	 */
-
+	@Secured({"ROLE_ADMIN","ROLE_VP"})
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_ROLE, method = RequestMethod.POST)
 	public String revokeRoleToUserPOST(Model model,@PathVariable Long idUser, Long idRole) {
 
@@ -618,11 +603,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @param idRole
 	 * @return
 	 */
-
-	/**
-	 * ONLY ADMIN VP
-	 */
-
+	@Secured({"ROLE_ADMIN","ROLE_VP"})
 	@RequestMapping(path = "{idUser}" + PATH + ADD_ROLE, method = RequestMethod.POST)
 	public String addRoleToUserPOST(Model model,@PathVariable Long idUser, Long idRole) {
 
@@ -664,11 +645,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @param idUser
 	 * @return
 	 */
-
-	/**
-	 * ONLY ADMIN VP
-	 */
-
+	@Secured({"ROLE_ADMIN","ROLE_VP"})
 	@RequestMapping(path = "{idUser}" + PATH + ADD_ROLE, method = RequestMethod.GET)
 	public <T> String addRoleforUserGET(Model model, @PathVariable Long idUser) {
 
@@ -701,10 +678,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @return
 	 */
 
-	/**
-	 * ONLY ALL
-	 */
-
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_GRAPH, method = RequestMethod.GET)
 	public String showPie(Model model, @PathVariable Long idUser) {
 
@@ -727,7 +701,7 @@ public class UserController extends ViewBaseController<User> {
 		}
 
 		model.addAttribute("title", "Mes votes !" );
-		model.addAttribute("mood", this.getUserLastMood(this.checkSessionId()));
+		model.addAttribute("mood", this.getUserLastMood(userCrud.findByLogin(super.checkSession().getName()).getId()));
 		model.addAttribute("good", good);
 		model.addAttribute("medium", medium);
 		model.addAttribute("bad", bad);
@@ -742,10 +716,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @return
 	 */
 
-	/**
-	 * ONLY ADMIN VP
-	 */
-
+	@Secured({"ROLE_ADMIN","ROLE_VP"})
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_GRAPH_ALL, method = RequestMethod.GET)
 	public String showAllPie(Model model, @PathVariable Long idUser) {
 
@@ -766,7 +737,7 @@ public class UserController extends ViewBaseController<User> {
 		}
 
 		model.addAttribute("title", "Tous les votes");
-		model.addAttribute("mood", this.getUserLastMood(this.checkSessionId()));
+		model.addAttribute("mood", this.getUserLastMood(userCrud.findByLogin(super.checkSession().getName()).getId()));
 		model.addAttribute("good", good);
 		model.addAttribute("medium", medium);
 		model.addAttribute("bad", bad);
@@ -774,15 +745,15 @@ public class UserController extends ViewBaseController<User> {
 		return "graphs" + PATH + "pie";
 	}
 
-	/**
-	 * Function used to check if the current user don't try to hack url
-	 *
-	 * @return the id of the user of the current session
-	 */
-	public Long checkSessionId(){
-		String userLogin =  SecurityContextHolder.getContext().getAuthentication().getName();
-		return userCrud.findByLogin(userLogin).getId();
-	}
+//	/**
+//	 * Function used to check if the current user don't try to hack url
+//	 *
+//	 * @return the id of the user of the current session
+//	 */
+//	public Long checkSessionId(){
+//		String userLogin =  super.checkSession().getName();
+//		return userCrud.findByLogin(userLogin).getId();
+//	}
 
 
 	/**
@@ -842,7 +813,6 @@ public class UserController extends ViewBaseController<User> {
 
 		teamList = findAllTeamsForUser(userId);
 
-		if (teamList.size()>1) {
 			for (int i = 0; i < teamList.size(); i++) {
 				teamName.add(teamList.get(i).getName());
 			}
@@ -876,50 +846,14 @@ public class UserController extends ViewBaseController<User> {
 			}
 
 			model.addAttribute("title", teamCrud.findOne(teamId).getName());
+			model.addAttribute("nameteam", teamName);
 			model.addAttribute("mood", nbMood);
 			model.addAttribute("good", good);
 			model.addAttribute("medium", medium);
 			model.addAttribute("bad", bad);
 			model.addAttribute("back", PATH + MENU_PATH);
 			LAST_WORD = "pieTeam";
-		}else{
-			Long teamId = teamList.get(0).getId();
 
-			List<BigInteger> listId = teamCrud.getNikoNikoFromTeam(teamId);
-			List<Long> listNikoId = new ArrayList<Long>();
-			List<NikoNiko> listNiko = new ArrayList<NikoNiko>();
-			int nbMood = 0;
-
-			if (!listId.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
-				nbMood = 1;
-				for (BigInteger id : listId) {
-					listNikoId.add(id.longValue());
-				}
-				listNiko =  (List<NikoNiko>) nikoCrud.findAll(listNikoId);
-			}
-
-			int good = 0;
-			int medium = 0;
-			int bad = 0;
-
-			for (int i = 0; i < listNiko.size(); i++) {
-				if (listNiko.get(i).getMood() == 3) {
-					good++;
-				}else if(listNiko.get(i).getMood() == 2){
-					medium++;
-				}else{
-					bad++;
-				}
-			}
-
-			model.addAttribute("title", teamCrud.findOne(teamId).getName());
-			model.addAttribute("mood", nbMood);
-			model.addAttribute("good", good);
-			model.addAttribute("medium", medium);
-			model.addAttribute("bad", bad);
-			model.addAttribute("back", PATH + MENU_PATH);
-			LAST_WORD = "pie";
-		}
 		return "graphs" + PATH + LAST_WORD;
 	}
 }

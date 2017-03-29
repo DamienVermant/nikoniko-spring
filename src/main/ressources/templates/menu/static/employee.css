@@ -30,6 +30,7 @@ hr {
 /* BUTTONS HEAD */
 
 .logout{
+	margin-top: 30px;
 	height: 30px;
 	width: 100px;
 	font-size: 10px;
@@ -44,6 +45,7 @@ hr {
 }
 
 .vote{
+	margin-top: 30px;
 	height: 30px;
 	font-size: 10px;
 	margin-bottom: 5px;
