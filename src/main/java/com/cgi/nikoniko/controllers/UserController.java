@@ -16,7 +16,6 @@ import org.joda.time.Days;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -119,7 +118,7 @@ public class UserController extends ViewBaseController<User> {
 	@Secured({"ROLE_ADMIN","ROLE_VP"})
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_PATH, method = RequestMethod.GET)
 	public String showItemGet(Model model,@PathVariable Long idUser) {
-		
+
 		Long idverticale = null;
 
 		User userBuffer = new User();
@@ -128,11 +127,11 @@ public class UserController extends ViewBaseController<User> {
 		// TODO : WHEN CREATE A USER ASIGN A VERTICAL
 
 		//Long idverticale = userBuffer.getVerticale().getId();
-		
+
 		// ADD A DEFAUT VERTICALE
 		if (userBuffer.getVerticale() == null) {
 			idverticale = 3L;
-			
+
 			userBuffer.setVerticale(verticaleCrud.findOne(3L));
 		}
 		else {
@@ -149,7 +148,7 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("show_roles", DOT + PATH + SHOW_ROLE);
 		model.addAttribute("go_delete", DELETE_ACTION);
 		model.addAttribute("go_update", UPDATE_ACTION);
-		
+
 
 		return BASE_USER + PATH + SHOW_PATH;
 	}

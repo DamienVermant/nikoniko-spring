@@ -24,7 +24,7 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 	private String updateRedirect;
 
 	private String deleteView;
-	private String deleteRedirect;
+	protected String deleteRedirect;
 
 	private String createView;
 	private String createRedirect;
