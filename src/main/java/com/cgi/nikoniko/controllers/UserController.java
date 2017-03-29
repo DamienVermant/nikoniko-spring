@@ -188,12 +188,35 @@ public class UserController extends ViewBaseController<User> {
 			response.sendError(HttpStatus.BAD_REQUEST.value(),("Don't try to hack url!").toUpperCase());
 		}
 
+		model.addAttribute("mood" , this.getUserLastMood(this.checkSessionId()));
 		model.addAttribute("page",user.getFirstname() + " " + CREATE_ACTION.toUpperCase());
 		model.addAttribute("sortedFields",NikoNiko.FIELDS);
 		model.addAttribute("item",DumpFields.createContentsEmpty(niko.getClass()));
 		model.addAttribute("back", DOT + PATH + SHOW_PATH);
 		model.addAttribute("create_item", CREATE_ACTION);
 		return "nikoniko/addNikoNiko";
+	}
+	
+	/**
+	 * 
+	 * @param idUser
+	 * @return
+	 */
+	public int getUserLastMood(Long idUser){
+		
+		int mood = 0;
+		
+		Long idMax = userCrud.getLastNikoNikoUser(idUser);
+		
+		if (idMax == null) {
+			return mood;
+		}
+		
+		else {
+			mood = nikonikoCrud.findOne(idMax).getMood();
+			return mood;
+		}
+		
 	}
 
 	/**NAME : newNikoNikoForUserPOST
@@ -286,6 +309,7 @@ public class UserController extends ViewBaseController<User> {
 
 				nikoUpdate.setChange_date(date);
 				nikoUpdate.setComment(comment);
+				nikoUpdate.setMood(mood);
 
 				nikonikoCrud.save(nikoUpdate);
 
@@ -693,6 +717,7 @@ public class UserController extends ViewBaseController<User> {
 			}
 		}
 
+		model.addAttribute("mood", this.getUserLastMood(this.checkSessionId()));
 		model.addAttribute("good", good);
 		model.addAttribute("medium", medium);
 		model.addAttribute("bad", bad);

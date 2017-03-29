@@ -37,7 +37,7 @@
 				<div class="col-lg-12">
 					<div class="align">
 					<button onclick="location.href='changer_mdp.html'" class="password"> Préférences (KO) </button>
-					<#if true>
+					<#if mood != 0>
 						<button onclick="location.href='${add_nikoniko}'" class="vote"> Modifier vote </button>
 					<#else>
 					</#if>
@@ -59,10 +59,9 @@
 	<div class="row-fluid">
 		<div class="col-lg-12">
 			- <a href="${pie_chart}"> Voir vos résultats <a> <br>
-			<#if false>
-				- <a href="${add_nikoniko}"> Donner votre satisfaction ! </a>
+			<#if mood != 0>
 			<#else>
-				- <a href="${add_nikoniko}"> Pas encore voté... Go ? </a>
+				- <a href="${add_nikoniko}"> Pas de vote enregistré... On vote ? </a>
 			</#if>
 		</div>
 	</div>

@@ -75,7 +75,7 @@
 
 <hr>
 
-<#if false>
+<#if mood != 0>
 <div class="welcome"> Vos résultats
     <div class="piechart" id="piechart" style="width: 700px; height: 400px;"></div>
 </div>

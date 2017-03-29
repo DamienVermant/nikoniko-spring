@@ -35,8 +35,9 @@
 				<div class="col-lg-12">
 					<div class="align">
 					<button onclick="location.href=''" class="password"> Préférences (KO) </button>
-					<#if false>
+					<#if mood != 0>
 						<button onclick="location.href='/menu'" class="vote"> Retour </button>
+					<#else>
 					</#if>
 					<button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
 					</div>
@@ -88,11 +89,11 @@
 			<center>
 				<#include "../includable/security/securityToken.ftl">
 				<TEXTAREA style="margin-top: 30px" name="comment" rows=5 cols=60 placeholder="Ecrire votre commentaire..."></TEXTAREA> <br>
-				<#if false>
-					<button name="mood" value="0" class="buttons" onclick="location.href='/menu'"> Voter plus tard </button>
-				<#else>
-					<button name="mood" value="0" class="buttons" onclick="location.href='/menu'"> Voter plus tard </button>
-				</#if>
+					<button class="buttons" onclick="location.href='/menu'"> Voter </button>
+					<#if mood = 0>
+						<button name="mood" value=0 class="buttons" onclick="location.href='/menu'"> Voter plus tard </button>
+					<#else>
+					</#if>
 				</form>
 			</center>
 		</div>

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.aspectj.weaver.ICrossReferenceHandler;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Days;
@@ -69,11 +70,14 @@ public class MenuController  {
 	@RequestMapping(path = "/menu", method = RequestMethod.GET)
 	public String index(Model model, String login) {
 		
+		
 		UserController userControler = new UserController();
 
 		model.addAttribute("page","MENU");
 		
 		model.addAttribute("status", this.checkDateNikoNiko(this.getUserInformations().getId()));
+		model.addAttribute("mood", this.getUserLastMood(this.getUserInformations().getId()));
+		
 		model.addAttribute("roles",this.getConnectUserRole());
 		model.addAttribute("auth",this.getUserInformations().getFirstname());
 		model.addAttribute("go_own_nikoniko", PATH + "user" + PATH + this.getUserInformations().getId() + PATH + "link");
@@ -193,6 +197,11 @@ public class MenuController  {
 	}
 	
 	// TODO : THIS FUNCTION CAN BE GENERIC (USED IN USERCONTROLLER)
+	/**
+	 * FUNCTION THAT CHECK NIKONIKO DATE FOR UPDATE OR NEW 
+	 * @param idUser
+	 * @return
+	 */
 	public Boolean checkDateNikoNiko(Long idUser){
 
 		Boolean updateNiko = true;
@@ -224,5 +233,23 @@ public class MenuController  {
 		
 		return updateNiko;
 	}
+	
+	public int getUserLastMood(Long idUser){
+		
+		int mood = 0;
+		
+		Long idMax = userCrud.getLastNikoNikoUser(idUser);
+		
+		if (idMax == null) {
+			return mood;
+		}
+		
+		else {
+			mood = nikoCrud.findOne(idMax).getMood();
+			return mood;
+		}
+		
+	}
+	
 
 }
