@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -58,11 +59,11 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 
 	@Autowired
 	IUserHasRoleCrudRepository userRoleCrud;
-	
-	/**
-	 * ONLY ADMIN VP
-	 */
 
+	/**
+	 *
+	 */
+	@Secured({"ROLE_ADMIN","ROLE_VP"})
 	@RequestMapping(path = ROUTE_SHOW, method = RequestMethod.GET)
 	public String showItemGet(Model model,@PathVariable Long id) {
 
@@ -87,11 +88,7 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 	 * @param idRole
 	 * @return
 	 */
-	
-	/**
-	 * ONLY ADMIN VP
-	 */
-	
+	@Secured({"ROLE_ADMIN","ROLE_VP"})
 	@RequestMapping(path = "{idRole}" + PATH + SHOW_FUNC, method = RequestMethod.GET)
 	public <T> String showLinksGet(Model model, @PathVariable Long idRole) {
 
@@ -116,11 +113,7 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 	 * @param idRole
 	 * @return
 	 */
-	
-	/**
-	 * ONLY ADMIN VP
-	 */
-	
+	@Secured({"ROLE_ADMIN","ROLE_VP"})
 	@RequestMapping(path = "{idRole}" + PATH + SHOW_USERS, method = RequestMethod.GET)
 	public <T> String showLinksGetUser(Model model, @PathVariable Long idRole) {
 
@@ -147,11 +140,8 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 	 * @param idFunction
 	 * @return
 	 */
-	
-	/**
-	 * ONLY ADMIN VP
-	 */
-	
+
+	@Secured({"ROLE_ADMIN","ROLE_VP"})
 	@RequestMapping(path = "{idRole}" + PATH + SHOW_FUNC, method = RequestMethod.POST)
 	public String showItemDeleteFunction(Model model,@PathVariable Long idRole, Long idFunction) {
 
@@ -160,7 +150,7 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 		roleFuncCrud.delete(roleHasFunction);
 		return redirect;
 	}
-	
+
 	/**
 	 * DELETE USERS FROM A ROLE
 	 * @param model
@@ -168,11 +158,7 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 	 * @param idFunction
 	 * @return
 	 */
-	
-	/**
-	 * ONLY ADMIN
-	 */
-	
+	@Secured({"ROLE_ADMIN"})
 	@RequestMapping(path = "{idRole}" + PATH + SHOW_USERS, method = RequestMethod.POST)
 	public String showItemDeleteUrt(Model model,@PathVariable Long idRole, Long idUser) {
 
@@ -189,11 +175,7 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 	 * @param idRole
 	 * @return
 	 */
-	
-	/**
-	 * ONLY ADMIN
-	 */
-	
+	@Secured({"ROLE_ADMIN"})
 	@RequestMapping(path = "{idRole}" + PATH + ADD_FUNC, method = RequestMethod.GET)
 	public <T> String addFunctionsGet(Model model, @PathVariable Long idRole) {
 
@@ -219,11 +201,7 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 	 * @param idFunction
 	 * @return
 	 */
-	
-	/**
-	 * ONLY ADMIN VP
-	 */
-	
+	@Secured({"ROLE_ADMIN"})
 	@RequestMapping(path = "{idRole}" + PATH + ADD_FUNC, method = RequestMethod.POST)
 	public String showItemPostRole(Model model,@PathVariable Long idRole, Long idFunction) {
 
@@ -233,18 +211,14 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 
 		return redirect;
 	}
-	
+
 	/**
 	 * ADD USERS TO A ROLE
 	 * @param model
 	 * @param idRole
 	 * @return
 	 */
-	
-	/**
-	 * ONLY ADMIN
-	 */
-	
+	@Secured({"ROLE_ADMIN"})
 	@RequestMapping(path = "{idRole}" + PATH + ADD_USER, method = RequestMethod.GET)
 	public <T> String addUsersGet(Model model, @PathVariable Long idRole) {
 
@@ -270,19 +244,15 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 	 * @param idFunction
 	 * @return
 	 */
-	
-	/**
-	 * ONLY ADMIN
-	 */
-	
+	@Secured({"ROLE_ADMIN"})
 	@RequestMapping(path = "{idRole}" + PATH + ADD_USER, method = RequestMethod.POST)
 	public String relationUserRole(Model model,@PathVariable Long idRole, Long idUser) {
 
 		String redirect = REDIRECT + PATH + BASE_ROLE + PATH + idRole + PATH + SHOW_USERS;
-		
+
 		UserHasRole userHasRole = new UserHasRole(userCrud.findOne(idUser), roleCrud.findOne(idRole));
 		userRoleCrud.save(userHasRole);
-		
+
 		//RoleHasFunction roleHasFunction = new RoleHasFunction(roleCrud.findOne(idRole), funcCrud.findOne(idFunction));
 		//roleFuncCrud.save(roleHasFunction);
 

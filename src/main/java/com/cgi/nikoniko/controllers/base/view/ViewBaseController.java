@@ -1,5 +1,8 @@
 package com.cgi.nikoniko.controllers.base.view;
 
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,9 +15,9 @@ import com.cgi.nikoniko.utils.DumpFields;
 
 public abstract class ViewBaseController<T extends DatabaseItem> extends BaseController<T> {
 
-	private String baseName;
+	protected String baseName;
 
-	private String listView;
+	protected String listView;
 	private String baseView;
 
 	private String updateView;
@@ -47,6 +50,12 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 
 	// TODO : Gérer la généricité des différentes fonctions (certaines ne peuvent plus être générics)
 
+	/**
+	 *
+	 * @param model
+	 * @return
+	 */
+	@Secured({"ROLE_ADMIN"})
 	@RequestMapping(path = {PATH, ROUTE_LIST}, method = RequestMethod.GET)
 	public String index(Model model) {
 		model.addAttribute("page",this.baseName + " " + LIST_ACTION.toUpperCase());
@@ -58,6 +67,12 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 		return listView;
 	}
 
+	/**
+	 *
+	 * @param model
+	 * @return
+	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 	@RequestMapping(path = ROUTE_CREATE, method = RequestMethod.GET)
 	public String createItemGet(Model model) {
 		model.addAttribute("page",this.baseName + " " + CREATE_ACTION.toUpperCase());
@@ -68,6 +83,13 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 		return createView;
 	}
 
+	/**
+	 *
+	 * @param model
+	 * @param item
+	 * @return
+	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 	@RequestMapping(path = ROUTE_CREATE, method = RequestMethod.POST)
 	public String createItemPost(Model model, T item) {
 		try {
@@ -78,6 +100,13 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 		return createRedirect;
 	}
 
+	/**
+	 *
+	 * @param model
+	 * @param id
+	 * @return
+	 */
+	@Secured({"ROLE_ADMIN"})
 	@RequestMapping(path = ROUTE_DELETE, method = RequestMethod.GET)
 	public String deleteItemGet(Model model,@PathVariable Long id) {
 		model.addAttribute("page",this.baseName + " " + DELETE_ACTION.toUpperCase());
@@ -88,12 +117,26 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 		return deleteView;
 	}
 
+	/**
+	 *
+	 * @param model
+	 * @param id
+	 * @return
+	 */
+	@Secured({"ROLE_ADMIN"})
 	@RequestMapping(path = ROUTE_DELETE, method = RequestMethod.POST)
 	public String deleteItemPost(Model model,@PathVariable Long id) {
 		super.deleteItem(id);
 		return deleteRedirect;
 	}
 
+	/**
+	 *
+	 * @param model
+	 * @param id
+	 * @return
+	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_USER"})
 	@RequestMapping(path = ROUTE_UPDATE, method = RequestMethod.GET)
 	public String updateItemGet(Model model,@PathVariable Long id) {
 
@@ -105,12 +148,28 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 		return updateView;
 	}
 
+	/**
+	 *
+	 * @param model
+	 * @param item
+	 * @return
+	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_USER"})
 	@RequestMapping(path = ROUTE_UPDATE, method = RequestMethod.POST)
 	public String updateItemPost(Model model,T item) {
 		updateItem(item);
 		return updateRedirect;
 	}
 
+	/**
+	 *
+	 * RETIRER VP DANS LES DROITS D'ACCES???
+	 *
+	 * @param model
+	 * @param id
+	 * @return
+	 */
+	@Secured({"ROLE_ADMIN","ROLE_VP"})
 	@RequestMapping(path = ROUTE_SHOW, method = RequestMethod.GET)
 	public String showItemGet(Model model,@PathVariable Long id) {
 		model.addAttribute("page",this.baseName + " " + SHOW_ACTION.toUpperCase());
@@ -120,6 +179,15 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 		model.addAttribute("go_delete", DELETE_ACTION);
 		model.addAttribute("go_update", UPDATE_ACTION);
 		return showView;
+	}
+
+	/**
+	 * Function used to check sessions informations from the session's token
+	 *
+	 * @return Session informations of type Authentication
+	 */
+	public Authentication checkSession(){
+		return  SecurityContextHolder.getContext().getAuthentication();
 	}
 
 }
