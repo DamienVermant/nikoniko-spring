@@ -37,6 +37,7 @@ public class TeamController extends ViewBaseController<Team> {
 	public static final String SHOW_PATH = "show";
 	public static final String MENU_PATH = "menu";
 
+	public final static String SHOW_GRAPH = "showGraph";
 	public final static String SHOW_USER = "showUser";
 	public final static String SHOW_NIKO = "showNiko";
 	public final static String VERTICALE = "verticale";
@@ -272,40 +273,42 @@ public class TeamController extends ViewBaseController<Team> {
 			return DumpFields.listFielder((List<User>) userCrud.findAll(ids));
 		}
 
-		@RequestMapping(path = "{teamId}" + PATH + SHOW_NIKO, method = RequestMethod.GET)
-		public String getNikoFromVerticale(Model model, @PathVariable Long teamId){
-			List<BigInteger> listId = teamCrud.getNikoNikoFromTeam(teamId);
-			List<Long> listNikoId = new ArrayList<Long>();
-			List<NikoNiko> listNiko = new ArrayList<NikoNiko>();
-			int nbMood = 0;
 
-			if (!listId.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
-				nbMood = 1;
-				for (BigInteger id : listId) {
-					listNikoId.add(id.longValue());
-				}
-				listNiko =  (List<NikoNiko>) nikoCrud.findAll(listNikoId);
-			}
 
-			int good = 0;
-			int medium = 0;
-			int bad = 0;
-
-			for (int i = 0; i < listNiko.size(); i++) {
-				if (listNiko.get(i).getMood() == 3) {
-					good++;
-				}else if(listNiko.get(i).getMood() == 2){
-					medium++;
-				}else{
-					bad++;
-				}
-			}
-
-			model.addAttribute("mood", nbMood);
-			model.addAttribute("good", good);
-			model.addAttribute("medium", medium);
-			model.addAttribute("bad", bad);
-			model.addAttribute("back", PATH + MENU_PATH);
-			return "graphs" + PATH + "pie";
-		}
+//		@RequestMapping(path = "{teamId}" + PATH + SHOW_GRAPH, method = RequestMethod.GET)
+//		public String getNikoFromVerticale(Model model, @PathVariable Long teamId){
+//			List<BigInteger> listId = teamCrud.getNikoNikoFromTeam(teamId);
+//			List<Long> listNikoId = new ArrayList<Long>();
+//			List<NikoNiko> listNiko = new ArrayList<NikoNiko>();
+//			int nbMood = 0;
+//
+//			if (!listId.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
+//				nbMood = 1;
+//				for (BigInteger id : listId) {
+//					listNikoId.add(id.longValue());
+//				}
+//				listNiko =  (List<NikoNiko>) nikoCrud.findAll(listNikoId);
+//			}
+//
+//			int good = 0;
+//			int medium = 0;
+//			int bad = 0;
+//
+//			for (int i = 0; i < listNiko.size(); i++) {
+//				if (listNiko.get(i).getMood() == 3) {
+//					good++;
+//				}else if(listNiko.get(i).getMood() == 2){
+//					medium++;
+//				}else{
+//					bad++;
+//				}
+//			}
+//
+//			model.addAttribute("mood", nbMood);
+//			model.addAttribute("good", good);
+//			model.addAttribute("medium", medium);
+//			model.addAttribute("bad", bad);
+//			model.addAttribute("back", PATH + MENU_PATH);
+//			return "graphs" + PATH + "pie";
+//		}
 }

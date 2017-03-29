@@ -97,6 +97,15 @@
             </div>
         </div>
     </div>
+    <div class="col_lg_2">
+        <div class="row-fluid">
+            <div class="col-lg-12">
+                <div class="align">
+
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <!-- FOOTER -->
 <div class="container-fluid">
