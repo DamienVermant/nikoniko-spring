@@ -33,6 +33,7 @@ import com.cgi.nikoniko.dao.ITeamCrudRepository;
 import com.cgi.nikoniko.dao.IUserCrudRepository;
 import com.cgi.nikoniko.dao.IUserHasRoleCrudRepository;
 import com.cgi.nikoniko.dao.IUserHasTeamCrudRepository;
+import com.cgi.nikoniko.dao.IVerticaleCrudRepository;
 import com.cgi.nikoniko.models.tables.Team;
 import com.cgi.nikoniko.models.tables.modelbase.DatabaseItem;
 import com.cgi.nikoniko.models.association.UserHasRole;
@@ -82,6 +83,9 @@ public class UserController extends ViewBaseController<User> {
 
 	@Autowired
 	IRoleCrudRepository roleCrud;
+	
+	@Autowired
+	IVerticaleCrudRepository verticaleCrud;
 
 	public UserController() {
 		super(User.class,BASE_URL);
@@ -112,27 +116,30 @@ public class UserController extends ViewBaseController<User> {
 	@Override
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_PATH, method = RequestMethod.GET)
 	public String showItemGet(Model model,@PathVariable Long idUser) {
+		
+		
 
 		User userBuffer = new User();
 		userBuffer = userCrud.findOne(idUser);
 		
-		// TODO : WHEN CREATE A USER ASIGN A VERTICAL
 		Long idverticale = userBuffer.getVerticale().getId();
-
-		for (RoleCGI roleName : this.getAllRolesForUser(idUser)) {
-			String varTest = roleName.getName();
-				model.addAttribute("myRole", roleName.getName());
-				model.addAttribute("page",  "USER : " + userBuffer.getRegistration_cgi());
-				model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
-				model.addAttribute("item",DumpFields.fielder(super.getItem(idUser)));
-				model.addAttribute("show_nikonikos", DOT + PATH + SHOW_NIKONIKO);
-				model.addAttribute("show_graphique", DOT + PATH + SHOW_GRAPH);
-				model.addAttribute("show_verticale", PATH + VERTICALE + PATH + idverticale + PATH + SHOW_PATH);
-				model.addAttribute("show_teams", DOT + PATH + SHOW_TEAM);
-				model.addAttribute("show_roles", DOT + PATH + SHOW_ROLE);
-				model.addAttribute("go_delete", DELETE_ACTION);
-				model.addAttribute("go_update", UPDATE_ACTION);
+		
+		// ADD A DEFAUT VERTICALE
+		if (idverticale == null) {
+			userBuffer.setVerticale(verticaleCrud.findOne(3L));
 		}
+
+		model.addAttribute("page",  "USER : " + userBuffer.getRegistration_cgi());
+		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
+		model.addAttribute("item",DumpFields.fielder(super.getItem(idUser)));
+		model.addAttribute("show_nikonikos", DOT + PATH + SHOW_NIKONIKO);
+		model.addAttribute("show_graphique", DOT + PATH + SHOW_GRAPH);
+		model.addAttribute("show_verticale", PATH + VERTICALE + PATH + idverticale + PATH + SHOW_PATH);
+		model.addAttribute("show_teams", DOT + PATH + SHOW_TEAM);
+		model.addAttribute("show_roles", DOT + PATH + SHOW_ROLE);
+		model.addAttribute("go_delete", DELETE_ACTION);
+		model.addAttribute("go_update", UPDATE_ACTION);
+		
 
 		return BASE_USER + PATH + SHOW_PATH;
 	}

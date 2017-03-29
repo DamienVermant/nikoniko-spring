@@ -18,7 +18,7 @@
 </head>
 <body>
 <style>
-<#include "static/vote.css">
+	<#include "static/vote.css">
 </style>
 
 <!-- HEAD -->
@@ -34,12 +34,11 @@
 			<div class="row-fluid">
 				<div class="col-lg-12">
 					<div class="align">
-					<button onclick="location.href=''" class="password"> Préférences (KO) </button>
+					<button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
 					<#if mood != 0>
 						<button onclick="location.href='/menu'" class="vote"> Retour </button>
 					<#else>
 					</#if>
-					<button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
 					</div>
 				</div>
 			</div>

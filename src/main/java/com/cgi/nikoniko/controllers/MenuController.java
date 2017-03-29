@@ -125,13 +125,13 @@ public class MenuController  {
 		if (roleNames.contains("ROLE_ADMIN")) {
 			role = "admin";
 		}
-		else if (roleNames.contains("VP")) {
+		else if (roleNames.contains("ROLE_VP")) {
 			role = "vp";
 		}
-		else if (roleNames.contains("Chef de projet")) {
+		else if (roleNames.contains("ROLE_CHEF_PROJET")) {
 			role = "chefProjet";
 		}
-		else if (roleNames.contains("Gestionnaire equipe")) {
+		else if (roleNames.contains("ROLE_GESTIONNAIRE")) {
 			role = "gestionTeam";
 		}
 		else {
