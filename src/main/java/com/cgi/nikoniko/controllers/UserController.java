@@ -115,7 +115,7 @@ public class UserController extends ViewBaseController<User> {
 
 		User userBuffer = new User();
 		userBuffer = userCrud.findOne(idUser);
-		
+
 		// TODO : WHEN CREATE A USER ASIGN A VERTICAL
 		Long idverticale = userBuffer.getVerticale().getId();
 
@@ -196,27 +196,27 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("create_item", CREATE_ACTION);
 		return "nikoniko/addNikoNiko";
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param idUser
 	 * @return
 	 */
 	public int getUserLastMood(Long idUser){
-		
+
 		int mood = 0;
-		
+
 		Long idMax = userCrud.getLastNikoNikoUser(idUser);
-		
+
 		if (idMax == null) {
 			return mood;
 		}
-		
+
 		else {
 			mood = nikonikoCrud.findOne(idMax).getMood();
 			return mood;
 		}
-		
+
 	}
 
 	/**NAME : newNikoNikoForUserPOST
@@ -755,6 +755,7 @@ public class UserController extends ViewBaseController<User> {
 			}
 		}
 
+		model.addAttribute("mood", this.getUserLastMood(this.checkSessionId()));
 		model.addAttribute("good", good);
 		model.addAttribute("medium", medium);
 		model.addAttribute("bad", bad);
