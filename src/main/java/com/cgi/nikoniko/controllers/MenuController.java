@@ -10,6 +10,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Days;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -36,7 +37,7 @@ public class MenuController  {
 
 	@Autowired
 	IRoleCrudRepository roleCrud;
-	
+
 	@Autowired
 	INikoNikoCrudRepository nikoCrud;
 
@@ -62,19 +63,17 @@ public class MenuController  {
 
 
 	// TODO : GESTION DES PATHS ET DES @SECURED
-	
+
 	/**
 	 * ONLY ALL
 	 */
 
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
 	@RequestMapping(path = "/menu", method = RequestMethod.GET)
 	public String index(Model model, String login) {
-		
-		
-		UserController userControler = new UserController();
 
 		model.addAttribute("page","MENU");
-		
+
 		model.addAttribute("status", this.checkDateNikoNiko(this.getUserInformations().getId()));
 		model.addAttribute("mood", this.getUserLastMood(this.getUserInformations().getId()));
 		
@@ -90,16 +89,16 @@ public class MenuController  {
 		model.addAttribute("go_roles", GO_ROLES);
 		model.addAttribute("go_functions", GO_FUNCTIONS);
 		model.addAttribute("go_verticales", GO_VERTICALE);
-		
+
 		model.addAttribute("go_user_has_team", GO_USERTEAM);
 		model.addAttribute("go_user_has_role", GO_USERROLE);
 		model.addAttribute("go_role_has_function", GO_ROLEFUNC);
-		
+
 		// TEST FOR SECURED REDIRECTION
-		
+
 		model.addAttribute("id",this.getUserInformations().getId());
-		
-		
+
+
 		return BASE_MENU + PATH + "mainMenu";
 	}
 
@@ -195,7 +194,7 @@ public class MenuController  {
 		}
 		return roleNames;
 	}
-	
+
 	// TODO : THIS FUNCTION CAN BE GENERIC (USED IN USERCONTROLLER)
 	/**
 	 * FUNCTION THAT CHECK NIKONIKO DATE FOR UPDATE OR NEW 
@@ -210,12 +209,12 @@ public class MenuController  {
 		Long idMaxNiko = userCrud.getLastNikoNikoUser(idUser);
 
 		if (idMaxNiko == null) {
-			
+
 			updateNiko = false;
 		}
-		
+
 		else {
-			
+
 			NikoNiko lastNiko = nikoCrud.findOne(idMaxNiko);
 			Date entryDate = lastNiko.getEntry_date();
 
@@ -225,12 +224,12 @@ public class MenuController  {
 			DateTime todayDateClean = new DateTime(todayDate,DateTimeZone.forID( "Europe/Paris" ));
 
 			Days diff = Days.daysBetween(eDateClean, todayDateClean);
-			
+
 			if (entryDate == null || (diff.getDays()) > 1) {
 				updateNiko = false;
-			} 
+			}
 		}
-		
+
 		return updateNiko;
 	}
 	

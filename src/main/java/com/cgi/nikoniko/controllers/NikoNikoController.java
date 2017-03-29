@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,12 +42,28 @@ public class NikoNikoController extends ViewBaseController<NikoNiko> {
 	public NikoNikoController() {
 		super(NikoNiko.class,BASE_URL);
 	}
-
-
 	/**
-	 * ALL
+	 *
+	 * @param model
+	 * @return
 	 */
 	@Override
+	@Secured({"ROLE_ADMIN","ROLE_VP"})
+	@RequestMapping(path = {PATH, ROUTE_LIST}, method = RequestMethod.GET)
+	public String index(Model model) {
+		model.addAttribute("page",super.baseName + " " + LIST_ACTION.toUpperCase());
+		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
+		model.addAttribute("items",DumpFields.listFielder(super.getItems()));
+		model.addAttribute("go_show", SHOW_ACTION);
+		model.addAttribute("go_create", CREATE_ACTION);
+		model.addAttribute("go_delete", DELETE_ACTION);
+		return super.listView;
+	}
+	/**
+	 *
+	 */
+	@Override
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
 	@RequestMapping(path = "{idNiko}" + PATH + SHOW_PATH, method = RequestMethod.GET)
 	public String showItemGet(Model model,@PathVariable Long idNiko) {
 
@@ -66,9 +83,10 @@ public class NikoNikoController extends ViewBaseController<NikoNiko> {
 	}
 
 	/**
-	 *	ADMIN
+	 *
 	 * Recupération de tous les changedate liés à un nikoniko
 	 */
+	@Secured({"ROLE_ADMIN"})
 	@RequestMapping("{nikonikoId}/showChangeDates")
 	public String getChangeDatesFromNikoNiko(Model model, @PathVariable Long nikonikoId) {
 		NikoNiko niko = super.getItem(nikonikoId);
@@ -83,9 +101,10 @@ public class NikoNikoController extends ViewBaseController<NikoNiko> {
 	}
 
 	/**
-	 *	ALL
+	 *
 	 * Page de creation d'un nikoniko pour un user
 	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
 	@RequestMapping(path = "{changId}/add", method = RequestMethod.GET)
 	public String createItemGet(Model model, @PathVariable Long changId) {
 		NikoNiko niko = super.getItem(changId);
@@ -100,9 +119,10 @@ public class NikoNikoController extends ViewBaseController<NikoNiko> {
 	}
 
 	/**
-	 *	ALL
+	 *
 	 * Creation d'un nikoniko
 	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
 	@RequestMapping(path = "{nikonikoId}/create", method = RequestMethod.POST)
 	public String createItemPost(Model model, ChangeDates chang, @PathVariable Long nikonikoId) {
 

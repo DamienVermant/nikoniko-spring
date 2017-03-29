@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
 import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
 import com.cgi.nikoniko.dao.IVerticaleCrudRepository;
+
 import com.cgi.nikoniko.models.tables.NikoNiko;
 import com.cgi.nikoniko.models.tables.RoleCGI;
+
 import com.cgi.nikoniko.models.tables.Team;
 import com.cgi.nikoniko.models.tables.User;
 import com.cgi.nikoniko.models.tables.Verticale;
@@ -51,10 +54,10 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	}
 
 	/**
-	 * ADMIN
-	 * VP
+	 *
 	 * SHOW ALL VERTICALE WITH A GIVEN ID
 	 */
+	@Secured({"ROLE_ADMIN","ROLE_VP"})
 	@RequestMapping(path = ROUTE_SHOW, method = RequestMethod.GET)
 	public String showItemGet(Model model,@PathVariable Long id) {
 
@@ -75,14 +78,16 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 
 
 	/**
-	 * ADMIN,
-	 * VP
+	 *
 	 * @param model
 	 * @param verticaleId
 	 * @return
 	 */
-	@RequestMapping(path ="{verticaleId}" + PATH + SHOW_USER)
-	public String showUsersFromVerticale(Model model, @PathVariable Long verticaleId) {
+
+	@Secured({"ROLE_ADMIN","ROLE_VP"})
+	@RequestMapping("{verticaleId}"+ PATH + SHOW_USER)
+	public String getUsersForVerticale(Model model, @PathVariable Long verticaleId) {
+
 		Verticale verticale = super.getItem(verticaleId);
 		Set<User> user =  verticale.getUsers();
 		List<User> listOfUser = new ArrayList<User>(user);
@@ -96,12 +101,12 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	}
 
 	/**
-	 * ADMIN,
-	 * VP
+	 *
 	 * @param model
 	 * @param verticaleId
 	 * @return
 	 */
+	@Secured({"ROLE_ADMIN","ROLE_VP"})
 	@RequestMapping("{verticaleId}/showTeam")
 	public String getTeamsForVerticale(Model model, @PathVariable Long verticaleId) {
 		Verticale verticale = super.getItem(verticaleId);
