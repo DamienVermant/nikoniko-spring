@@ -1,6 +1,5 @@
 package com.cgi.nikoniko.controllers;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -15,11 +14,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
 import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
+import com.cgi.nikoniko.dao.ITeamCrudRepository;
+import com.cgi.nikoniko.dao.IUserCrudRepository;
 import com.cgi.nikoniko.dao.IVerticaleCrudRepository;
-
-import com.cgi.nikoniko.models.tables.NikoNiko;
-import com.cgi.nikoniko.models.tables.RoleCGI;
-
 import com.cgi.nikoniko.models.tables.Team;
 import com.cgi.nikoniko.models.tables.User;
 import com.cgi.nikoniko.models.tables.Verticale;
@@ -42,6 +39,11 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 
 	public static final String SHOW_PATH = "show";
 
+	@Autowired
+	IUserCrudRepository userCrud;
+
+	@Autowired
+	ITeamCrudRepository teamCrud;
 
 	@Autowired
 	IVerticaleCrudRepository verticaleCrud;
@@ -121,43 +123,39 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 		return "verticale/showAllRelation";
 	}
 
+	/**
+	 *
+	 * @param model
+	 * @param id
+	 * @return
+	 */
+	@Override
+	@Secured({"ROLE_ADMIN"})
+	@RequestMapping(path = ROUTE_DELETE, method = RequestMethod.POST)
+	public String deleteItemPost(Model model,@PathVariable Long id) {
+		Verticale verticale = super.getItem(id);
 
+		//Set to null foreign key verticale_id in user table before delete the verticale object
+		if (verticale.getUsers()!= null) {
+			for (User user : verticale.getUsers()) {
+				if (user.getVerticale().getId()==id) {
+					user.setVerticale(null);
+					userCrud.save(user);
+				}
+			}
+		}
+		//Set to null foreign key verticale_id in Team table before delete the verticale object
+		if (verticale.getTeams()!= null) {
+			for (Team team : verticale.getTeams()) {
+				if (team.getVerticale().getId()==id) {
+					team.setVerticale(null);
+					teamCrud.save(team);
+				}
+			}
+		}
 
-//	@RequestMapping(path = "{verticaleId}" + PATH + SHOW_GRAPH, method = RequestMethod.GET)
-//	public String getNikoFromVerticale(Model model, @PathVariable Long verticaleId){
-//		List<BigInteger> listId = verticaleCrud.getNikoNikoFromVerticale(verticaleId);
-//		List<Long> listNikoId = new ArrayList<Long>();
-//		List<NikoNiko> listNiko = new ArrayList<NikoNiko>();
-//		int nbMood = 0;
-//
-//		if (!listId.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
-//			nbMood =1;
-//			for (BigInteger id : listId) {
-//				listNikoId.add(id.longValue());
-//			}
-//			listNiko =  (List<NikoNiko>) nikoCrud.findAll(listNikoId);
-//		}
-//
-//
-//		int good = 0;
-//		int medium = 0;
-//		int bad = 0;
-//
-//		for (int i = 0; i < listNiko.size(); i++) {
-//			if (listNiko.get(i).getMood() == 3) {
-//				good++;
-//			}else if(listNiko.get(i).getMood() == 2){
-//				medium++;
-//			}else{
-//				bad++;
-//			}
-//		}
-//
-//		model.addAttribute("mood", nbMood);
-//		model.addAttribute("good", good);
-//		model.addAttribute("medium", medium);
-//		model.addAttribute("bad", bad);
-//		model.addAttribute("back", PATH + MENU_PATH);
-//		return "graphs" + PATH + "pie";
-//	}
+		super.deleteItem(id);
+		return deleteRedirect;
+	}
+
 }
