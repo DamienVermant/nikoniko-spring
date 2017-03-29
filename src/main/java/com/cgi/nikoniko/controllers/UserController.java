@@ -1,5 +1,6 @@
 package com.cgi.nikoniko.controllers;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
@@ -7,15 +8,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Days;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
 import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
@@ -28,6 +34,7 @@ import com.cgi.nikoniko.dao.IUserCrudRepository;
 import com.cgi.nikoniko.dao.IUserHasRoleCrudRepository;
 import com.cgi.nikoniko.dao.IUserHasTeamCrudRepository;
 import com.cgi.nikoniko.models.tables.Team;
+import com.cgi.nikoniko.models.tables.modelbase.DatabaseItem;
 import com.cgi.nikoniko.models.association.UserHasRole;
 import com.cgi.nikoniko.models.association.UserHasTeam;
 import com.cgi.nikoniko.models.association.base.AssociationItemId;
@@ -55,9 +62,9 @@ public class UserController extends ViewBaseController<User> {
 	public final static String ADD_TEAM = "addTeams";
 	public final static String ADD_ROLE = "addRoles";
 	public final static String REDIRECT = "redirect:";
-	
+
 	public final static int TIME = 1;
-	
+
 	@Autowired
 	INikoNikoCrudRepository nikonikoCrud;
 
@@ -98,7 +105,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @param idUser
 	 * @return
 	 */
-	
+
 	/**
 	 * ONLY ADMIN VP
 	 */
@@ -137,7 +144,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @param userId
 	 * @return
 	 */
-	
+
 	/**
 	 * ONLY USER VP ADMIN
 	 */
@@ -158,20 +165,28 @@ public class UserController extends ViewBaseController<User> {
 	/**NAME : newNikoNikoForUserGET
 	 *
 	 * Page de creation d'un nikoniko pour un user
+	 * Only show the nikoniko's page of the user of the current session
+	 * If someone try to hack url, he's redirected to an error page (or logout for now)
 	 *
 	 * @param model
 	 * @param userId
 	 * @return
+	 * @throws IOException
 	 */
-	
+
 	/**
 	 * ONLY ALL
 	 */
 	@RequestMapping(path = "{userId}/add", method = RequestMethod.GET)
-	public String newNikoNikoForUserGET(Model model, @PathVariable Long userId) {
+	public String newNikoNikoForUserGET(Model model,@PathVariable Long userId,
+						HttpServletResponse response) throws IOException {
 
 		User user = super.getItem(userId);
 		NikoNiko niko = new NikoNiko();
+
+		if (this.checkSessionId()!= userId) {
+			response.sendError(HttpStatus.BAD_REQUEST.value(),("Don't try to hack url!").toUpperCase());
+		}
 
 		model.addAttribute("page",user.getFirstname() + " " + CREATE_ACTION.toUpperCase());
 		model.addAttribute("sortedFields",NikoNiko.FIELDS);
@@ -190,7 +205,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @param comment
 	 * @return
 	 */
-	
+
 	/**
 	 * ONLY ADMIN ALL
 	 */
@@ -198,7 +213,7 @@ public class UserController extends ViewBaseController<User> {
 	public String newNikoNikoForUserPOST(Model model, @PathVariable Long idUser, Integer mood, String comment) {
 		return this.addNikoNikoInDB(idUser, mood, comment);
 	}
-	
+
 	/**
 	 * CHECK FOR NEW NIKONIKO OR UPDATE
 	 */
@@ -271,7 +286,7 @@ public class UserController extends ViewBaseController<User> {
 
 				nikoUpdate.setChange_date(date);
 				nikoUpdate.setComment(comment);
-				
+
 				nikonikoCrud.save(nikoUpdate);
 
 				return REDIRECT + PATH + MENU_PATH;
@@ -328,7 +343,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @param id
 	 * @return
 	 */
-	
+
 	/**
 	 * ONLY ADMIN VP
 	 */
@@ -358,7 +373,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @param idTeam
 	 * @return
 	 */
-	
+
 	/**
 	 * ONLY ADMIN VP
 	 */
@@ -375,7 +390,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @param idUser
 	 * @return
 	 */
-	
+
 	/**
 	 * ONLY ADMIN GESTIONNAIRE
 	 */
@@ -405,7 +420,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @param idTeam
 	 * @return
 	 */
-	
+
 	/**
 	 * ONLY ADMIN GESTIONNAIRE
 	 */
@@ -518,11 +533,11 @@ public class UserController extends ViewBaseController<User> {
 	 * @param idUser
 	 * @return
 	 */
-	
+
 	/**
 	 * ONLY ADMIN VP
 	 */
-	
+
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_ROLE, method = RequestMethod.GET)
 	public String showRolesForUserGET(Model model,@PathVariable Long idUser) {
 
@@ -548,11 +563,11 @@ public class UserController extends ViewBaseController<User> {
 	 * @param idRole
 	 * @return
 	 */
-	
+
 	/**
 	 * ONLY ADMIN VP
 	 */
-	
+
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_ROLE, method = RequestMethod.POST)
 	public String revokeRoleToUserPOST(Model model,@PathVariable Long idUser, Long idRole) {
 
@@ -570,11 +585,11 @@ public class UserController extends ViewBaseController<User> {
 	 * @param idRole
 	 * @return
 	 */
-	
+
 	/**
 	 * ONLY ADMIN VP
 	 */
-	
+
 	@RequestMapping(path = "{idUser}" + PATH + ADD_ROLE, method = RequestMethod.POST)
 	public String addRoleToUserPOST(Model model,@PathVariable Long idUser, Long idRole) {
 
@@ -616,11 +631,11 @@ public class UserController extends ViewBaseController<User> {
 	 * @param idUser
 	 * @return
 	 */
-	
+
 	/**
 	 * ONLY ADMIN VP
 	 */
-	
+
 	@RequestMapping(path = "{idUser}" + PATH + ADD_ROLE, method = RequestMethod.GET)
 	public <T> String addRoleforUserGET(Model model, @PathVariable Long idUser) {
 
@@ -638,14 +653,14 @@ public class UserController extends ViewBaseController<User> {
 
 		return BASE_USER + PATH + ADD_ROLE;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * GRAPH GESTION
-	 * 
-	 * 
+	 *
+	 *
 	 */
-	
+
 	/**
 	 * ALL NIKONIKO GRAPH FOR AN USER
 	 * @param model
@@ -656,7 +671,7 @@ public class UserController extends ViewBaseController<User> {
 	/**
 	 * ONLY ALL
 	 */
-	
+
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_GRAPH, method = RequestMethod.GET)
 	public String showPie(Model model, @PathVariable Long idUser) {
 
@@ -691,11 +706,11 @@ public class UserController extends ViewBaseController<User> {
 	 * @param idUser
 	 * @return
 	 */
-	
+
 	/**
 	 * ONLY ADMIN VP
 	 */
-	
+
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_GRAPH_ALL, method = RequestMethod.GET)
 	public String showAllPie(Model model, @PathVariable Long idUser) {
 
@@ -721,4 +736,15 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("back", PATH + MENU_PATH);
 		return "graphs" + PATH + "pie";
 	}
+
+	/**
+	 * Function used to check if the current user don't try to hack url
+	 *
+	 * @return the id of the user of the current session
+	 */
+	public Long checkSessionId(){
+		String userLogin =  SecurityContextHolder.getContext().getAuthentication().getName();
+		return userCrud.findByLogin(userLogin).getId();
+	}
+
 }
