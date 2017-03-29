@@ -62,11 +62,11 @@ public class UserController extends ViewBaseController<User> {
 	public final static String SHOW_ROLE = "showRole";
 	public final static String SHOW_LINK = "link";
 	public final static String SHOW_VERTICAL = "showVerticale";
-	
+
 	public final static String ADD_TEAM = "addTeams";
 	public final static String ADD_ROLE = "addRoles";
 	public final static String ADD_VERTICAL = "addVerticale";
-	
+
 	public final static String REDIRECT = "redirect:";
 
 	public final static int TIME = 1;
@@ -102,7 +102,7 @@ public class UserController extends ViewBaseController<User> {
 	protected UserController(Class<User> clazz, String baseURL) {
 		super(clazz, baseURL);
 	}
-	
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
@@ -110,7 +110,7 @@ public class UserController extends ViewBaseController<User> {
 	 * ASSOCIATION USER --> NIKONIKO
 	 *
 	 */
-	
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**NAME : showUserActionsGET
@@ -134,11 +134,11 @@ public class UserController extends ViewBaseController<User> {
 		userBuffer = userCrud.findOne(idUser);
 
 		// TODO : WHEN CREATE A USER ASIGN A VERTICAL
-		
+
 		// ADD A DEFAUT VERTICALE
 		if (userBuffer.getVerticale() == null) {
 			idverticale = 1L;
-			
+
 			userBuffer.setVerticale(verticaleCrud.findOne(1L));
 			userCrud.save(userBuffer);
 		}
@@ -348,7 +348,7 @@ public class UserController extends ViewBaseController<User> {
 			}
 		}
 	}
-	
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
@@ -356,7 +356,7 @@ public class UserController extends ViewBaseController<User> {
 	 * ASSOCIATION USER --> TEAM
 	 *
 	 */
-	
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**NAME : showTeamsForUserGET
@@ -536,7 +536,7 @@ public class UserController extends ViewBaseController<User> {
 		}
 		return DumpFields.listFielder((List<Team>) teamCrud.findAll(ids));
 	}
-	
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
@@ -544,7 +544,7 @@ public class UserController extends ViewBaseController<User> {
 	 * ASSOCIATION USER --> ROLE
 	 *
 	 */
-	
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**NAME : showRolesForUserGET
@@ -658,7 +658,7 @@ public class UserController extends ViewBaseController<User> {
 
 		return BASE_USER + PATH + ADD_ROLE;
 	}
-	
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
@@ -667,7 +667,7 @@ public class UserController extends ViewBaseController<User> {
 	 *
 	 *
 	 */
-	
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
@@ -833,7 +833,7 @@ public class UserController extends ViewBaseController<User> {
 					bad++;
 				}
 			}
-			
+
 			model.addAttribute("title", teamCrud.findOne(teamId).getName());
 			model.addAttribute("nameteam", teamName);
 			model.addAttribute("mood", nbMood);
@@ -845,12 +845,12 @@ public class UserController extends ViewBaseController<User> {
 
 		return "graphs" + PATH + LAST_WORD;
 	}
-	
-	
-	
-	
+
+
+
+
 	// TODO : RELATION USER -> VERTICAL
-	
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
@@ -885,21 +885,21 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("add", "addVerticale");
 
 		return BASE_USER + PATH + SHOW_VERTICAL;
-	
+
 	}
-	
+
 	// TODO : ARRAYLIST CAN BE CONVERT TO A LONG
 	public ArrayList<Verticale> getVerticalForUser(Long idUser){
 
 		ArrayList<Verticale> verticaleList = new ArrayList<Verticale>();
-		
+
 		Long idVerticale = userCrud.getUserVertical(idUser);
-		
+
 		verticaleList.add(verticaleCrud.findOne(idVerticale));
-		
+
 		return verticaleList;
-		
-		
+
+
 	}
 
 ///**NAME : quiTeamPOST
@@ -1055,18 +1055,18 @@ public class UserController extends ViewBaseController<User> {
 //}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
