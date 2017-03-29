@@ -63,8 +63,9 @@
             <div class="row-fluid">
                 <div class="col-lg-12">
                     <div class="align">
-                    <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
+                    <button onclick="location.href='changer_mdp.html'" class="password"> Préférences (KO) </button>
                     <button onclick="location.href='${back}'" class="vote"> Retour </button>
+                    <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
                     </div>
                 </div>
             </div>
@@ -92,6 +93,15 @@
                 <button onclick="location.href='showGraphAll'" class="allresults"> ALL Results </button>
                 <button onclick="location.href='showGraphVerticale'" class="resultsverticale"> Results Verticale </button>
                 <button onclick="location.href='showGraphTeam'" class="resultsteam"> Results team </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col_lg_2">
+        <div class="row-fluid">
+            <div class="col-lg-12">
+                <div class="align">
+
                 </div>
             </div>
         </div>

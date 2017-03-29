@@ -57,6 +57,8 @@ public class UserController extends ViewBaseController<User> {
 	public final static String SHOW_NIKONIKO = "showNikoNikos";
 	public final static String SHOW_GRAPH = "showGraph";
 	public final static String SHOW_GRAPH_ALL = "showGraphAll";
+	public final static String SHOW_GRAPH_VERTICALE = "showGraphVerticale";
+	public final static String SHOW_GRAPH_TEAM = "showGraphTeam";
 	public final static String SHOW_TEAM = "showTeam";
 	public final static String SHOW_ROLE = "showRole";
 	public final static String SHOW_LINK = "link";
@@ -82,10 +84,13 @@ public class UserController extends ViewBaseController<User> {
 	ITeamCrudRepository teamCrud;
 
 	@Autowired
-	IRoleCrudRepository roleCrud;
-	
-	@Autowired
 	IVerticaleCrudRepository verticaleCrud;
+
+	@Autowired
+	INikoNikoCrudRepository nikoCrud;
+
+	@Autowired
+	IRoleCrudRepository roleCrud;
 
 	public UserController() {
 		super(User.class,BASE_URL);
@@ -121,7 +126,8 @@ public class UserController extends ViewBaseController<User> {
 
 		User userBuffer = new User();
 		userBuffer = userCrud.findOne(idUser);
-		
+
+		// TODO : WHEN CREATE A USER ASIGN A VERTICAL
 		Long idverticale = userBuffer.getVerticale().getId();
 		
 		// ADD A DEFAUT VERTICALE
@@ -203,27 +209,27 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("create_item", CREATE_ACTION);
 		return "nikoniko/addNikoNiko";
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param idUser
 	 * @return
 	 */
 	public int getUserLastMood(Long idUser){
-		
+
 		int mood = 0;
-		
+
 		Long idMax = userCrud.getLastNikoNikoUser(idUser);
-		
+
 		if (idMax == null) {
 			return mood;
 		}
-		
+
 		else {
 			mood = nikonikoCrud.findOne(idMax).getMood();
 			return mood;
 		}
-		
+
 	}
 
 	/**NAME : newNikoNikoForUserPOST
@@ -724,6 +730,7 @@ public class UserController extends ViewBaseController<User> {
 			}
 		}
 
+		model.addAttribute("title", "Mes votes !" );
 		model.addAttribute("mood", this.getUserLastMood(this.checkSessionId()));
 		model.addAttribute("good", good);
 		model.addAttribute("medium", medium);
@@ -762,6 +769,8 @@ public class UserController extends ViewBaseController<User> {
 			}
 		}
 
+		model.addAttribute("title", "Tous les votes");
+		model.addAttribute("mood", this.getUserLastMood(this.checkSessionId()));
 		model.addAttribute("good", good);
 		model.addAttribute("medium", medium);
 		model.addAttribute("bad", bad);
@@ -779,4 +788,138 @@ public class UserController extends ViewBaseController<User> {
 		return userCrud.findByLogin(userLogin).getId();
 	}
 
+
+	/**
+	 * NikoNiko associated from Verticale
+	 * @param model
+	 * @param userId
+	 * @return
+	 */
+	@RequestMapping(path = "{userId}" + PATH + SHOW_GRAPH_VERTICALE, method = RequestMethod.GET)
+	public String getNikoFromVerticale(Model model, @PathVariable Long userId){
+		User user = super.getItem(userId);
+		Long verticaleId = user.getVerticale().getId();
+		List<BigInteger> listId = verticaleCrud.getNikoNikoFromVerticale(verticaleId);
+		List<Long> listNikoId = new ArrayList<Long>();
+		List<NikoNiko> listNiko = new ArrayList<NikoNiko>();
+		int nbMood = 0;
+
+		if (!listId.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
+			nbMood =1;
+			for (BigInteger id : listId) {
+				listNikoId.add(id.longValue());
+			}
+			listNiko =  (List<NikoNiko>) nikoCrud.findAll(listNikoId);
+		}
+
+
+		int good = 0;
+		int medium = 0;
+		int bad = 0;
+
+		for (int i = 0; i < listNiko.size(); i++) {
+			if (listNiko.get(i).getMood() == 3) {
+				good++;
+			}else if(listNiko.get(i).getMood() == 2){
+				medium++;
+			}else{
+				bad++;
+			}
+		}
+
+		model.addAttribute("title", verticaleCrud.findOne(verticaleId).getName());
+		model.addAttribute("mood", nbMood);
+		model.addAttribute("good", good);
+		model.addAttribute("medium", medium);
+		model.addAttribute("bad", bad);
+		model.addAttribute("back", PATH + MENU_PATH);
+		return "graphs" + PATH + "pie";
+	}
+
+	@RequestMapping(path = "{userId}" + PATH + SHOW_GRAPH_TEAM, method = RequestMethod.GET)
+	public String getNikoFromTeam(Model model, @PathVariable Long userId){
+
+		String LAST_WORD = null;
+
+		ArrayList<Team> teamList = new ArrayList<Team>();
+
+		teamList = findAllTeamsForUser(userId);
+
+		if (teamList.size()>1) {
+		Long teamId = teamList.get(1).getId();
+
+		List<BigInteger> listId = teamCrud.getNikoNikoFromTeam(teamId);
+		List<Long> listNikoId = new ArrayList<Long>();
+		List<NikoNiko> listNiko = new ArrayList<NikoNiko>();
+		int nbMood = 0;
+
+		if (!listId.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
+			nbMood = 1;
+			for (BigInteger id : listId) {
+				listNikoId.add(id.longValue());
+			}
+			listNiko =  (List<NikoNiko>) nikoCrud.findAll(listNikoId);
+		}
+
+		int good = 0;
+		int medium = 0;
+		int bad = 0;
+
+		for (int i = 0; i < listNiko.size(); i++) {
+			if (listNiko.get(i).getMood() == 3) {
+				good++;
+			}else if(listNiko.get(i).getMood() == 2){
+				medium++;
+			}else{
+				bad++;
+			}
+		}
+
+		model.addAttribute("title", teamCrud.findOne(teamId).getName());
+		model.addAttribute("mood", nbMood);
+		model.addAttribute("good", good);
+		model.addAttribute("medium", medium);
+		model.addAttribute("bad", bad);
+		model.addAttribute("back", PATH + MENU_PATH);
+		LAST_WORD = "pieTeam";
+		}else{
+			Long teamId = teamList.get(1).getId();
+
+			List<BigInteger> listId = teamCrud.getNikoNikoFromTeam(teamId);
+			List<Long> listNikoId = new ArrayList<Long>();
+			List<NikoNiko> listNiko = new ArrayList<NikoNiko>();
+			int nbMood = 0;
+
+			if (!listId.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
+				nbMood = 1;
+				for (BigInteger id : listId) {
+					listNikoId.add(id.longValue());
+				}
+				listNiko =  (List<NikoNiko>) nikoCrud.findAll(listNikoId);
+			}
+
+			int good = 0;
+			int medium = 0;
+			int bad = 0;
+
+			for (int i = 0; i < listNiko.size(); i++) {
+				if (listNiko.get(i).getMood() == 3) {
+					good++;
+				}else if(listNiko.get(i).getMood() == 2){
+					medium++;
+				}else{
+					bad++;
+				}
+			}
+
+			model.addAttribute("title", teamCrud.findOne(teamId).getName());
+			model.addAttribute("mood", nbMood);
+			model.addAttribute("good", good);
+			model.addAttribute("medium", medium);
+			model.addAttribute("bad", bad);
+			model.addAttribute("back", PATH + MENU_PATH);
+			LAST_WORD = "pie";
+		}
+		return "graphs" + PATH + LAST_WORD;
+	}
 }
