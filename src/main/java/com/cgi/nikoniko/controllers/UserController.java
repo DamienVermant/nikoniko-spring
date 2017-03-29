@@ -150,7 +150,7 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("item",DumpFields.fielder(super.getItem(idUser)));
 		model.addAttribute("show_nikonikos", DOT + PATH + SHOW_NIKONIKO);
 		model.addAttribute("show_graphique", DOT + PATH + SHOW_GRAPH);
-		model.addAttribute("show_verticale", PATH + VERTICALE + PATH + idverticale + PATH + SHOW_PATH);
+		model.addAttribute("show_verticale", DOT + PATH + SHOW_VERTICAL);
 		model.addAttribute("show_teams", DOT + PATH + SHOW_TEAM);
 		model.addAttribute("show_roles", DOT + PATH + SHOW_ROLE);
 		model.addAttribute("go_delete", DELETE_ACTION);
@@ -881,7 +881,7 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("items",this.getVerticalForUser(idUser));
 		model.addAttribute("show_teams", DOT + PATH + SHOW_VERTICAL);
 		model.addAttribute("back", DOT + PATH + SHOW_PATH);
-		model.addAttribute("add", "addTeams");
+		model.addAttribute("add", "addVerticale");
 
 		return BASE_USER + PATH + SHOW_VERTICAL;
 	
