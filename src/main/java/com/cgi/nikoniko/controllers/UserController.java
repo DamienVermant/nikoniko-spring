@@ -139,7 +139,8 @@ public class UserController extends ViewBaseController<User> {
 		if (userBuffer.getVerticale() == null) {
 			idverticale = 1L;
 
-			userBuffer.setVerticale(verticaleCrud.findOne(3L));
+			userBuffer.setVerticale(verticaleCrud.findOne(1L));
+			userCrud.save(userBuffer);
 		}
 		else {
 			 idverticale = userBuffer.getVerticale().getId();
