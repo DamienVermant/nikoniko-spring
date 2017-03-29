@@ -91,7 +91,7 @@
                 <button onclick="location.href='showGraph'" class="myresults"> My Results </button>
                 <button onclick="location.href='showGraphAll'" class="allresults"> ALL Results </button>
                 <button onclick="location.href='showGraphVerticale'" class="resultsverticale"> Results Verticale </button>
-                <button onclick="location.href='showGraphTeam'" class="resultsteam"> Results team </button>
+                <button onclick="location.href='showGraphTeam/0'" class="resultsteam"> Results team </button>
                 </div>
             </div>
         </div>

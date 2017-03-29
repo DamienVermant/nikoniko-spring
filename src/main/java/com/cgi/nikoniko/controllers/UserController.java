@@ -122,7 +122,7 @@ public class UserController extends ViewBaseController<User> {
 	@Secured({"ROLE_ADMIN","ROLE_VP"})
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_PATH, method = RequestMethod.GET)
 	public String showItemGet(Model model,@PathVariable Long idUser) {
-		
+
 		Long idverticale = null;
 
 		User userBuffer = new User();
@@ -150,7 +150,7 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("show_roles", DOT + PATH + SHOW_ROLE);
 		model.addAttribute("go_delete", DELETE_ACTION);
 		model.addAttribute("go_update", UPDATE_ACTION);
-		
+
 
 		return BASE_USER + PATH + SHOW_PATH;
 	}
@@ -785,57 +785,21 @@ public class UserController extends ViewBaseController<User> {
 		return "graphs" + PATH + "pie";
 	}
 
-	@RequestMapping(path = "{userId}" + PATH + SHOW_GRAPH_TEAM, method = RequestMethod.GET)
-	public String getNikoFromTeam(Model model, @PathVariable Long userId){
+	@RequestMapping(path = "{userId}" + PATH + SHOW_GRAPH_TEAM + PATH + "{nbTable}", method = RequestMethod.GET)
+	public String getNikoFromTeam(Model model, @PathVariable Long userId, @PathVariable int nbTable){
 
 		String LAST_WORD = null;
 
 		ArrayList<Team> teamList = new ArrayList<Team>();
+		ArrayList<String> teamName = new ArrayList<String>();
 
 		teamList = findAllTeamsForUser(userId);
 
-		if (teamList.size()>1) {
-		Long teamId = teamList.get(1).getId();
-
-		List<BigInteger> listId = teamCrud.getNikoNikoFromTeam(teamId);
-		List<Long> listNikoId = new ArrayList<Long>();
-		List<NikoNiko> listNiko = new ArrayList<NikoNiko>();
-		int nbMood = 0;
-
-		if (!listId.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
-			nbMood = 1;
-			for (BigInteger id : listId) {
-				listNikoId.add(id.longValue());
+			for (int i = 0; i < teamList.size(); i++) {
+				teamName.add(teamList.get(i).getName());
 			}
-			listNiko =  (List<NikoNiko>) nikoCrud.findAll(listNikoId);
-		}
 
-		int good = 0;
-		int medium = 0;
-		int bad = 0;
-
-		for (int i = 0; i < listNiko.size(); i++) {
-			if (listNiko.get(i).getMood() == 3) {
-				good++;
-			}else if(listNiko.get(i).getMood() == 2){
-				medium++;
-			}else{
-				bad++;
-			}
-		}
-
-		model.addAttribute("title", teamCrud.findOne(teamId).getName());
-		model.addAttribute("mood", nbMood);
-		model.addAttribute("good", good);
-		model.addAttribute("medium", medium);
-		model.addAttribute("bad", bad);
-		model.addAttribute("back", PATH + MENU_PATH);
-		LAST_WORD = "pieTeam";
-		
-		}
-		
-		else{
-			Long teamId = teamList.get(1).getId();
+		Long teamId = teamList.get(nbTable).getId();
 
 			List<BigInteger> listId = teamCrud.getNikoNikoFromTeam(teamId);
 			List<Long> listNikoId = new ArrayList<Long>();
@@ -865,13 +829,14 @@ public class UserController extends ViewBaseController<User> {
 			}
 			
 			model.addAttribute("title", teamCrud.findOne(teamId).getName());
+			model.addAttribute("nameteam", teamName);
 			model.addAttribute("mood", nbMood);
 			model.addAttribute("good", good);
 			model.addAttribute("medium", medium);
 			model.addAttribute("bad", bad);
 			model.addAttribute("back", PATH + MENU_PATH);
-			LAST_WORD = "pie";
-		}
+			LAST_WORD = "pieTeam";
+
 		return "graphs" + PATH + LAST_WORD;
 	}
 }
