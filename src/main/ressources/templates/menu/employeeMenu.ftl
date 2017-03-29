@@ -37,7 +37,10 @@
 				<div class="col-lg-12">
 					<div class="align">
 					<button onclick="location.href='changer_mdp.html'" class="password"> Préférences (KO) </button>
-					<button onclick="location.href='vote.html'" class="vote"> Modifier vote (KO) </button>
+					<#if true>
+						<button onclick="location.href='${add_nikoniko}'" class="vote"> Modifier vote </button>
+					<#else>
+					</#if>
 					<button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
 					</div>
 				</div>
@@ -52,6 +55,25 @@
 
 <hr>
 
-<div class="text"> <a href="${add_nikoniko}"> Donner votre satisfaction ! </a> </div>
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="col-lg-12">
+			- <a href="${pie_chart}"> Voir vos résultats <a> <br>
+			<#if false>
+				- <a href="${add_nikoniko}"> Donner votre satisfaction ! </a>
+			<#else>
+				- <a href="${add_nikoniko}"> Pas encore voté... Go ? </a>
+			</#if>
+		</div>
+	</div>
+</div>
 
-<a href="${pie_chart}"> Graph <a>
+<!-- FOOTER -->
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="col-lg-12">
+			<div class="copyright">&copy; Niko-Niko CGI 2017</div>
+		</div>
+	</div>
+</div>
+

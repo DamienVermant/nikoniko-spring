@@ -34,8 +34,10 @@
 			<div class="row-fluid">
 				<div class="col-lg-12">
 					<div class="align">
-					<button onclick="location.href='changer_mdp.html'" class="password"> Préférences (KO) </button>
-					<button onclick="location.href='menu_employe.html'" class="vote"> Voter plus tard (KO)</button>
+					<button onclick="location.href=''" class="password"> Préférences (KO) </button>
+					<#if false>
+						<button onclick="location.href='/menu'" class="vote"> Retour </button>
+					</#if>
 					<button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
 					</div>
 				</div>
@@ -86,7 +88,11 @@
 			<center>
 				<#include "../includable/security/securityToken.ftl">
 				<TEXTAREA style="margin-top: 30px" name="comment" rows=5 cols=60 placeholder="Ecrire votre commentaire..."></TEXTAREA> <br>
-				<button class="buttons" onclick="location.href='/menu'"> Valider </button>
+				<#if false>
+					<button name="mood" value="0" class="buttons" onclick="location.href='/menu'"> Voter plus tard </button>
+				<#else>
+					<button name="mood" value="0" class="buttons" onclick="location.href='/menu'"> Voter plus tard </button>
+				</#if>
 				</form>
 			</center>
 		</div>
@@ -104,36 +110,3 @@
 </body>
 </html>
 
-<!-- COMMENT TO TEST
-<head>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-</head>
-<body>
-	<h1>${page}</h1>
-	<form action = "${create_item}" method = "POST">
-        <table class="table table-bordered table-hover">
-            <#list sortedFields as field>
-                <#if field != "id">
-                    <#list item?keys as key>
-                        <#if key == field>
-                            <tr>
-                                <th>${key}</th>
-                                <td>
-                                    <input type="text" name = "${key}">
-                                </td>
-                            </tr>
-                        </#if>
-                    </#list>
-                </#if>
-            </#list>
-        </table>
-        <input type="submit" value="create"><br>
-        <#include "../includable/security/securityToken.ftl">
-    </form>
-    <#if item["id"]??>
-        <a href="${back}">Back</a><br>
-    <#else>
-        <a href="${back}">Back</a><br>
-    </#if>
-</body>
--->

@@ -2,8 +2,12 @@ package com.cgi.nikoniko.controllers;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.Days;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,9 +16,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
 import com.cgi.nikoniko.dao.IRoleCrudRepository;
 import com.cgi.nikoniko.dao.IUserCrudRepository;
 import com.cgi.nikoniko.dao.IUserHasRoleCrudRepository;
+import com.cgi.nikoniko.models.tables.NikoNiko;
 import com.cgi.nikoniko.models.tables.RoleCGI;
 import com.cgi.nikoniko.models.tables.User;
 
@@ -29,6 +35,9 @@ public class MenuController  {
 
 	@Autowired
 	IRoleCrudRepository roleCrud;
+	
+	@Autowired
+	INikoNikoCrudRepository nikoCrud;
 
 	public final static String DOT = ".";
 	public final static String PATH = "/";
@@ -59,9 +68,12 @@ public class MenuController  {
 
 	@RequestMapping(path = "/menu", method = RequestMethod.GET)
 	public String index(Model model, String login) {
+		
+		UserController userControler = new UserController();
 
 		model.addAttribute("page","MENU");
-
+		
+		model.addAttribute("status", this.checkDateNikoNiko(this.getUserInformations().getId()));
 		model.addAttribute("roles",this.getConnectUserRole());
 		model.addAttribute("auth",this.getUserInformations().getFirstname());
 		model.addAttribute("go_own_nikoniko", PATH + "user" + PATH + this.getUserInformations().getId() + PATH + "link");
@@ -78,6 +90,10 @@ public class MenuController  {
 		model.addAttribute("go_user_has_team", GO_USERTEAM);
 		model.addAttribute("go_user_has_role", GO_USERROLE);
 		model.addAttribute("go_role_has_function", GO_ROLEFUNC);
+		
+		// TEST FOR SECURED REDIRECTION
+		
+		model.addAttribute("id",this.getUserInformations().getId());
 		
 		
 		return BASE_MENU + PATH + "mainMenu";
@@ -174,6 +190,39 @@ public class MenuController  {
 			roleNames.add(roleList.get(i).getName());
 		}
 		return roleNames;
+	}
+	
+	// TODO : THIS FUNCTION CAN BE GENERIC (USED IN USERCONTROLLER)
+	public Boolean checkDateNikoNiko(Long idUser){
+
+		Boolean updateNiko = true;
+		Date todayDate = new Date();
+
+		Long idMaxNiko = userCrud.getLastNikoNikoUser(idUser);
+
+		if (idMaxNiko == null) {
+			
+			updateNiko = false;
+		}
+		
+		else {
+			
+			NikoNiko lastNiko = nikoCrud.findOne(idMaxNiko);
+			Date entryDate = lastNiko.getEntry_date();
+
+			java.util.Date eDate = new java.util.Date(entryDate.getTime());
+
+			DateTime eDateClean = new DateTime(eDate,DateTimeZone.forID( "Europe/Paris" ));
+			DateTime todayDateClean = new DateTime(todayDate,DateTimeZone.forID( "Europe/Paris" ));
+
+			Days diff = Days.daysBetween(eDateClean, todayDateClean);
+			
+			if (entryDate == null || (diff.getDays()) > 1) {
+				updateNiko = false;
+			} 
+		}
+		
+		return updateNiko;
 	}
 
 }
