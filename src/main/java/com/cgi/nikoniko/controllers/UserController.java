@@ -27,6 +27,7 @@ import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
 import com.cgi.nikoniko.models.tables.NikoNiko;
 import com.cgi.nikoniko.models.tables.RoleCGI;
 import com.cgi.nikoniko.models.tables.User;
+import com.cgi.nikoniko.models.tables.Verticale;
 import com.cgi.nikoniko.dao.IRoleCrudRepository;
 import com.cgi.nikoniko.dao.ITeamCrudRepository;
 import com.cgi.nikoniko.dao.IUserCrudRepository;
@@ -60,8 +61,12 @@ public class UserController extends ViewBaseController<User> {
 	public final static String SHOW_TEAM = "showTeam";
 	public final static String SHOW_ROLE = "showRole";
 	public final static String SHOW_LINK = "link";
+	public final static String SHOW_VERTICAL = "showVerticale";
+	
 	public final static String ADD_TEAM = "addTeams";
 	public final static String ADD_ROLE = "addRoles";
+	public final static String ADD_VERTICAL = "addVerticale";
+	
 	public final static String REDIRECT = "redirect:";
 
 	public final static int TIME = 1;
@@ -839,4 +844,228 @@ public class UserController extends ViewBaseController<User> {
 
 		return "graphs" + PATH + LAST_WORD;
 	}
+	
+	
+	
+	
+	// TODO : RELATION USER -> VERTICAL
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 *
+	 * ASSOCIATION USER --> VERTICAL
+	 *
+	 */
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/**NAME : showTeamsForUserGET
+	 *
+	 * RELATION USER HAS TEAM
+	 *
+	 * @param model
+	 * @param id
+	 * @return
+	 */
+
+	//@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP"})
+	@RequestMapping(path = "{idUser}" + PATH + SHOW_VERTICAL, method = RequestMethod.GET)
+	public String showVerticalForUserGET(Model model,@PathVariable Long idUser) {
+
+		User userBuffer = new User();
+		userBuffer = userCrud.findOne(idUser);
+
+		model.addAttribute("page",userBuffer.getRegistration_cgi());
+		model.addAttribute("sortedFields",Verticale.FIELDS);
+		model.addAttribute("items",this.getVerticalForUser(idUser));
+		model.addAttribute("show_teams", DOT + PATH + SHOW_VERTICAL);
+		model.addAttribute("back", DOT + PATH + SHOW_PATH);
+		model.addAttribute("add", "addTeams");
+
+		return BASE_USER + PATH + SHOW_VERTICAL;
+	
+	}
+	
+	// TODO : ARRAYLIST CAN BE CONVERT TO A LONG
+	public ArrayList<Verticale> getVerticalForUser(Long idUser){
+
+		ArrayList<Verticale> verticaleList = new ArrayList<Verticale>();
+		
+		Long idVerticale = userCrud.getUserVertical(idUser);
+		
+		verticaleList.add(verticaleCrud.findOne(idVerticale));
+		
+		return verticaleList;
+		
+		
+	}
+
+///**NAME : quiTeamPOST
+//*
+//* Delete the selected relation team-user and redirect to the userhasteams view (by using quitTeam())
+//* SHOW POST THAT UPDATE USER RELATION WITH TEAM WHEN A USER QUIT A TEAM
+//*
+//* @param model
+//* @param idUser
+//* @param idTeam
+//* @return
+//*/
+//
+//@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP"})
+//@RequestMapping(path = "{idUser}" + PATH + SHOW_TEAM, method = RequestMethod.POST)
+//public String quiTeamPOST(Model model,@PathVariable Long idUser, Long idTeam) {
+//return quitTeam(idUser, idTeam);
+//}
+//
+///**NAME : addUserInTeamGET
+//*
+//* ADD USER FOR CURRENT TEAM
+//*
+//* @param model
+//* @param idUser
+//* @return
+//*/
+//
+//@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
+//@RequestMapping(path = "{idUser}" + PATH + ADD_TEAM, method = RequestMethod.GET)
+//public <T> String addUserInTeamGET(Model model, @PathVariable Long idUser) {
+//
+//Object userBuffer = new Object();
+//userBuffer = userCrud.findOne(idUser);
+//model.addAttribute("items", DumpFields.listFielder((ArrayList<Team>) teamCrud.findAll()));
+//model.addAttribute("sortedFields",Team.FIELDS);
+//model.addAttribute("page", ((User) userBuffer).getRegistration_cgi());
+//model.addAttribute("go_show", SHOW_ACTION);
+//model.addAttribute("go_create", CREATE_ACTION);
+//model.addAttribute("go_delete", DELETE_ACTION);
+//model.addAttribute("back", DOT + PATH + SHOW_TEAM);
+//model.addAttribute("add", ADD_TEAM);
+//
+//return BASE_USER + PATH + ADD_TEAM;
+//}
+//
+///**NAME : addUserInTeamPOST
+//*
+//* ADD USER FOR CURRENT TEAM
+//*
+//* @param model
+//* @param idUser
+//* @param idTeam
+//* @return
+//*/
+//
+//@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
+//@RequestMapping(path = "{idUser}" + PATH + ADD_TEAM, method = RequestMethod.POST)
+//public <T> String addUserInTeamPOST(Model model, @PathVariable Long idUser, Long idTeam) {
+//return setUsersForTeam(idTeam, idUser);
+//}
+//
+///**NAME : findAllTeamsForUser
+//*
+//* Find all teams related to a user by checking relation table user_has_team
+//*
+//* @param idValue
+//* @return teamList (list of user associated to a team)
+//*/
+//public ArrayList<Team> findAllTeamsForUser(Long idValue) {
+//
+//List<Long> ids = new ArrayList<Long>();
+//ArrayList<Team> teamList = new ArrayList<Team>();
+//
+//List<BigInteger> idsBig = userTeamCrud.findAssociatedTeam(idValue);
+//
+//if (!idsBig.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
+//for (BigInteger id : idsBig) {
+//ids.add(id.longValue());
+//}
+//teamList = (ArrayList<Team>) teamCrud.findAll(ids);
+//}
+//
+//return teamList;
+//}
+//
+///**NAME : setUsersForTeam
+//*
+//* Put an user in a new team by creating a new  association in user_has_team (or modify if exists)
+//*
+//* @param idTeam
+//* @param idUser
+//* @return
+//*/
+//public String setUsersForTeam(Long idTeam,Long idUser){
+//
+//userTeamCrud.save(new UserHasTeam(userCrud.findOne(idUser), teamCrud.findOne(idTeam), new Date()));
+//
+//String redirect = REDIRECT + PATH + BASE_USER + PATH + idUser + PATH + SHOW_TEAM;
+//
+//return redirect;
+//}
+//
+///**NAME : quitTeam
+//*
+//* Set the leaving date in user_has_team table when a user leave a team
+//*
+//* @param idUser
+//* @param idTeam
+//* @return redirect (path redirection after action)
+//*/
+//public String quitTeam(Long idUser, Long idTeam){
+//
+//Date date = new Date();
+//
+//UserHasTeam userHasTeamBuffer = userTeamCrud.findOne(new AssociationItemId(idUser, idTeam));
+//userHasTeamBuffer.setLeavingDate(date);
+//
+//userTeamCrud.save(userHasTeamBuffer);
+//
+//String redirect = REDIRECT + PATH + BASE_USER + PATH + idUser + PATH + SHOW_TEAM;
+//
+//return redirect;
+//}
+//
+///** NAME : getTeamsForUser
+//*
+//* FUNCTION RETURNING ALL TEAM RELATED WITH ONE USER WITH leaving_date = null
+//*
+//* @param idUser
+//* @return
+//*/
+//public ArrayList<Map<String, Object>> getTeamsForUser(Long idUser){
+//
+//ArrayList<Long> ids = new ArrayList<Long>();
+//ArrayList<Team> teamList = new ArrayList<Team>();
+//ArrayList<UserHasTeam> userHasTeamList = new ArrayList<UserHasTeam>();
+//ArrayList<UserHasTeam> userHasTeamListClean = new ArrayList<UserHasTeam>();
+//
+//teamList = findAllTeamsForUser(idUser);
+//
+//for (int i = 0; i < teamList.size(); i++) {
+//userHasTeamList.add(userTeamCrud.findAssociatedUserTeamALL(idUser, teamList.get(i).getId()));
+//
+//if(userHasTeamList.get(i).getLeavingDate() == null){
+//
+//userHasTeamListClean.add(userHasTeamList.get(i));
+//ids.add(userHasTeamList.get(i).getIdRight());
+//
+//}
+//}
+//return DumpFields.listFielder((List<Team>) teamCrud.findAll(ids));
+//}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
