@@ -16,7 +16,6 @@ import org.joda.time.Days;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -98,12 +97,16 @@ public class UserController extends ViewBaseController<User> {
 	protected UserController(Class<User> clazz, String baseURL) {
 		super(clazz, baseURL);
 	}
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 *
 	 * ASSOCIATION USER --> NIKONIKO
 	 *
 	 */
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**NAME : showUserActionsGET
 	 *
@@ -126,12 +129,10 @@ public class UserController extends ViewBaseController<User> {
 		userBuffer = userCrud.findOne(idUser);
 
 		// TODO : WHEN CREATE A USER ASIGN A VERTICAL
-
-		//Long idverticale = userBuffer.getVerticale().getId();
 		
 		// ADD A DEFAUT VERTICALE
 		if (userBuffer.getVerticale() == null) {
-			idverticale = 3L;
+			idverticale = 1L;
 			
 			userBuffer.setVerticale(verticaleCrud.findOne(3L));
 		}
@@ -341,32 +342,16 @@ public class UserController extends ViewBaseController<User> {
 			}
 		}
 	}
-
-//	/**
-//	 * CREATE A NIKONIKO
-//	 * @param model
-//	 * @param niko
-//	 * @param userId
-//	 * @return
-//	 */
-//	@RequestMapping(path = "{userId}/create", method = RequestMethod.POST)
-//	public String createItemPost(Model model, NikoNiko niko, @PathVariable Long userId) {
-//
-//		try {
-//			User user = super.getItem(userId);
-//			niko.setUser(user);
-//			nikonikoCrud.save(niko);
-//		} catch (Exception e) {
-//			 e.printStackTrace();
-//		}
-//		return "redirect:/user/" + userId + "/showNikoNikos";
-//	}
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 *
 	 * ASSOCIATION USER --> TEAM
 	 *
 	 */
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**NAME : showTeamsForUserGET
 	 *
@@ -545,12 +530,16 @@ public class UserController extends ViewBaseController<User> {
 		}
 		return DumpFields.listFielder((List<Team>) teamCrud.findAll(ids));
 	}
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 *
 	 * ASSOCIATION USER --> ROLE
 	 *
 	 */
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**NAME : showRolesForUserGET
 	 *
@@ -663,6 +652,8 @@ public class UserController extends ViewBaseController<User> {
 
 		return BASE_USER + PATH + ADD_ROLE;
 	}
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 *
@@ -670,6 +661,8 @@ public class UserController extends ViewBaseController<User> {
 	 *
 	 *
 	 */
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * ALL NIKONIKO GRAPH FOR AN USER
@@ -744,17 +737,6 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("back", PATH + MENU_PATH);
 		return "graphs" + PATH + "pie";
 	}
-
-//	/**
-//	 * Function used to check if the current user don't try to hack url
-//	 *
-//	 * @return the id of the user of the current session
-//	 */
-//	public Long checkSessionId(){
-//		String userLogin =  super.checkSession().getName();
-//		return userCrud.findByLogin(userLogin).getId();
-//	}
-
 
 	/**
 	 * NikoNiko associated from Verticale
@@ -849,7 +831,10 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("bad", bad);
 		model.addAttribute("back", PATH + MENU_PATH);
 		LAST_WORD = "pieTeam";
-		}else{
+		
+		}
+		
+		else{
 			Long teamId = teamList.get(1).getId();
 
 			List<BigInteger> listId = teamCrud.getNikoNikoFromTeam(teamId);
@@ -878,7 +863,7 @@ public class UserController extends ViewBaseController<User> {
 					bad++;
 				}
 			}
-
+			
 			model.addAttribute("title", teamCrud.findOne(teamId).getName());
 			model.addAttribute("mood", nbMood);
 			model.addAttribute("good", good);

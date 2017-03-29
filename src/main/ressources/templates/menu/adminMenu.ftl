@@ -43,7 +43,7 @@
 
 <hr>
 
-<div class="welcome"> Bienvenue : ${auth} </div>
+<div class="welcome"> Bienvenue : ${auth} (connecté en tant que  : ${roles}) </div>
 
 <hr>
 
