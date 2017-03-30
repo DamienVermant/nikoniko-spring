@@ -2,13 +2,10 @@ package com.cgi.nikoniko.dao;
 
 import java.math.BigInteger;
 import java.util.List;
-import java.util.Set;
-
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.cgi.nikoniko.dao.base.IBaseCrudRepository;
-import com.cgi.nikoniko.models.tables.NikoNiko;
 import com.cgi.nikoniko.models.tables.Verticale;
 
 public interface IVerticaleCrudRepository extends IBaseCrudRepository<Verticale>{

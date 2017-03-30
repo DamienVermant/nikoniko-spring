@@ -1,5 +1,6 @@
 package com.cgi.nikoniko.controllers;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -16,7 +17,9 @@ import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
 import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
 import com.cgi.nikoniko.dao.ITeamCrudRepository;
 import com.cgi.nikoniko.dao.IUserCrudRepository;
+import com.cgi.nikoniko.dao.IUserHasTeamCrudRepository;
 import com.cgi.nikoniko.dao.IVerticaleCrudRepository;
+import com.cgi.nikoniko.models.tables.NikoNiko;
 import com.cgi.nikoniko.models.tables.Team;
 import com.cgi.nikoniko.models.tables.User;
 import com.cgi.nikoniko.models.tables.Verticale;
@@ -47,6 +50,9 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 
 	@Autowired
 	IVerticaleCrudRepository verticaleCrud;
+
+	@Autowired
+	IUserHasTeamCrudRepository userTeamCrud;
 
 	@Autowired
 	INikoNikoCrudRepository nikoCrud;
@@ -157,5 +163,80 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 		super.deleteItem(id);
 		return deleteRedirect;
 	}
+
+
+
+
+	/**
+	 * SELECTION NIKONIKO PAR RAPPORT A UN ENSEMBLE (TEAM, VERTICALE, ETC...)
+	 */
+
+	public ArrayList<NikoNiko> findNikoNikosOfAVerticale(Long idVert){
+		ArrayList<NikoNiko> vertNikonikos = new ArrayList<NikoNiko>();
+
+		ArrayList<Team> vertTeams = new ArrayList<Team>();
+
+		if (!verticaleCrud.findOne(idVert).getTeams().isEmpty()) {
+			vertTeams.addAll(verticaleCrud.findOne(idVert).getTeams());
+
+			for (Team team : vertTeams) {
+				vertNikonikos.addAll(findNikoNikosOfATeam(team.getId()));
+			}
+		}
+				return vertNikonikos;
+	}
+
+	public ArrayList<NikoNiko> findNikoNikosOfATeam(Long idTeam){
+
+		ArrayList<User> usersOfTeam = findUsersOfATeam(idTeam);
+
+		ArrayList<NikoNiko> nikonikos = new ArrayList<NikoNiko>();
+		//Partie a externaliser en fonction findAllNikoNikoForAUser(idUser) => probablement deja existante
+		if (!usersOfTeam.isEmpty()) {
+			for (User user : usersOfTeam) {
+				if (!user.getNikoNikos().isEmpty()) {
+					nikonikos.addAll(user.getNikoNikos());
+				}
+			}
+		}
+		//fin de partie a externaliser
+
+		return nikonikos;
+	}
+
+	public ArrayList<User> findUsersOfATeam(Long idValue) {
+
+		List<Long> ids = new ArrayList<Long>();
+		ArrayList<User> userList = new ArrayList<User>();
+		List<BigInteger> idsBig = userTeamCrud.findAssociatedUser(idValue);
+
+		if (!idsBig.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
+			for (BigInteger id : idsBig) {
+				ids.add(id.longValue());
+			}
+			userList = (ArrayList<User>) userCrud.findAll(ids);
+		}
+		return userList;
+	}
+
+	/**se trouve a l adresse verticale/idTeam/mesnikonikos
+	 *
+	 * @param model
+	 * @param idTeam
+	 * @return
+	 */
+	@RequestMapping(path = "{idVert}/mesnikonikos", method = RequestMethod.GET)
+	public String controlleurBidon(Model model, @PathVariable Long idVert) {
+
+		ArrayList<NikoNiko> nikos = findNikoNikosOfAVerticale(idVert);
+
+		List<Long> ids = new ArrayList<Long>();
+
+		model.addAttribute("sortedFields",NikoNiko.FIELDS);
+		model.addAttribute("items",DumpFields.listFielder(nikos));
+
+		return "nikoniko/testFindNikopage";
+	}
+
 
 }

@@ -270,4 +270,63 @@ public class TeamController extends ViewBaseController<Team> {
 		return DumpFields.listFielder((List<User>) userCrud.findAll(ids));
 	}
 
+
+	/**
+	 * SELECTION NIKONIKO PAR RAPPORT A UN ENSEMBLE (TEAM, VERTICALE, ETC...)
+	 */
+
+	public ArrayList<NikoNiko> findNikoNikosOfATeam(Long idTeam){
+
+		ArrayList<User> usersOfTeam = findUsersOfATeam(idTeam);
+
+		ArrayList<NikoNiko> nikonikos = new ArrayList<NikoNiko>();
+		//Partie a externaliser en fonction findAllNikoNikoForAUser(idUser) => probablement deja existante
+		if (!usersOfTeam.isEmpty()) {
+			for (User user : usersOfTeam) {
+				if (!user.getNikoNikos().isEmpty()) {
+					nikonikos.addAll(user.getNikoNikos());
+				}
+			}
+		}
+		//fin de partie a externaliser
+
+		return nikonikos;
+	}
+
+	public ArrayList<User> findUsersOfATeam(Long idValue) {
+
+		List<Long> ids = new ArrayList<Long>();
+		ArrayList<User> userList = new ArrayList<User>();
+		List<BigInteger> idsBig = userTeamCrud.findAssociatedUser(idValue);
+
+		if (!idsBig.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
+			for (BigInteger id : idsBig) {
+				ids.add(id.longValue());
+			}
+			userList = (ArrayList<User>) userCrud.findAll(ids);
+		}
+		return userList;
+	}
+
+	/**se trouve a l adresse team/idTeam/mesnikonikos
+	 *
+	 * @param model
+	 * @param idTeam
+	 * @return
+	 */
+	@RequestMapping(path = "{idTeam}/mesnikonikos", method = RequestMethod.GET)
+	public String controlleurBidon(Model model, @PathVariable Long idTeam) {
+
+		ArrayList<NikoNiko> nikos = findNikoNikosOfATeam(idTeam);
+
+		List<Long> ids = new ArrayList<Long>();
+
+		model.addAttribute("sortedFields",NikoNiko.FIELDS);
+		model.addAttribute("items",DumpFields.listFielder(nikos));
+
+		return "nikoniko/testFindNikopage";
+	}
+
+
+
 }

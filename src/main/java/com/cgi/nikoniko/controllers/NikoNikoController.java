@@ -1,5 +1,6 @@
 package com.cgi.nikoniko.controllers;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -15,8 +16,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
 import com.cgi.nikoniko.dao.IChangeDatesCrudRepository;
 import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
+import com.cgi.nikoniko.dao.IUserCrudRepository;
+import com.cgi.nikoniko.dao.IUserHasTeamCrudRepository;
 import com.cgi.nikoniko.models.tables.ChangeDates;
 import com.cgi.nikoniko.models.tables.NikoNiko;
+import com.cgi.nikoniko.models.tables.User;
 import com.cgi.nikoniko.utils.DumpFields;
 
 @Controller
@@ -35,6 +39,12 @@ public class NikoNikoController extends ViewBaseController<NikoNiko> {
 
 	@Autowired
 	INikoNikoCrudRepository nikoCrud;
+
+	@Autowired
+	IUserCrudRepository userCrud;
+
+	@Autowired
+	IUserHasTeamCrudRepository userHasTeamCrud;
 
 	@Autowired
 	IChangeDatesCrudRepository changeCrud;
