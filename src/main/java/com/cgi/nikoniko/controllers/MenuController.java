@@ -59,6 +59,10 @@ public class MenuController  {
 	public final static String GO_USERTEAM = PATH + "user_has_team" + PATH;
 	public final static String GO_USERROLE = PATH + "user_has_role" + PATH;
 	public final static String GO_ROLEFUNC = PATH + "role_has_function" + PATH;
+	
+	// TODO : CHANGE TYPE OF TIME
+	// 0.99999... = 1 
+	public final static double TIME = 0.9999999999;
 
 
 	// TODO : GESTION DES PATHS ET DES @SECURED
@@ -224,7 +228,7 @@ public class MenuController  {
 
 			Days diff = Days.daysBetween(eDateClean, todayDateClean);
 
-			if (entryDate == null || (diff.getDays()) > 1) {
+			if (entryDate == null || (diff.getDays()) > TIME) {
 				updateNiko = false;
 			}
 		}
@@ -248,6 +252,5 @@ public class MenuController  {
 		}
 
 	}
-
 
 }
