@@ -135,5 +135,7 @@ public class NikoNikoController extends ViewBaseController<NikoNiko> {
 		}
 		return "redirect:/nikoniko/1/link";
 	}
+	
+	
 
 }

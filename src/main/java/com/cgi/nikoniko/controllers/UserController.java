@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Days;
+import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
@@ -55,6 +56,9 @@ public class UserController extends ViewBaseController<User> {
 
 	public final static String SHOW_NIKONIKO = "showNikoNikos";
 	public final static String SHOW_GRAPH = "showGraph";
+	public final static String SHOW_GRAPH_MONTH = "showGraphMonth";
+	public final static String SHOW_GRAPH_WEEK = "showGraphWeek";
+	public final static String SHOW_GRAPH_DATE = "showDate";
 	public final static String SHOW_GRAPH_ALL = "showGraphAll";
 	public final static String SHOW_GRAPH_VERTICALE = "showGraphVerticale";
 	public final static String SHOW_GRAPH_TEAM = "showGraphTeam";
@@ -684,15 +688,48 @@ public class UserController extends ViewBaseController<User> {
 		User user = super.getItem(idUser);
 		Set<NikoNiko> niko =  user.getNikoNikos();
 		List<NikoNiko> listOfNiko = new ArrayList<NikoNiko>(niko);
+		List<NikoNiko> nikotoday = getNikoToday(listOfNiko);
 
 		int good = 0;
 		int medium = 0;
 		int bad = 0;
 
-		for (int i = 0; i < listOfNiko.size(); i++) {
-			if (listOfNiko.get(i).getMood() == 3) {
+		for (int i = 0; i < nikotoday.size(); i++) {
+			if (nikotoday.get(i).getMood() == 3) {
 				good++;
-			}else if(listOfNiko.get(i).getMood() == 2){
+			}else if(nikotoday.get(i).getMood() == 2){
+				medium++;
+			}else{
+				bad++;
+			}
+		}
+
+		model.addAttribute("title", "Mes votes !" );
+		model.addAttribute("mood", this.getUserLastMood(userCrud.findByLogin(super.checkSession().getName()).getId()));
+		model.addAttribute("good", good);
+		model.addAttribute("medium", medium);
+		model.addAttribute("bad", bad);
+		model.addAttribute("back", PATH + MENU_PATH);
+		return "graphs" + PATH + "pie";
+	}
+
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
+	@RequestMapping(path = "{idUser}" + PATH + SHOW_GRAPH_MONTH, method = RequestMethod.GET)
+	public String showPieMonth(Model model, @PathVariable Long idUser) {
+
+		User user = super.getItem(idUser);
+		Set<NikoNiko> niko =  user.getNikoNikos();
+		List<NikoNiko> listOfNiko = new ArrayList<NikoNiko>(niko);
+		List<NikoNiko> nikomonth = getNikoMonth(listOfNiko);
+
+		int good = 0;
+		int medium = 0;
+		int bad = 0;
+
+		for (int i = 0; i < nikomonth.size(); i++) {
+			if (nikomonth.get(i).getMood() == 3) {
+				good++;
+			}else if(nikomonth.get(i).getMood() == 2){
 				medium++;
 			}else{
 				bad++;
@@ -846,6 +883,100 @@ public class UserController extends ViewBaseController<User> {
 		return "graphs" + PATH + LAST_WORD;
 	}
 
+	@RequestMapping(path = "{userId}" + PATH + SHOW_GRAPH_DATE , method = RequestMethod.GET)
+	public String getNikoWithDate(Model model, @PathVariable Long userId){
+
+		User user = super.getItem(userId);
+		Set<NikoNiko> niko =  user.getNikoNikos();
+		List<NikoNiko> listOfNiko = new ArrayList<NikoNiko>(niko);
+
+		Date firstniko = listOfNiko.get(1).getEntry_date();
+		DateTime nikodate = new DateTime(firstniko);
+
+		int monthDay = nikodate.getDayOfMonth();
+		int weekDay = nikodate.getDayOfWeek();
+		int yearDay = nikodate.getDayOfYear();
+		int month = nikodate.monthOfYear().get();
+		int week = nikodate.weekOfWeekyear().get();
+
+		return null;
+	}
+
+	public List<NikoNiko> getNikoToday(List<NikoNiko> listOfNiko){
+
+		LocalDate nikodate = new LocalDate();
+		LocalDate date;
+		List<NikoNiko> nikotoday = new ArrayList<NikoNiko>();
+
+		for (int i = 0; i < listOfNiko.size(); i++) {
+				Date firstniko = listOfNiko.get(i).getEntry_date();
+				nikodate = new LocalDate(firstniko);
+				date = new LocalDate();
+				if (nikodate.isEqual(date)) {
+					nikotoday.add(listOfNiko.get(i));
+				}
+		}
+
+		return nikotoday;
+	}
+
+	public List<NikoNiko> getNikoWeek(List<NikoNiko> listOfNiko){
+
+		LocalDate nikodate = new LocalDate();
+		LocalDate date= new LocalDate();
+		LocalDate interval1 = date.withDayOfWeek(1);
+		LocalDate interval2 = date.withDayOfWeek(5);
+
+
+		List<NikoNiko> nikoWeek = new ArrayList<NikoNiko>();
+
+		for (int i = 0; i < listOfNiko.size(); i++) {
+				Date firstniko = listOfNiko.get(i).getEntry_date();
+				nikodate = new LocalDate(firstniko);
+
+
+
+				if (nikodate.isAfter(interval1) && nikodate.isBefore(interval2)
+						|| nikodate.isEqual(interval1)
+						|| nikodate.isEqual(interval2)) {
+					nikoWeek.add(listOfNiko.get(i));
+				}
+		}
+
+		return nikoWeek;
+	}
+
+	public List<NikoNiko> getNikoMonth(List<NikoNiko> listOfNiko){
+
+		int[] monthDays= {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+		LocalDate nikodate = new LocalDate();
+		LocalDate date= new LocalDate();
+
+		int year = date.getYear();
+		int j;
+		if (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0)){
+            monthDays[1] = 29;
+        };
+        LocalDate interval1 = date.withDayOfMonth(1);
+		LocalDate interval2 = date.withDayOfMonth(monthDays[nikodate.getMonthOfYear()-1]);
+
+
+		List<NikoNiko> nikoMonth = new ArrayList<NikoNiko>();
+
+		for (int i = 0; i < listOfNiko.size(); i++) {
+				Date firstniko = listOfNiko.get(i).getEntry_date();
+				nikodate = new LocalDate(firstniko);
+
+				if (nikodate.isAfter(interval1) && nikodate.isBefore(interval2)
+						|| nikodate.isEqual(interval1)
+						|| nikodate.isEqual(interval2)) {
+					nikoMonth.add(listOfNiko.get(i));
+				}
+		}
+
+		return nikoMonth;
+	}
 
 
 
