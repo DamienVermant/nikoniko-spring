@@ -5,7 +5,7 @@
 </head>
 
 <body>
-	<h1>USERS IN TEAM : ${page}  </h1>
+	<h1>VERTICALE FOR TEAM : ${page}  </h1>
 		<table class="table table-bordered table-hover">
 			<tr>
 				<#list items as item>
@@ -30,7 +30,6 @@
 									<td>${item[key]?string("yyyy:MM:dd HH:mm:ss")}</td>
 								<#else>
 									<td>${item[key]}</td>
-									
 								</#if>
 							</#if>
 						</#list>
@@ -38,13 +37,13 @@
 					<td>
 						<form action = "" method = "POST">
 							<#include "../includable/security/securityToken.ftl">
-							<input type="hidden" name = "idUser" value = "${item["id"]}">
-							<input type="submit" value="Enlever"><br>
+							<input type="hidden" name = "idVerticale" value = "${item["id"]}">
+							<input type="submit" value="Quitter"><br>
 						</form>
 					</td>
 				</tr>
 			</#list>
 		</table>
-	<a href = "${add}"> Add user </a> <br>
-	<a href="${back}"> Back <a>		
+	<a href = "${add}"> Add verticale </a> <br>
+	<a href = "${back}"> Back <a>
 </body>

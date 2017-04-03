@@ -19,10 +19,12 @@ import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
 import com.cgi.nikoniko.dao.ITeamCrudRepository;
 import com.cgi.nikoniko.dao.IUserCrudRepository;
 import com.cgi.nikoniko.dao.IUserHasTeamCrudRepository;
+import com.cgi.nikoniko.dao.IVerticaleCrudRepository;
 import com.cgi.nikoniko.models.association.UserHasTeam;
 import com.cgi.nikoniko.models.tables.NikoNiko;
 import com.cgi.nikoniko.models.tables.Team;
 import com.cgi.nikoniko.models.tables.User;
+import com.cgi.nikoniko.models.tables.Verticale;
 import com.cgi.nikoniko.models.association.base.AssociationItemId;
 import com.cgi.nikoniko.utils.DumpFields;
 
@@ -41,8 +43,12 @@ public class TeamController extends ViewBaseController<Team> {
 	public final static String SHOW_GRAPH = "showGraph";
 	public final static String SHOW_USER = "showUser";
 	public final static String SHOW_NIKO = "showNiko";
-	public final static String VERTICALE = "verticale";
+	public final static String SHOW_VERTICAL = "showVerticale";
+	
+	public final static String ADD_VERTICAL = "addVerticale";
 	public final static String ADD_USER = "addUsers";
+	
+	public final static String VERTICALE = "verticale";
 
 	public final static String REDIRECT = "redirect:";
 
@@ -57,7 +63,10 @@ public class TeamController extends ViewBaseController<Team> {
 
 	@Autowired
 	INikoNikoCrudRepository nikoCrud;
-
+	
+	@Autowired
+	IVerticaleCrudRepository verticaleCrud;
+	
 	public TeamController() {
 		super(Team.class, BASE_URL);
 	}
@@ -69,18 +78,27 @@ public class TeamController extends ViewBaseController<Team> {
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP"})
 	@RequestMapping(path = ROUTE_SHOW, method = RequestMethod.GET)
 	public String showItemGet(Model model,@PathVariable Long id) {
+		
+		Long idverticale = null;
 
 		Team teamBuffer = new Team();
 		teamBuffer = teamCrud.findOne(id);
+		
+		if (teamBuffer.getVerticale() == null) {
+			idverticale = 1L;
+
+			teamBuffer.setVerticale(verticaleCrud.findOne(1L));
+			teamCrud.save(teamBuffer);
+			}
+		else {
+			idverticale = teamBuffer.getVerticale().getId();
+			}
 
 		model.addAttribute("page","TEAM : " + teamBuffer.getName());
 		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
 		model.addAttribute("item",DumpFields.fielder(super.getItem(id)));
 		model.addAttribute("show_users", DOT + PATH + SHOW_USER);
-		if (teamBuffer.getVerticale()!= null) {
-			Long idverticale = teamBuffer.getVerticale().getId();
-			model.addAttribute("show_verticale", PATH + VERTICALE + PATH + idverticale + PATH + SHOW_PATH);
-		}
+		model.addAttribute("show_verticale", DOT + PATH + SHOW_VERTICAL);
 		model.addAttribute("go_index", LIST_ACTION);
 		model.addAttribute("go_delete", DELETE_ACTION);
 		model.addAttribute("go_update", UPDATE_ACTION);
@@ -268,6 +286,113 @@ public class TeamController extends ViewBaseController<Team> {
 		}
 
 		return DumpFields.listFielder((List<User>) userCrud.findAll(ids));
+	}
+	
+	
+	// ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 *
+	 * ASSOCIATION TEAM --> VERTICAL
+	 *
+	 */
+
+	// ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * NAME : showTeamsForUserGET
+	 *
+	 * RELATION USER HAS TEAM
+	 *
+	 * @param model
+	 * @param id
+	 * @return
+	 */
+
+	// @Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP"})
+	@RequestMapping(path = "{idTeam}" + PATH + SHOW_VERTICAL, method = RequestMethod.GET)
+	public String showVerticalForUserGET(Model model, @PathVariable Long idTeam) {
+
+		User userBuffer = new User();
+		userBuffer = userCrud.findOne(idTeam);
+
+		model.addAttribute("page", userBuffer.getRegistration_cgi());
+		model.addAttribute("sortedFields", Verticale.FIELDS);
+		model.addAttribute("items", this.getVerticalForUser(idTeam));
+		model.addAttribute("show_verticale", DOT + PATH + SHOW_VERTICAL);
+		model.addAttribute("back", DOT + PATH + SHOW_PATH);
+		model.addAttribute("add", "addVerticale");
+
+		return BASE_TEAM + PATH + SHOW_VERTICAL;
+
+	}
+
+	// TODO : ARRAYLIST CAN BE CONVERT TO A LONG
+	
+	public ArrayList<Verticale> getVerticalForUser(Long idTeam) {
+		ArrayList<Verticale> verticaleList = new ArrayList<Verticale>();
+		Long idVerticale = teamCrud.getTeamVertical(idTeam);
+		verticaleList.add(verticaleCrud.findOne(idVerticale));
+		return verticaleList;
+	}
+
+	/**
+	 * SHOW VERTICAL TO ADD USER
+	 * 
+	 * @param model
+	 * @param idUser
+	 * @return
+	 */
+	@Secured({ "ROLE_ADMIN", "ROLE_GESTIONNAIRE" })
+	@RequestMapping(path = "{idTeam}" + PATH + ADD_VERTICAL, method = RequestMethod.GET)
+	public <T> String addVerticalForUserGET(Model model,
+			@PathVariable Long idTeam) {
+
+		Object teamBuffer = new Object();
+		teamBuffer = teamCrud.findOne(idTeam);
+		model.addAttribute("items", DumpFields
+				.listFielder((ArrayList<Verticale>) verticaleCrud.findAll()));
+		model.addAttribute("sortedFields", Verticale.FIELDS);
+		model.addAttribute("page", ((Team) teamBuffer).getName());
+		model.addAttribute("go_show", SHOW_ACTION);
+		model.addAttribute("go_create", CREATE_ACTION);
+		model.addAttribute("go_delete", DELETE_ACTION);
+		model.addAttribute("back", DOT + PATH + SHOW_VERTICAL);
+		model.addAttribute("add", ADD_VERTICAL);
+
+		return BASE_TEAM + PATH + ADD_VERTICAL;
+	}
+
+	/**
+	 * ADD ONE VERTICALE TO USER
+	 * 
+	 * @param model
+	 * @param idUser
+	 * @param idTeam
+	 * @return
+	 */
+	@Secured({ "ROLE_ADMIN", "ROLE_GESTIONNAIRE" })
+	@RequestMapping(path = "{idTeam}" + PATH + ADD_VERTICAL, method = RequestMethod.POST)
+	public <T> String addVerticalForUserPOST(Model model,
+			@PathVariable Long idTeam, Long idVertical) {
+		return setVerticalForTeam(idTeam, idVertical);
+	}
+
+	private String setVerticalForTeam(Long idTeam, Long idVertical) {
+
+		String redirect = REDIRECT + PATH + BASE_TEAM + PATH + idTeam + PATH
+				+ SHOW_VERTICAL;
+
+		Team teamBuffer = new Team();
+		Verticale verticaleBuffer = new Verticale();
+
+		teamBuffer = teamCrud.findOne(idTeam);
+		verticaleBuffer = verticaleCrud.findOne(idVertical);
+
+		teamBuffer.setVerticale(verticaleBuffer);
+		teamCrud.save(teamBuffer);
+
+		return redirect;
 	}
 
 }

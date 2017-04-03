@@ -41,6 +41,5 @@
                 </tr>
             </#list>
         </table>
-<a href = "${add}"> Add NikoNiko </a> <br>
 <a href = "${back}"> Back <a>
 </body>

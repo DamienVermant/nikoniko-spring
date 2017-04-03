@@ -52,10 +52,7 @@
 	<div class="row-fluid">
 		<div class="col-lg-12">
 			<div class="row-fluid">
-				<a class="text" href=""> Visualisation des graphes (NOT ACTIVE)</a>
-			</div>
-			<div class="row-fluid">
-				<div class="text"> Administration des tables simples </div>
+				<div class="text"> Administration </div>
 				<ul>
 					<li> <a href="${go_users}"> Users </a> </li>
 					<li> <a href="${go_nikonikos}"> Niko Niko </a> </li>
@@ -66,11 +63,9 @@
 				</ul>
 			</div>
 			<div class="row-fluid">
-				<div class="text"> Administration des tables d'association </div>
+				<div class="text"> Visualisation des graphes </div>
 				<ul>
-					<li> <a href="${go_user_has_team}"> User Has Team </a> </li>
-					<li> <a href="${go_user_has_role}"> User Has Role </a> </li>
-					<li> <a href="${go_role_has_function}"> Role Has Function </li>
+					<li> <a href=""> Menu visualisation </a> </li>
 				</ul>
 			</div>
 		</div>

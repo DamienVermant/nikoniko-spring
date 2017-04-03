@@ -44,7 +44,7 @@
 						<button onclick="location.href=''" class="password"> Préférences </button>
 					<#else>
 					</#if>
-					<#if mood != 0>
+					<#if mood != 0 && status == true>
 						<button onclick="location.href='${add_nikoniko}'" class="vote"> Modifier vote </button>
 					<#else>
 					</#if>
@@ -80,9 +80,9 @@
 			<h2> Niko Niko </h2>
 			
 			- <a href="${pie_chart}"> Voir vos résultats <a> <br>
-			<#if mood != 0>
-			<#else>
+			<#if mood == 0 || status == false>
 				- <a href="${add_nikoniko}"> Pas de vote enregistré... On vote ? </a>
+			<#else>
 			</#if>
 		</div>
 	</div>

@@ -17,11 +17,11 @@
 							<th>${key}</th>
 							<#if items[key]?is_boolean>
 								<td>
-									<input type="text" name = "${key}">
+									<input type="text" name = "${key}" value ="${items[key]?c}">
 								</td>
 							<#elseif items[key]?is_date_like>
 								<td>
-									<input type="text" name = "${key}" value ="${items[key]?string("yyyy/MM/dd HH:mm:ss")}">
+									<input type="text" name = "${key}" value ="${items[key]?string("yyyy/MM/dd")!}">
 								</td>
 							<#else>
 								<td>

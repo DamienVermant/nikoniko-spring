@@ -1,5 +1,7 @@
 package com.cgi.nikoniko.dao;
 
+import java.util.ArrayList;
+
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -25,5 +27,8 @@ public interface IUserCrudRepository extends IBaseCrudRepository<User>{
 
 	@Query(value = "SELECT verticale.id FROM verticale INNER JOIN user ON verticale.id = user.verticale_id where user.id = :idUser", nativeQuery=true)
 	public Long getUserVertical(@Param("idUser") long idUser);
+	
+	@Query(value = "SELECT * FROM user WHERE registration_number LIKE %:name%", nativeQuery=true)
+	public ArrayList<User> getUsers(@Param("name") String name);
 
 }

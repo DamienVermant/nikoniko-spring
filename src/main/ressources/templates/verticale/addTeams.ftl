@@ -1,11 +1,11 @@
-<head>
+ <head>
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
 </head>
 
 <body>
-	<h1>USERS IN TEAM : ${page}  </h1>
+	<h1>TEAMS TO ADD IN VERTICALE : ${page}  </h1>
 		<table class="table table-bordered table-hover">
 			<tr>
 				<#list items as item>
@@ -30,7 +30,6 @@
 									<td>${item[key]?string("yyyy:MM:dd HH:mm:ss")}</td>
 								<#else>
 									<td>${item[key]}</td>
-									
 								</#if>
 							</#if>
 						</#list>
@@ -38,13 +37,12 @@
 					<td>
 						<form action = "" method = "POST">
 							<#include "../includable/security/securityToken.ftl">
-							<input type="hidden" name = "idUser" value = "${item["id"]}">
-							<input type="submit" value="Enlever"><br>
+							<input type="hidden" name = "idTeam" value = "${item["id"]}">
+							<input type="submit" value="add"><br>
 						</form>
 					</td>
 				</tr>
 			</#list>
 		</table>
-	<a href = "${add}"> Add user </a> <br>
-	<a href="${back}"> Back <a>		
+	<a href="${back}"> Back <a>
 </body>
