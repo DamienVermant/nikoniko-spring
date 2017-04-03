@@ -42,7 +42,7 @@ public class User extends SecurityUser {
 	private char sex;
 
 	@Column(name = "registration_number", nullable = false, unique = true)
-	private String registration_cgi;
+	private String registrationcgi;
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
 	private Set<NikoNiko> nikoNikos;
@@ -117,16 +117,16 @@ public class User extends SecurityUser {
 	/**
 	 * @return the registration_cgi
 	 */
-	public String getRegistration_cgi() {
-		return registration_cgi;
+	public String getRegistrationcgi() {
+		return registrationcgi;
 	}
 
 	/**
 	 * @param registration_cgi
 	 *            the registration_cgi to set
 	 */
-	public void setRegistration_cgi(String registration_cgi) {
-		this.registration_cgi = registration_cgi;
+	public void setRegistrationcgi(String registration_cgi) {
+		this.registrationcgi = registration_cgi;
 	}
 
 	/**
@@ -196,7 +196,7 @@ public class User extends SecurityUser {
 
 	public User (Verticale  verticale, String registration_cgi, String login, String password) {
 		super(User.TABLE, User.FIELDS, login, password);
-		this.registration_cgi = registration_cgi;
+		this.registrationcgi = registration_cgi;
 		this.verticale = verticale;
 		this.verticale.getUsers().add(this);
 	}

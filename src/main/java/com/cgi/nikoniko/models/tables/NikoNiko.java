@@ -32,8 +32,8 @@ public class NikoNiko extends DatabaseItem {
 	private int mood;
 
 	@Column(name = "entry_date", nullable = false)
-	private Date entry_date;
-	
+	private Date entryDate;
+
 	@Column(name = "change_date", nullable = true)
 	private Date change_date;
 
@@ -66,15 +66,15 @@ public class NikoNiko extends DatabaseItem {
 	/**
 	 * @return the entry_date
 	 */
-	public Date getEntry_date() {
-		return entry_date;
+	public Date getEntryDate() {
+		return entryDate;
 	}
 
 	/**
 	 * @param entry_date the entry_date to set
 	 */
-	public void setEntry_date(Date entry_date) {
-		this.entry_date = entry_date;
+	public void setEntryDate(Date entryDate) {
+		this.entryDate = entryDate;
 	}
 
 	/**
@@ -127,19 +127,19 @@ public class NikoNiko extends DatabaseItem {
             user.getNikoNikos().add(this);
             }
 	}
-	
-	
+
+
 	@PrePersist
 	public void saveTime(){
-		this.entry_date = new Date();
+		this.entryDate = new Date();
 	}
-	
+
 	@PreUpdate
 	public void updateTime(){
 		this.change_date = new Date();
 	}
-	
-	
+
+
 
 	public NikoNiko() {
 		super(NikoNiko.TABLE, NikoNiko.FIELDS);
@@ -158,7 +158,7 @@ public class NikoNiko extends DatabaseItem {
 		this.user = user;
 		this.user.getNikoNikos().add(this);
 		this.setMood(mood);
-		this.entry_date = entry_date;
+		this.entryDate = entry_date;
 	}
 
 	public NikoNiko(User user, int mood) {
@@ -169,13 +169,13 @@ public class NikoNiko extends DatabaseItem {
 		this(user, mood, entry_date);
 		this.comment = comment;
 	}
-	
+
 	public NikoNiko(User user, int mood, Date entry_date, String comment, Date change_date) {
 		this(user, mood, entry_date);
 		this.comment = comment;
 		this.change_date = change_date;
 	}
-	
+
 
 	//Class to check if given satisfaction is valid with our configuration
 	private static class NikoNikoSatisfaction {

@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -220,7 +217,8 @@ public class MenuController  {
 		else {
 
 			NikoNiko lastNiko = nikoCrud.findOne(idMaxNiko);
-			Date entryDate = lastNiko.getEntry_date();
+
+			Date entryDate = lastNiko.getEntryDate();
 			LocalDate dateEntry = new LocalDate(entryDate);
 
 			if (entryDate == null || (todayDate.isAfter(dateEntry))) {

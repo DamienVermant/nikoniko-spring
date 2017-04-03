@@ -3,9 +3,11 @@ package com.cgi.nikoniko.controllers;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -44,10 +46,10 @@ public class TeamController extends ViewBaseController<Team> {
 	public final static String SHOW_USER = "showUser";
 	public final static String SHOW_NIKO = "showNiko";
 	public final static String SHOW_VERTICAL = "showVerticale";
-	
+
 	public final static String ADD_VERTICAL = "addVerticale";
 	public final static String ADD_USER = "addUsers";
-	
+
 	public final static String VERTICALE = "verticale";
 
 	public final static String REDIRECT = "redirect:";
@@ -63,14 +65,14 @@ public class TeamController extends ViewBaseController<Team> {
 
 	@Autowired
 	INikoNikoCrudRepository nikoCrud;
-	
+
 	@Autowired
 	IVerticaleCrudRepository verticaleCrud;
-	
+
 	public TeamController() {
 		super(Team.class, BASE_URL);
 	}
-	
+
 	// ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		/**
@@ -88,21 +90,21 @@ public class TeamController extends ViewBaseController<Team> {
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP"})
 	@RequestMapping(path = ROUTE_SHOW, method = RequestMethod.GET)
 	public String showItemGet(Model model,@PathVariable Long id) {
-		
+
 		Long idverticale = null;
 
 		Team teamBuffer = new Team();
 		teamBuffer = teamCrud.findOne(id);
-		
+
 		if (teamBuffer.getVerticale() == null) {
 			idverticale = 1L;
 
 			teamBuffer.setVerticale(verticaleCrud.findOne(1L));
 			teamCrud.save(teamBuffer);
 			}
-		else {
-			idverticale = teamBuffer.getVerticale().getId();
-			}
+//		else {
+//			idverticale = teamBuffer.getVerticale().getId();//CODE MORT
+//			}
 
 		model.addAttribute("page","TEAM : " + teamBuffer.getName());
 		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
@@ -192,7 +194,7 @@ public class TeamController extends ViewBaseController<Team> {
 		return setUsersForTeamPost(idTeam, idUser);
 	}
 
-	/** 
+	/**
 	 *	RETURN LIST OF ALL USERS IN A TEAM WITH A GIVEN ID
 	 * @param teamId
 	 * @return userList (list of user associated to a team)
@@ -215,7 +217,7 @@ public class TeamController extends ViewBaseController<Team> {
 		return userList;
 	}
 
-	/** 
+	/**
 	 * FUNCTION THAT SET NEW USER IN TEAM (JUST AFFECT A USER ALREADY CREATE)
 	 * @param idTeam
 	 * @param idUser
@@ -286,8 +288,8 @@ public class TeamController extends ViewBaseController<Team> {
 
 		return DumpFields.listFielder((List<User>) userCrud.findAll(ids));
 	}
-	
-	
+
+
 	// ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
@@ -312,7 +314,7 @@ public class TeamController extends ViewBaseController<Team> {
 		User userBuffer = new User();
 		userBuffer = userCrud.findOne(idTeam);
 
-		model.addAttribute("page", userBuffer.getRegistration_cgi());
+		model.addAttribute("page", userBuffer.getRegistrationcgi());
 		model.addAttribute("sortedFields", Verticale.FIELDS);
 		model.addAttribute("items", this.getVerticalForUser(idTeam));
 		model.addAttribute("show_verticale", DOT + PATH + SHOW_VERTICAL);
@@ -336,8 +338,13 @@ public class TeamController extends ViewBaseController<Team> {
 	}
 
 	/**
+<<<<<<< HEAD
 	 * SHOW VERTICAL TO ADD TEAM
-	 * 
+	 *
+=======
+	 * SHOW VERTICAL TO ADD USER
+	 *
+>>>>>>> 36083fece454a2c7bb52b9edc1b9e2a2b5abe381
 	 * @param model
 	 * @param idUser
 	 * @return
@@ -363,8 +370,13 @@ public class TeamController extends ViewBaseController<Team> {
 	}
 
 	/**
+<<<<<<< HEAD
 	 * ADD ONE VERTICALE TO TEAM
-	 * 
+	 *
+=======
+	 * ADD ONE VERTICALE TO USER
+	 *
+>>>>>>> 36083fece454a2c7bb52b9edc1b9e2a2b5abe381
 	 * @param model
 	 * @param idUser
 	 * @param idTeam
@@ -399,5 +411,191 @@ public class TeamController extends ViewBaseController<Team> {
 
 		return redirect;
 	}
+
+
+	/**
+	 * PARTIE DE ERWAN
+	 */
+
+
+	/**
+	 * SELECTION NIKONIKO PAR RAPPORT A UN ENSEMBLE (TEAM, VERTICALE, ETC...)
+	 */
+
+	public ArrayList<NikoNiko> findNikoNikosOfATeam(Long idTeam){
+
+		ArrayList<User> usersOfTeam = findUsersOfATeam(idTeam);
+
+		ArrayList<NikoNiko> nikonikos = new ArrayList<NikoNiko>();
+		//Partie a externaliser en fonction findAllNikoNikoForAUser(idUser) => probablement deja existante
+		if (!usersOfTeam.isEmpty()) {
+			for (User user : usersOfTeam) {
+				if (!user.getNikoNikos().isEmpty()) {
+					nikonikos.addAll(user.getNikoNikos());
+				}
+			}
+		}
+		//fin de partie a externaliser
+
+		return nikonikos;
+	}
+
+	public ArrayList<User> findUsersOfATeam(Long idValue) {
+
+		List<Long> ids = new ArrayList<Long>();
+		ArrayList<User> userList = new ArrayList<User>();
+		List<BigInteger> idsBig = userTeamCrud.findAssociatedUser(idValue);
+
+		if (!idsBig.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
+			for (BigInteger id : idsBig) {
+				ids.add(id.longValue());
+			}
+			userList = (ArrayList<User>) userCrud.findAll(ids);
+		}
+		return userList;
+	}
+
+	/**se trouve a l adresse team/idTeam/mesnikonikos
+	 *
+	 * @param model
+	 * @param idTeam
+	 * @return
+	 */
+	@RequestMapping(path = "{idTeam}/mesnikonikos", method = RequestMethod.GET)
+	public String controlleurBidon(Model model, @PathVariable Long idTeam) {
+
+		ArrayList<NikoNiko> nikos = findNikoNikosOfATeam(idTeam);
+
+		//##################################################################
+		//Creation calendrier
+		//##################################################################
+
+		LocalDate dateLocale = LocalDate.now();
+		dateLocale = dateLocale.withMonthOfYear(4);//line to modify month to show previous nikos
+
+		LocalDate maxDayOfCurrentMonth = dateLocale.dayOfMonth().withMaximumValue();
+		int firstDayOfCurrentMonth = dateLocale.withDayOfMonth(1).getDayOfWeek();
+		int lastDayOfCurrentMonth = maxDayOfCurrentMonth.getDayOfMonth();
+
+		String[] jourSemaine = {"Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"};
+		List<Integer> nbWeeks = new ArrayList<Integer>();
+		Boolean uncompleteWeek = true;
+		int firstWeekUncomplete = 0;
+		int lastWeekUncomplete = 0;
+		int numberOfWeekInMonth = 1;
+		nbWeeks.add(numberOfWeekInMonth);
+
+		ArrayList<Map<String,Object>> days = new ArrayList<Map<String,Object>>();
+
+		if (firstDayOfCurrentMonth!=1) {
+			firstWeekUncomplete = 1;
+			model.addAttribute("nbJoursSemaineAIgnorer",firstDayOfCurrentMonth-1);
+		}
+
+		if (maxDayOfCurrentMonth.getDayOfWeek()!=7) {
+			lastWeekUncomplete = 1;
+			model.addAttribute("nbJoursSemaineAAjouter",7-maxDayOfCurrentMonth.getDayOfWeek());
+		}
+
+		for (int i = 1; i <= lastDayOfCurrentMonth; i++) {
+			days.add(new HashMap<String, Object>());
+
+			days.get(i-1).put(jourSemaine[dateLocale.withDayOfMonth(i).getDayOfWeek()-1], i);
+
+			//fonction a importer
+			List<NikoNiko> nikostemp = getNikoPreciseDate((List<NikoNiko>)nikos,dateLocale.getYear(),dateLocale.getMonthOfYear(),i);
+			int countNikosBad = 0;
+			int countNikosNeut = 0;
+			int countNikosGood = 0;
+
+			for (NikoNiko nikotemp : nikostemp) {
+				if (nikotemp.getMood()==1) {
+					countNikosBad = countNikosBad+1;
+				}
+				if (nikotemp.getMood()==2) {
+					countNikosNeut = countNikosNeut+1;
+				}
+				if (nikotemp.getMood()==3) {
+					countNikosGood = countNikosGood+1;
+				}
+			}
+
+			//Put niko stats here
+			days.get(i-1).put("nikoBad", countNikosBad);
+			days.get(i-1).put("nikoNeutral", countNikosNeut);
+			days.get(i-1).put("nikoGood", countNikosGood);
+
+			if (dateLocale.withDayOfMonth(i).getDayOfWeek()==1) {//if Monday
+				numberOfWeekInMonth++;
+				nbWeeks.add(numberOfWeekInMonth);
+				days.get(i-1).put("endOfWeek", numberOfWeekInMonth);
+			} else {
+				days.get(i-1).put("endOfWeek", numberOfWeekInMonth);
+			}
+
+			if (uncompleteWeek) {
+				days.get(i-1).put("uncompleteWeek", 1);
+				if (dateLocale.withDayOfMonth(i).getDayOfWeek()==7) {
+					uncompleteWeek = false;
+				}
+			} else {
+				days.get(i-1).put("uncompleteWeek", 0);
+			}
+
+			if (dateLocale.withDayOfMonth(i).getDayOfWeek()== 1
+				&& i >= (lastDayOfCurrentMonth-5)) {
+				uncompleteWeek = true;
+			}
+		}
+
+
+		model.addAttribute("days",days);
+
+		model.addAttribute("nbweeks",nbWeeks);
+		model.addAttribute("numberOfWeekInMonth",numberOfWeekInMonth);
+		model.addAttribute("jourSemaine",jourSemaine);
+
+		model.addAttribute("firstWeekUncomplete",firstWeekUncomplete);
+		model.addAttribute("lastWeekUncomplete",lastWeekUncomplete);
+
+
+		//##################################################################
+		//Fin creation calendrier
+		//##################################################################
+
+
+		model.addAttribute("nikos",DumpFields.listFielder(
+				(ArrayList<NikoNiko>)nikoCrud.findAllByMood(2)));
+
+
+//		model.addAttribute("teamName", teamCrud.findByName("Trololololo").getSerial());
+//		model.addAttribute("teamName", teamCrud.findBySerial("264523kl").getName());
+//		model.addAttribute("userregistrated",userCrud.findByRegistrationcgi("NOUVEAUUSER").getLogin());
+//		model.addAttribute("users",DumpFields.listFielder((ArrayList<User>)userCrud.findAllByFirstname("Tony")));
+//		model.addAttribute("verticales",DumpFields.listFielder((ArrayList<Verticale>)verticaleCrud.findAllByName("test")));
+
+//		model.addAttribute("sortedFields",NikoNiko.FIELDS);
+//		model.addAttribute("items",DumpFields.listFielder(nikos));
+
+		return "nikoniko/testFindNikopage";
+	}
+
+	public List<NikoNiko> getNikoPreciseDate(List<NikoNiko> listOfNiko, int year, int month, int day){
+
+		LocalDate nikodate = new LocalDate();
+		LocalDate date = new LocalDate().withYear(year).withMonthOfYear(month).withDayOfMonth(day);
+		List<NikoNiko> niko = new ArrayList<NikoNiko>();
+
+		for (int i = 0; i < listOfNiko.size(); i++) {
+				Date firstniko = listOfNiko.get(i).getEntryDate();
+				nikodate = new LocalDate(firstniko);
+				if (nikodate.isEqual(date)) {
+					niko.add(listOfNiko.get(i));
+				}
+		}
+
+		return niko;
+	}
+
 
 }

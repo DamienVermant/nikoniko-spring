@@ -134,7 +134,7 @@ public class UserController extends ViewBaseController<User> {
 			 idverticale = userBuffer.getVerticale().getId();
 		}
 
-		model.addAttribute("page",  "USER : " + userBuffer.getRegistration_cgi());
+		model.addAttribute("page",  "USER : " + userBuffer.getRegistrationcgi());
 		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
 		model.addAttribute("item",DumpFields.fielder(super.getItem(idUser)));
 		model.addAttribute("show_nikonikos", DOT + PATH + SHOW_NIKONIKO);
@@ -291,7 +291,7 @@ public class UserController extends ViewBaseController<User> {
 		else {
 
 			NikoNiko lastNiko = nikonikoCrud.findOne(idMaxNiko);
-			Date entryDate = lastNiko.getEntry_date();
+			Date entryDate = lastNiko.getEntryDate();
 			LocalDate dateEntry = new LocalDate(entryDate);
 
 			if (todayDate.isAfter(dateEntry)) {
@@ -385,7 +385,7 @@ public class UserController extends ViewBaseController<User> {
 		User userBuffer = new User();
 		userBuffer = userCrud.findOne(idUser);
 
-		model.addAttribute("page",userBuffer.getRegistration_cgi());
+		model.addAttribute("page",userBuffer.getRegistrationcgi());
 		model.addAttribute("sortedFields",Team.FIELDS);
 		model.addAttribute("items",this.getTeamsForUser(idUser));
 		model.addAttribute("show_teams", DOT + PATH + SHOW_TEAM);
@@ -427,7 +427,7 @@ public class UserController extends ViewBaseController<User> {
 		userBuffer = userCrud.findOne(idUser);
 		model.addAttribute("items", DumpFields.listFielder((ArrayList<Team>) teamCrud.findAll()));
 		model.addAttribute("sortedFields",Team.FIELDS);
-		model.addAttribute("page", ((User) userBuffer).getRegistration_cgi());
+		model.addAttribute("page", ((User) userBuffer).getRegistrationcgi());
 		model.addAttribute("go_show", SHOW_ACTION);
 		model.addAttribute("go_create", CREATE_ACTION);
 		model.addAttribute("go_delete", DELETE_ACTION);
@@ -564,7 +564,7 @@ public class UserController extends ViewBaseController<User> {
 		User userBuffer = new User();
 		userBuffer = userCrud.findOne(idUser);
 
-		model.addAttribute("page",userBuffer.getRegistration_cgi());
+		model.addAttribute("page",userBuffer.getRegistrationcgi());
 		model.addAttribute("sortedFields",Team.FIELDS);
 		model.addAttribute("items", DumpFields.listFielder(this.getAllRolesForUser(idUser)));
 		model.addAttribute("show_roles", DOT + PATH + SHOW_ROLE);
@@ -647,7 +647,7 @@ public class UserController extends ViewBaseController<User> {
 
 		model.addAttribute("items", DumpFields.listFielder((ArrayList<RoleCGI>) roleCrud.findAll()));
 		model.addAttribute("sortedFields",RoleCGI.FIELDS);
-		model.addAttribute("page", ((User) userBuffer).getRegistration_cgi());
+		model.addAttribute("page", ((User) userBuffer).getRegistrationcgi());
 		model.addAttribute("go_show", SHOW_ACTION);
 		model.addAttribute("go_create", CREATE_ACTION);
 		model.addAttribute("go_delete", DELETE_ACTION);
@@ -656,9 +656,6 @@ public class UserController extends ViewBaseController<User> {
 
 		return BASE_USER + PATH + ADD_ROLE;
 	}
-
-
-
 
 	// TODO : RELATION USER -> VERTICAL
 
@@ -686,7 +683,7 @@ public class UserController extends ViewBaseController<User> {
 		User userBuffer = new User();
 		userBuffer = userCrud.findOne(idUser);
 
-		model.addAttribute("page",userBuffer.getRegistration_cgi());
+		model.addAttribute("page",userBuffer.getRegistrationcgi());
 		model.addAttribute("sortedFields",Verticale.FIELDS);
 		model.addAttribute("items",this.getVerticalForUser(idUser));
 		model.addAttribute("show_teams", DOT + PATH + SHOW_VERTICAL);
@@ -724,7 +721,7 @@ public class UserController extends ViewBaseController<User> {
 
 	model.addAttribute("items", DumpFields.listFielder((ArrayList<Verticale>) verticaleCrud.findAll()));
 	model.addAttribute("sortedFields",Verticale.FIELDS);
-	model.addAttribute("page", ((User) userBuffer).getRegistration_cgi());
+	model.addAttribute("page", ((User) userBuffer).getRegistrationcgi());
 	model.addAttribute("go_show", SHOW_ACTION);
 	model.addAttribute("go_create", CREATE_ACTION);
 	model.addAttribute("go_delete", DELETE_ACTION);

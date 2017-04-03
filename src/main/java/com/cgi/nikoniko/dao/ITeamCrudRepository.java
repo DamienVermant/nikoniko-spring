@@ -19,4 +19,20 @@ public interface ITeamCrudRepository extends IBaseCrudRepository<Team>{
 	@Query(value = "SELECT verticale.id FROM verticale INNER JOIN team ON verticale.id = team.verticale_id where team.id = :idTeam", nativeQuery=true)
 	public Long getTeamVertical(@Param("idTeam") long idTeam);
 
+	/**
+	 * FIND TEAM BY HIS NAME
+	 * @param name
+	 * @return team
+	 */
+	Team findByName(String name);
+
+
+	/**
+	 * FIND TEAM BY HIS SERIAL
+	 * @param Serial
+	 * @return team
+	 */
+	Team findBySerial(String serial);
+
+
 }

@@ -335,7 +335,7 @@ public class GraphController extends ViewBaseController<User>{
 		List<NikoNiko> nikotoday = new ArrayList<NikoNiko>();
 
 		for (int i = 0; i < listOfNiko.size(); i++) {
-			Date firstniko = listOfNiko.get(i).getEntry_date();
+			Date firstniko = listOfNiko.get(i).getEntryDate();
 			nikodate = new LocalDate(firstniko);
 			date = new LocalDate();
 			if (nikodate.isEqual(date)) {
@@ -361,7 +361,7 @@ public class GraphController extends ViewBaseController<User>{
 		List<NikoNiko> nikoWeek = new ArrayList<NikoNiko>();
 
 		for (int i = 0; i < listOfNiko.size(); i++) {
-			Date firstniko = listOfNiko.get(i).getEntry_date();
+			Date firstniko = listOfNiko.get(i).getEntryDate();
 			nikodate = new LocalDate(firstniko);
 
 			if (nikodate.isAfter(interval1) && nikodate.isBefore(interval2)
@@ -397,7 +397,7 @@ public class GraphController extends ViewBaseController<User>{
 		List<NikoNiko> nikoMonth = new ArrayList<NikoNiko>();
 
 		for (int i = 0; i < listOfNiko.size(); i++) {
-			Date firstniko = listOfNiko.get(i).getEntry_date();
+			Date firstniko = listOfNiko.get(i).getEntryDate();
 			nikodate = new LocalDate(firstniko);
 
 			if (nikodate.isAfter(interval1) && nikodate.isBefore(interval2)
@@ -428,7 +428,7 @@ public class GraphController extends ViewBaseController<User>{
 	List<NikoNiko> nikoWeek = new ArrayList<NikoNiko>();
 
 	for (int i = 0; i < listOfNiko.size(); i++) {
-		Date firstniko = listOfNiko.get(i).getEntry_date();
+		Date firstniko = listOfNiko.get(i).getEntryDate();
 		nikodate = new LocalDate(firstniko);
 
 		if (nikodate.isAfter(interval1) && nikodate.isBefore(interval2)
@@ -467,7 +467,7 @@ public class GraphController extends ViewBaseController<User>{
 	List<NikoNiko> nikoMonth = new ArrayList<NikoNiko>();
 
 	for (int i = 0; i < listOfNiko.size(); i++) {
-		Date firstniko = listOfNiko.get(i).getEntry_date();
+		Date firstniko = listOfNiko.get(i).getEntryDate();
 		nikodate = new LocalDate(firstniko);
 
 	if (nikodate.isAfter(interval1) && nikodate.isBefore(interval2)
@@ -495,7 +495,7 @@ public class GraphController extends ViewBaseController<User>{
 	List<NikoNiko> niko = new ArrayList<NikoNiko>();
 
 	for (int i = 0; i < listOfNiko.size(); i++) {
-		Date firstniko = listOfNiko.get(i).getEntry_date();
+		Date firstniko = listOfNiko.get(i).getEntryDate();
 		nikodate = new LocalDate(firstniko);
 		if (nikodate.isEqual(date)) {
 			niko.add(listOfNiko.get(i));

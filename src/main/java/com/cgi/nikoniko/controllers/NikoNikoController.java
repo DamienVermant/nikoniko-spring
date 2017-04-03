@@ -50,7 +50,7 @@ public class NikoNikoController extends ViewBaseController<NikoNiko> {
 		nikoBuffer = nikoCrud.findOne(idNiko);
 		Long iduser = nikoBuffer.getUser().getId();
 
-		model.addAttribute("page",  "NikoNiko : " + nikoBuffer.getEntry_date());
+		model.addAttribute("page",  "NikoNiko : " + nikoBuffer.getEntryDate());
 		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
 		model.addAttribute("item",DumpFields.fielder(super.getItem(idNiko)));
 		model.addAttribute("show_user", USER + PATH + iduser + PATH + SHOW_PATH);
