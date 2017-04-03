@@ -106,10 +106,7 @@ public class UserController extends ViewBaseController<User> {
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	/**NAME : showUserActionsGET
-	 *
-	 * RETIRER VP DANS LES DROITS D'ACCES???
-	 *
+	/**
 	 * SHOW USER ACTIONS FOR A SPECIFIC PROFILE
 	 *
 	 * @param model
@@ -125,8 +122,6 @@ public class UserController extends ViewBaseController<User> {
 
 		User userBuffer = new User();
 		userBuffer = userCrud.findOne(idUser);
-
-		// TODO : WHEN CREATE A USER ASIGN A VERTICAL
 
 		// ADD A DEFAUT VERTICALE
 		if (userBuffer.getVerticale() == null) {
@@ -154,16 +149,16 @@ public class UserController extends ViewBaseController<User> {
 		return BASE_USER + PATH + SHOW_PATH;
 	}
 
-	/**NAME : getNikoNikosForUser
-	 *
-	 * LINK USER -> NIKONIKO (SELECT ALL NIKONIKOS FOR A USER)
+	/**
+	 * SELECT ALL NIKONIKOS FOR A USER
 	 * @param model
 	 * @param userId
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_VP","ROLE_USER"})
-	@RequestMapping("{userId}/showNikoNikos")
+	@RequestMapping(path = "{userId}" + PATH + SHOW_NIKONIKO, method = RequestMethod.GET)
 	public String getNikoNikosForUser(Model model, @PathVariable Long userId) {
+
 		User user = super.getItem(userId);
 		Set<NikoNiko> niko =  user.getNikoNikos();
 		List<NikoNiko> listOfNiko = new ArrayList<NikoNiko>(niko);
@@ -176,9 +171,9 @@ public class UserController extends ViewBaseController<User> {
 		return "user/showNikoNikos";
 	}
 
-	/**NAME : newNikoNikoForUserGET
+	/**
 	 *
-	 * Page de creation d'un nikoniko pour un user
+	 * CREATION PAGE FOR A NEW NIKONIKO
 	 * Only show the nikoniko's page of the user of the current session
 	 * If someone try to hack url, he's redirected to an error page (or logout for now)
 	 *
@@ -198,6 +193,9 @@ public class UserController extends ViewBaseController<User> {
 		if (userCrud.findByLogin(super.checkSession().getName()).getId()!= userId) {
 			response.sendError(HttpStatus.BAD_REQUEST.value(),("Don't try to hack url!").toUpperCase());
 		}
+
+		model.addAttribute("lastMood", this.getLastLastNikoNikoMood(userCrud.findByLogin(super.checkSession().getName()).getId()));
+
 		model.addAttribute("status", this.checkDateNikoNiko(userCrud.findByLogin(super.checkSession().getName()).getId()));
 		model.addAttribute("mood" , this.getUserLastMood(userCrud.findByLogin(super.checkSession().getName()).getId()));
 		model.addAttribute("page",user.getFirstname() + " " + CREATE_ACTION.toUpperCase());
@@ -205,11 +203,26 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("item",DumpFields.createContentsEmpty(niko.getClass()));
 		model.addAttribute("back", DOT + PATH + SHOW_PATH);
 		model.addAttribute("create_item", CREATE_ACTION);
+
 		return "nikoniko/addNikoNiko";
 	}
 
 	/**
-	 *
+	 * CREATION PAGE FOR A NEW NIKONIKO
+	 * @param model
+	 * @param idUser
+	 * @param mood
+	 * @param comment
+	 * @return
+	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
+	@RequestMapping(path = "{idUser}/add", method = RequestMethod.POST)
+	public String newNikoNikoForUserPOST(Model model, @PathVariable Long idUser, Integer mood, String comment) {
+		return this.addNikoNikoInDB(idUser, mood, comment);
+	}
+
+	/**
+	 *	CHECK THE LAST MOOD OF USER IF IT EXISTS OR NOT
 	 * @param idUser
 	 * @return
 	 */
@@ -230,29 +243,40 @@ public class UserController extends ViewBaseController<User> {
 
 	}
 
-	/**NAME : newNikoNikoForUserPOST
-	 *
-	 *
-	 * @param model
+	/**
+	 * CHECK LAST-1 NIKONIKO IF IT EXISTS
 	 * @param idUser
-	 * @param mood
-	 * @param comment
 	 * @return
 	 */
+	public Boolean getLastLastNikoNikoMood(Long idUser){
 
-	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
-	@RequestMapping(path = "{idUser}/add", method = RequestMethod.POST)
-	public String newNikoNikoForUserPOST(Model model, @PathVariable Long idUser, Integer mood, String comment) {
-		return this.addNikoNikoInDB(idUser, mood, comment);
+		Long idMax = userCrud.getLastLastNikoNikoUser(idUser);
+
+		NikoNiko lastLastNiko = nikonikoCrud.findOne(userCrud.getLastLastNikoNikoUser(idUser));
+
+		if (lastLastNiko == null) {
+			return false;
+		}
+
+		else {
+
+			Integer mood = lastLastNiko.getMood();
+
+			if (mood == 0 || mood == null) {
+				return true;
+			}
+
+			else {
+				return false;
+			}
+		}
 	}
 
 	/**
-	 * CHECK FOR NEW NIKONIKO OR UPDATE
+	 * CHECK IF A USER AS ENTER A NIKONIKO DURING THE DAY
+	 * @param idUser
+	 * @return
 	 */
-
-	// TODO : CREATE A FUNCTION THAT CAN SET A NIKO AFTER J+1 IF USER DOES NOT SET HIS NIKONIKO
-	// TODO : IF A USER FORGET TO POST HIS SATISFACTION, RECALL HIM AFTER (ONE DAY ?) TO VOTE FOR HIS PREVIOUS VOTE
-
 	public Boolean checkDateNikoNiko(Long idUser){
 
 		Boolean updateNiko = null;
@@ -284,9 +308,9 @@ public class UserController extends ViewBaseController<User> {
 		return updateNiko;
 	}
 
-	/**NAME : addNikoNikoInDB
+	/**
 	*
-	* FUNCTION THAT SAVE THE NIKONIKO IN DB
+	* FUNCTION THAT SAVE THE NIKONIKO IN DB IN FUNCTION OF THE DATE
 	*
 	* @param idUser, mood, comment
 	* @return
@@ -346,7 +370,7 @@ public class UserController extends ViewBaseController<User> {
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	/**NAME : showTeamsForUserGET
+	/**
 	 *
 	 * RELATION USER HAS TEAM
 	 *
@@ -354,7 +378,6 @@ public class UserController extends ViewBaseController<User> {
 	 * @param id
 	 * @return
 	 */
-
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP"})
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_TEAM, method = RequestMethod.GET)
 	public String showTeamsForUserGET(Model model,@PathVariable Long idUser) {
@@ -372,8 +395,9 @@ public class UserController extends ViewBaseController<User> {
 		return BASE_USER + PATH + SHOW_TEAM;
 	}
 
-	/**NAME : quiTeamPOST
+	/**
 	 *
+	 * FUNCTION THAT RETIRE A TEAM FOR A USER
 	 * Delete the selected relation team-user and redirect to the userhasteams view (by using quitTeam())
 	 * SHOW POST THAT UPDATE USER RELATION WITH TEAM WHEN A USER QUIT A TEAM
 	 *
@@ -382,22 +406,19 @@ public class UserController extends ViewBaseController<User> {
 	 * @param idTeam
 	 * @return
 	 */
-
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP"})
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_TEAM, method = RequestMethod.POST)
 	public String quiTeamPOST(Model model,@PathVariable Long idUser, Long idTeam) {
 		return quitTeam(idUser, idTeam);
 	}
 
-	/**NAME : addUserInTeamGET
-	 *
+	/**
 	 * ADD USER FOR CURRENT TEAM
 	 *
 	 * @param model
 	 * @param idUser
 	 * @return
 	 */
-
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 	@RequestMapping(path = "{idUser}" + PATH + ADD_TEAM, method = RequestMethod.GET)
 	public <T> String addUserInTeamGET(Model model, @PathVariable Long idUser) {
@@ -416,8 +437,7 @@ public class UserController extends ViewBaseController<User> {
 		return BASE_USER + PATH + ADD_TEAM;
 	}
 
-	/**NAME : addUserInTeamPOST
-	 *
+	/**
 	 * ADD USER FOR CURRENT TEAM
 	 *
 	 * @param model
@@ -425,16 +445,15 @@ public class UserController extends ViewBaseController<User> {
 	 * @param idTeam
 	 * @return
 	 */
-
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 	@RequestMapping(path = "{idUser}" + PATH + ADD_TEAM, method = RequestMethod.POST)
 	public <T> String addUserInTeamPOST(Model model, @PathVariable Long idUser, Long idTeam) {
 		return setUsersForTeam(idTeam, idUser);
 	}
 
-	/**NAME : findAllTeamsForUser
+	/**
 	 *
-	 * Find all teams related to a user by checking relation table user_has_team
+	 * FIND ALL TEAMS RELATED TO A USER
 	 *
 	 * @param idValue
 	 * @return teamList (list of user associated to a team)
@@ -456,9 +475,9 @@ public class UserController extends ViewBaseController<User> {
 		return teamList;
 	}
 
-	/**NAME : setUsersForTeam
+	/**
 	 *
-	 * Put an user in a new team by creating a new  association in user_has_team (or modify if exists)
+	 * PUT AND USER IN NEW TEAM BY CREATING NEW ASSOCIATION
 	 *
 	 * @param idTeam
 	 * @param idUser
@@ -473,9 +492,8 @@ public class UserController extends ViewBaseController<User> {
 		return redirect;
 	}
 
-	/**NAME : quitTeam
-	 *
-	 * Set the leaving date in user_has_team table when a user leave a team
+	/**
+	 * SET LEAVING DATE IN user_has_team WHEN A USER LEAVE A TEAM
 	 *
 	 * @param idUser
 	 * @param idTeam
@@ -495,8 +513,7 @@ public class UserController extends ViewBaseController<User> {
 		return redirect;
 	}
 
-	/** NAME : getTeamsForUser
-	 *
+	/**
 	 * FUNCTION RETURNING ALL TEAM RELATED WITH ONE USER WITH leaving_date = null
 	 *
 	 * @param idUser
@@ -534,8 +551,8 @@ public class UserController extends ViewBaseController<User> {
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	/**NAME : showRolesForUserGET
-	 *
+	/**
+	 * SHOW ALL ROLES RELATED TO ONE USER
 	 * @param model
 	 * @param idUser
 	 * @return
@@ -557,16 +574,13 @@ public class UserController extends ViewBaseController<User> {
 		return BASE_USER + PATH + SHOW_ROLE;
 	}
 
-	/**NAME : revokeRoleToUserPOST // revokeRoleToOneUserPOST
-	 *
-	 *Revoke the selected role for the selected user
-	 *
+	/**
+	 * REVOKE THE SELECT ROLE FOR USER
 	 * @param model
 	 * @param idUser
 	 * @param idRole
 	 * @return
 	 */
-
 	@Secured({"ROLE_ADMIN","ROLE_VP"})
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_ROLE, method = RequestMethod.POST)
 	public String revokeRoleToUserPOST(Model model,@PathVariable Long idUser, Long idRole) {
@@ -577,9 +591,8 @@ public class UserController extends ViewBaseController<User> {
 		return redirect;
 	}
 
-	/**NAME : addRoleToUserPOST
-	 *
-	 * Add the selected role to the selected user
+	/**
+	 * ADD ROLE TO USER
 	 * @param model
 	 * @param idUser
 	 * @param idRole
@@ -596,9 +609,8 @@ public class UserController extends ViewBaseController<User> {
 		return redirect;
 	}
 
-	/**NAME : getAllRolesForUser
-	 *
-	 * Return all roles of the selected user
+	/**
+	 * RETURN ALL ROLES RELATED TO USER
 	 *
 	 * @param idUser
 	 * @return
@@ -619,9 +631,8 @@ public class UserController extends ViewBaseController<User> {
 		return roleList;
 	}
 
-	/**NAME : addRoleforUserGET
-	 *
-	 * Show the page to add a role to an User
+	/**
+	 * PAGE TO ADD ROLES TO USER
 	 *
 	 * @param model
 	 * @param idUser
@@ -648,6 +659,7 @@ public class UserController extends ViewBaseController<User> {
 
 
 
+
 	// TODO : RELATION USER -> VERTICAL
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -660,15 +672,13 @@ public class UserController extends ViewBaseController<User> {
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	/**NAME : showTeamsForUserGET
-	 *
-	 * RELATION USER HAS TEAM
+	/**
+	 * SHOW VERTICALE FOR ONE USER
 	 *
 	 * @param model
 	 * @param id
 	 * @return
 	 */
-
 	//@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP"})
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_VERTICAL, method = RequestMethod.GET)
 	public String showVerticalForUserGET(Model model,@PathVariable Long idUser) {
@@ -687,8 +697,11 @@ public class UserController extends ViewBaseController<User> {
 
 	}
 
-
-	// TODO : ARRAYLIST CAN BE CONVERT TO A LONG
+	/**
+	 * GET VERTICAL FOR ONE USER
+	 * @param idUser
+	 * @return
+	 */
 	public ArrayList<Verticale> getVerticalForUser(Long idUser){
 		ArrayList<Verticale> verticaleList = new ArrayList<Verticale>();
 		Long idVerticale = userCrud.getUserVertical(idUser);
@@ -708,6 +721,7 @@ public class UserController extends ViewBaseController<User> {
 
 	Object userBuffer = new Object();
 	userBuffer = userCrud.findOne(idUser);
+
 	model.addAttribute("items", DumpFields.listFielder((ArrayList<Verticale>) verticaleCrud.findAll()));
 	model.addAttribute("sortedFields",Verticale.FIELDS);
 	model.addAttribute("page", ((User) userBuffer).getRegistration_cgi());
@@ -733,6 +747,12 @@ public class UserController extends ViewBaseController<User> {
 		return setVerticalForUser(idUser, idVertical);
 	}
 
+	/**
+	 * SET A VERTICALE FOR ONE USER
+	 * @param idUser
+	 * @param idVertical
+	 * @return
+	 */
 	private String setVerticalForUser(Long idUser, Long idVertical) {
 
 		String redirect = REDIRECT + PATH + BASE_USER + PATH + idUser + PATH + SHOW_VERTICAL;
@@ -754,10 +774,18 @@ public class UserController extends ViewBaseController<User> {
 
 	/**
 	 *
-	 * @param model
-	 * @return
+	 * SEARCH USER, STATUS : WORK
+	 *
 	 */
 
+	/////////////////////////////////////////////////////////////////////
+
+	/**
+	 * LIST USER METHOD POST
+	 * @param model
+	 * @param name
+	 * @return
+	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 	@RequestMapping(path = {PATH, ROUTE_LIST}, method = RequestMethod.POST)
 	public String showUsers(Model model,String name){
@@ -773,6 +801,11 @@ public class UserController extends ViewBaseController<User> {
 
 	}
 
+	/**
+	 * FIND A SPECIFIC USER
+	 * @param name
+	 * @return
+	 */
 	public ArrayList<User> searchUser(String name){
 
 		ArrayList<User> userList = new ArrayList<User>();
@@ -782,5 +815,68 @@ public class UserController extends ViewBaseController<User> {
 
 	}
 
-	/////////////////////////////////////////////////////////////////////
+	////////////////////////////// IN WORK //////////////////////////////
+
+	/**
+	 * RETURN PAGE VOTE TO VOTE FOR THE PREVIOUS NIKONIKO
+	 * @param model
+	 * @param userId
+	 * @param response
+	 * @return
+	 * @throws IOException
+	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
+	@RequestMapping(path = "{userId}/addLast", method = RequestMethod.GET)
+	public String lastNikoNikoForUserGET(Model model,@PathVariable Long userId,
+						HttpServletResponse response) throws IOException {
+
+		return "nikoniko/addNikoNikoLast";
+	}
+
+	/**
+	 * UPDATE THE PREVIOUS NIKONIKO VOTE BY USER
+	 * @param model
+	 * @param userId
+	 * @param response
+	 * @param mood
+	 * @param comment
+	 * @return
+	 * @throws IOException
+	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
+	@RequestMapping(path = "{userId}/addNikoNikoLast", method = RequestMethod.POST)
+	public String lastNikoNikoForUserPOST(Model model,@PathVariable Long userId,
+						HttpServletResponse response, int mood, String comment) throws IOException {
+
+		return this.updateLastNikoNiko(userId, mood, comment);
+	}
+
+	/**
+	 * FUNCTION FOR UPDATE THE PREVIOUS NIKONIKO VOTE BY USER
+	 * @param idUser
+	 * @param mood
+	 * @param comment
+	 * @return
+	 */
+	public String updateLastNikoNiko(Long idUser, Integer mood, String comment){
+
+		if (mood == null) {
+			return REDIRECT + PATH + MENU_PATH;
+		}
+
+		else {
+
+			NikoNiko lastNiko = nikonikoCrud.findOne(userCrud.getLastLastNikoNikoUser(idUser));
+
+			lastNiko.setMood(mood);
+			lastNiko.setComment(comment);
+			nikonikoCrud.save(lastNiko);
+
+			return REDIRECT + PATH + MENU_PATH;
+
+		}
+	}
+
+	//////////////////////////////////////////////////////////////////////
+
 }

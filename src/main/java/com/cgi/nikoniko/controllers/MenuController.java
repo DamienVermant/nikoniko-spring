@@ -64,20 +64,20 @@ public class MenuController  {
 	// TODO : CHANGE TYPE OF TIME
 	// 0.99999... = 1
 	public final static double TIME = 0.9999999999;
-
-
-	// TODO : GESTION DES PATHS ET DES @SECURED
-
+	
 	/**
-	 * ONLY ALL
+	 * SHOW MENU
+	 * @param model
+	 * @param login
+	 * @return
 	 */
-
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
 	@RequestMapping(path = "/menu", method = RequestMethod.GET)
 	public String index(Model model, String login) {
 
 		model.addAttribute("page","MENU");
 
+		model.addAttribute("lastNiko",this.getLastLastNikoNikoMood(this.getUserInformations().getId()));
 		model.addAttribute("status", this.checkDateNikoNiko(this.getUserInformations().getId()));
 		model.addAttribute("mood", this.getUserLastMood(this.getUserInformations().getId()));
 
@@ -97,6 +97,8 @@ public class MenuController  {
 		model.addAttribute("go_user_has_team", GO_USERTEAM);
 		model.addAttribute("go_user_has_role", GO_USERROLE);
 		model.addAttribute("go_role_has_function", GO_ROLEFUNC);
+		
+		model.addAttribute("add_last", PATH + "user" + PATH + this.getUserInformations().getId() + PATH + "addLast");
 
 		// TEST FOR SECURED REDIRECTION
 
@@ -162,7 +164,6 @@ public class MenuController  {
 	}
 
 	/**
-	 * TODO : this function can be generic or we can put it in a parent class for other implement
 	 * HAVE ALL ROLES ASSOCIATED TO A USER
 	 * @param idUser
 	 * @return
@@ -197,9 +198,8 @@ public class MenuController  {
 			roleNames.add(roleList.get(i).getName());
 		}
 		return roleNames;
-	}
-
-	// TODO : THIS FUNCTION CAN BE GENERIC (USED IN USERCONTROLLER)
+	}	
+	
 	/**
 	 * FUNCTION THAT CHECK NIKONIKO DATE FOR UPDATE OR NEW
 	 * @param idUser
@@ -231,6 +231,11 @@ public class MenuController  {
 		return updateNiko;
 	}
 
+	/**
+	 * GET LAST NIKONIKO ENTER BY USER
+	 * @param idUser
+	 * @return
+	 */
 	public int getUserLastMood(Long idUser){
 
 		int mood = 0;
@@ -245,7 +250,37 @@ public class MenuController  {
 			mood = nikoCrud.findOne(idMax).getMood();
 			return mood;
 		}
+	}	
 
+	/**
+	 * GET LAST-1 NIKONIKO USER AND CHECK IF THE MOOD IS NULL OR NOT
+	 * @param idUser
+	 * @return
+	 */
+	public Boolean getLastLastNikoNikoMood(Long idUser){
+		
+		Long idMax = userCrud.getLastLastNikoNikoUser(idUser);
+		
+		NikoNiko lastLastNiko = nikoCrud.findOne(userCrud.getLastLastNikoNikoUser(idUser));
+		
+		if (lastLastNiko == null) {
+			return false;
+		}
+		
+		else {
+			
+			Integer mood = lastLastNiko.getMood();
+			
+			if (mood == 0 || mood == null) {
+				return true;
+			}
+			
+			else {
+				
+				return false;
+			}
+		}
 	}
+	
 
 }

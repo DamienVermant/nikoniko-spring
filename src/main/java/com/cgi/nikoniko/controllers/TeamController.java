@@ -70,6 +70,16 @@ public class TeamController extends ViewBaseController<Team> {
 	public TeamController() {
 		super(Team.class, BASE_URL);
 	}
+	
+	// ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		/**
+		 *
+		 * ASSOCIATION TEAM --> USER
+		 *
+		 */
+
+	// ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 *
@@ -182,10 +192,7 @@ public class TeamController extends ViewBaseController<Team> {
 		return setUsersForTeamPost(idTeam, idUser);
 	}
 
-	/** DOES IT REALLY NEED A RESTRICTION??
-	 * ADMIN,
-	 * VP,
-	 * GESTIONNAIRE
+	/** 
 	 *	RETURN LIST OF ALL USERS IN A TEAM WITH A GIVEN ID
 	 * @param teamId
 	 * @return userList (list of user associated to a team)
@@ -208,12 +215,7 @@ public class TeamController extends ViewBaseController<Team> {
 		return userList;
 	}
 
-	/** DOES IT REALLY NEED A RESTRICTION??
-	 *
-	 *
-	 * ADMIN,
-	 * VP,
-	 * GESTIONNAIRE
+	/** 
 	 * FUNCTION THAT SET NEW USER IN TEAM (JUST AFFECT A USER ALREADY CREATE)
 	 * @param idTeam
 	 * @param idUser
@@ -237,9 +239,7 @@ public class TeamController extends ViewBaseController<Team> {
 
 	}
 
-
 	/**
-	 * ADMIN + Gestionnaire
 	 * UPDATE USER_HAS_TEAM (leaving_date) WHEN A TEAM DELETE AN USER FROM HIS OWN
 	 * @param idUser
 	 * @param idTeam
@@ -260,7 +260,6 @@ public class TeamController extends ViewBaseController<Team> {
 	}
 
 	/**
-	 * ADMIN
 	 * FUNCTION RETURNING ALL TEAM RELATED WITH ONE USER WITH leaving_date = null
 	 * @param idUser
 	 * @return
@@ -300,15 +299,12 @@ public class TeamController extends ViewBaseController<Team> {
 	// ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * NAME : showTeamsForUserGET
-	 *
 	 * RELATION USER HAS TEAM
 	 *
 	 * @param model
 	 * @param id
 	 * @return
 	 */
-
 	// @Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP"})
 	@RequestMapping(path = "{idTeam}" + PATH + SHOW_VERTICAL, method = RequestMethod.GET)
 	public String showVerticalForUserGET(Model model, @PathVariable Long idTeam) {
@@ -327,8 +323,11 @@ public class TeamController extends ViewBaseController<Team> {
 
 	}
 
-	// TODO : ARRAYLIST CAN BE CONVERT TO A LONG
-	
+	/**
+	 * SHOW VERTICAL TO ON TEAM
+	 * @param idTeam
+	 * @return
+	 */
 	public ArrayList<Verticale> getVerticalForUser(Long idTeam) {
 		ArrayList<Verticale> verticaleList = new ArrayList<Verticale>();
 		Long idVerticale = teamCrud.getTeamVertical(idTeam);
@@ -337,7 +336,7 @@ public class TeamController extends ViewBaseController<Team> {
 	}
 
 	/**
-	 * SHOW VERTICAL TO ADD USER
+	 * SHOW VERTICAL TO ADD TEAM
 	 * 
 	 * @param model
 	 * @param idUser
@@ -364,7 +363,7 @@ public class TeamController extends ViewBaseController<Team> {
 	}
 
 	/**
-	 * ADD ONE VERTICALE TO USER
+	 * ADD ONE VERTICALE TO TEAM
 	 * 
 	 * @param model
 	 * @param idUser
@@ -378,6 +377,12 @@ public class TeamController extends ViewBaseController<Team> {
 		return setVerticalForTeam(idTeam, idVertical);
 	}
 
+	/**
+	 * ADD ONE VERTICAL TO A TEAM
+	 * @param idTeam
+	 * @param idVertical
+	 * @return
+	 */
 	private String setVerticalForTeam(Long idTeam, Long idVertical) {
 
 		String redirect = REDIRECT + PATH + BASE_TEAM + PATH + idTeam + PATH

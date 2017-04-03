@@ -1,9 +1,5 @@
 package com.cgi.nikoniko.controllers;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -15,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
 import com.cgi.nikoniko.dao.IChangeDatesCrudRepository;
 import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
-import com.cgi.nikoniko.models.tables.ChangeDates;
 import com.cgi.nikoniko.models.tables.NikoNiko;
 import com.cgi.nikoniko.utils.DumpFields;
 
@@ -42,29 +37,9 @@ public class NikoNikoController extends ViewBaseController<NikoNiko> {
 	public NikoNikoController() {
 		super(NikoNiko.class,BASE_URL);
 	}
+
 	/**
-	 *
-	 * @param model
-	 * @return
-	 */
-	@Override
-	@Secured({"ROLE_ADMIN","ROLE_VP"})
-	@RequestMapping(path = {PATH, ROUTE_LIST}, method = RequestMethod.GET)
-	public String index(Model model) {
-		
-		ArrayList<NikoNiko> emptyList = new ArrayList<NikoNiko>();
-		
-		model.addAttribute("model", "nikoniko");
-		model.addAttribute("page",super.baseName + " " + LIST_ACTION.toUpperCase());
-		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
-		model.addAttribute("items",DumpFields.listFielder(emptyList));
-		model.addAttribute("go_show", SHOW_ACTION);
-		model.addAttribute("go_create", CREATE_ACTION);
-		model.addAttribute("go_delete", DELETE_ACTION);
-		return listView;
-	}
-	/**
-	 *
+	 * SHOW A SELECT NIKONIKO
 	 */
 	@Override
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
@@ -85,61 +60,4 @@ public class NikoNikoController extends ViewBaseController<NikoNiko> {
 
 		return BASE_NIKONIKO + PATH + SHOW_PATH;
 	}
-
-	/**
-	 *
-	 * Recupération de tous les changedate liés à un nikoniko
-	 */
-	@Secured({"ROLE_ADMIN"})
-	@RequestMapping("{nikonikoId}/showChangeDates")
-	public String getChangeDatesFromNikoNiko(Model model, @PathVariable Long nikonikoId) {
-		NikoNiko niko = super.getItem(nikonikoId);
-		Set<ChangeDates> chang =  niko.getChangeDates();
-		List<ChangeDates> listOfChang = new ArrayList<ChangeDates>(chang);
-
-		model.addAttribute("page", niko.getId() + " nikonikos");
-		model.addAttribute("sortedFields", ChangeDates.FIELDS);
-		model.addAttribute("items", DumpFields.listFielder(listOfChang));
-		model.addAttribute("back", DOT + PATH + SHOW_PATH);
-		return "nikoniko/showAllRelation";
-	}
-
-	/**
-	 *
-	 * Page de creation d'un nikoniko pour un user
-	 */
-	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
-	@RequestMapping(path = "{changId}/add", method = RequestMethod.GET)
-	public String createItemGet(Model model, @PathVariable Long changId) {
-		NikoNiko niko = super.getItem(changId);
-		ChangeDates chang = new ChangeDates();
-
-		model.addAttribute("page",niko.getId() + " " + CREATE_ACTION.toUpperCase());
-		model.addAttribute("sortedFields",ChangeDates.FIELDS);
-		model.addAttribute("item",DumpFields.createContentsEmpty(chang.getClass()));
-		model.addAttribute("go_index", LIST_ACTION);
-		model.addAttribute("create_item", CREATE_ACTION);
-		return "nikoniko/addNikoNiko";
-	}
-
-	/**
-	 *
-	 * Creation d'un nikoniko
-	 */
-	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
-	@RequestMapping(path = "{nikonikoId}/create", method = RequestMethod.POST)
-	public String createItemPost(Model model, ChangeDates chang, @PathVariable Long nikonikoId) {
-
-		try {
-			NikoNiko niko = super.getItem(nikonikoId);
-			chang.setNikoniko(niko);
-			changeCrud.save(chang);
-		} catch (Exception e) {
-			 e.printStackTrace();
-		}
-		return "redirect:/nikoniko/1/link";
-	}
-	
-	
-
 }

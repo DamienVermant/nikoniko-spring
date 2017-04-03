@@ -83,14 +83,12 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	return BASE_VERTICALE + PATH + SHOW_PATH;
 }
 
-
 	/**
-	 *
+	 * SHOW ALL USERS TO ADD TO A VERTICALE
 	 * @param model
 	 * @param verticaleId
 	 * @return
 	 */
-
 	@Secured({"ROLE_ADMIN","ROLE_VP"})
 	@RequestMapping(path = "{verticaleId}"+ PATH + SHOW_USER, method = RequestMethod.GET)
 	public String getUsersForVerticaleGET(Model model, @PathVariable Long verticaleId) {
@@ -109,6 +107,13 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 		return BASE_VERTICALE + PATH + SHOW_USER;
 	}
 	
+	/**
+	 * ADD USER TO ONE VERTICALE
+	 * @param model
+	 * @param verticaleId
+	 * @param idUser
+	 * @return
+	 */
 	@Secured({"ROLE_ADMIN","ROLE_VP"})
 	@RequestMapping(path = "{verticaleId}"+ PATH + SHOW_USER, method = RequestMethod.POST)
 	public String getUsersForVerticalePOST(Model model, @PathVariable Long verticaleId, Long idUser) {
@@ -116,7 +121,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	}
 	
 	/**
-	 *
+	 * SHOW TEAMS RELATED TO ONE VERTICALE
 	 * @param model
 	 * @param verticaleId
 	 * @return
@@ -139,7 +144,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	}
 
 	/**
-	 *
+	 * DELETE TEAMS AND USERS RELATED TO ONE VERTICALE
 	 * @param model
 	 * @param id
 	 * @return
@@ -210,6 +215,12 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 		return setUserforVertical(idUser, idVertical);
 	}
 
+	/**
+	 * FUNCTION USED FOR ADD ONE USER TO VERTICALE
+	 * @param idUser
+	 * @param idVertical
+	 * @return
+	 */
 	private String setUserforVertical(Long idUser, Long idVertical) {
 		
 		String redirect = REDIRECT + PATH + BASE_VERTICALE + PATH + idVertical + PATH + SHOW_USER;
@@ -227,6 +238,12 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 		return redirect;
 	}
 	
+	/**
+	 * NAME ??
+	 * @param idUser
+	 * @param idVerticale
+	 * @return
+	 */
 	public String deleteUserFromVertical(Long idUser, Long idVerticale){
 		
 		String redirect = REDIRECT + PATH + BASE_VERTICALE + PATH + idVerticale + PATH + SHOW_USER;
@@ -266,6 +283,13 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	return BASE_VERTICALE + PATH + ADD_TEAM;
 	}
 	
+	/**
+	 * DELETE TEAM FROM A VERTICALE
+	 * @param model
+	 * @param verticaleId
+	 * @param idTeam
+	 * @return
+	 */
 	@Secured({"ROLE_ADMIN","ROLE_VP"})
 	@RequestMapping(path = "{verticaleId}"+ PATH + SHOW_TEAM, method = RequestMethod.POST)
 	public String getTeamsForVerticalePOST(Model model, @PathVariable Long verticaleId, Long idTeam) {
@@ -273,7 +297,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	}
 	
 	/**
-	 * ADD ONE USER TO VERTICALE
+	 * ADD ONE TEAM TO VERTICALE
 	 * @param model
 	 * @param idUser
 	 * @param idTeam
@@ -285,6 +309,12 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 		return setTeamforVertical(idTeam, idVertical);
 	}
 
+	/**
+	 * FUNCTION USED FOR ADD ONE TEAM TO VERTICALE
+	 * @param idTeam
+	 * @param idVertical
+	 * @return
+	 */
 	private String setTeamforVertical(Long idTeam, Long idVertical) {
 		
 		String redirect = REDIRECT + PATH + BASE_VERTICALE + PATH + idVertical + PATH + SHOW_TEAM;
@@ -302,6 +332,12 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 		return redirect;
 	}
 	
+	/**
+	 * FUNCTION USED TO DELETE TEAM FROM VERTICALE
+	 * @param idTeam
+	 * @param idVerticale
+	 * @return
+	 */
 	public String deleteTeamFromVertical(Long idTeam, Long idVerticale){
 		
 		String redirect = REDIRECT + PATH + BASE_VERTICALE + PATH + idVerticale + PATH + SHOW_TEAM;

@@ -31,4 +31,7 @@ public interface IUserCrudRepository extends IBaseCrudRepository<User>{
 	@Query(value = "SELECT * FROM user WHERE registration_number LIKE %:name%", nativeQuery=true)
 	public ArrayList<User> getUsers(@Param("name") String name);
 
+	@Query(value = "SELECT max(nikoniko.id)-1 from nikoniko where nikoniko.user_id = :idUser", nativeQuery=true)
+	public Long getLastLastNikoNikoUser(@Param("idUser") long idUser);
+
 }
