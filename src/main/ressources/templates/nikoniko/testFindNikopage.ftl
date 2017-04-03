@@ -5,38 +5,58 @@
 </head>
 <body>
 <body>
-	<h1>Les nikos de la team sont :</h1>
-		<table class="table table-bordered table-hover">
-			<tr>
-				<#list items as item>
-					<#list sortedFields as field>
-						<#list item?keys as key>
-							<#if key == field>
-								<th>${key}</th>
-							</#if>
-						</#list>
-					</#list>
-					<#break>
-				</#list>
-			</tr>
-			<#list items as item>
-				<tr>
-					<#list sortedFields as field>
-						<#list item?keys as key>
-							<#if key == field>
-								<#if item[key]?is_boolean>
-									<td>${item[key]?c}</td>
-								<#elseif item[key]?is_date_like>
-									<td>${item[key]?string("yyyy:MM:dd HH:mm:ss")}</td>
-								<#else>
-									<td>${item[key]}</td>
-								</#if>
-							</#if>
-						</#list>
-					</#list>
-				</tr>
+	<h1>Calendrier des nikonikos du mois</h1>
+
+	<table class="table table-bordered table-hover">
+		<tr>
+			<#list jourSemaine as jour>
+				<th>${jour}</th>
 			</#list>
-		</table>
-		<a href="/menu/">Back</a>
+		</tr>
+		<#list nbweeks as week>
+			<tr>
+				<#if week == 1 && firstWeekUncomplete == 1>
+					<#list 1..nbJoursSemaineAIgnorer as i>
+					<td class = "emptyDay"></td>
+					</#list>
+				</#if>
+				<#list jourSemaine as jour>
+					<#list days as map>
+				    	<#assign keys = map?keys>
+				    		<#list map?keys as key>
+									<#if map["uncompleteWeek"] == 1>
+										<#if jour == key && week == map["endOfWeek"]>
+												<td class = "fillableDay">
+													Good :  ${map["nikoGood"]} <br>
+													Neutral :  ${map["nikoNeutral"]} <br>
+													Bad 1:  ${map["nikoBad"]} <br>
+												</td>
+										</#if>
+									<#else>
+										<#if jour == key && week == map["endOfWeek"]>
+												<td class = "fillableDay">
+													Good :  ${map["nikoGood"]} <br>
+													Neutral :  ${map["nikoNeutral"]} <br>
+													Bad 2 :  ${map["nikoBad"]} <br>
+												</td>
+										</#if>
+									</#if>
+
+							</#list>
+						</#list>
+					</td>
+				</#list>
+				<#if week == numberOfWeekInMonth && lastWeekUncomplete == 1>
+					<#list 1..nbJoursSemaineAAjouter as i>
+					<td class = "emptyDay"></td>
+					</#list>
+				</#if>
+			</tr>
+		</#list>
+
+
+	</table>
+
+	<a href="/menu/">Back</a>
 
 </body>

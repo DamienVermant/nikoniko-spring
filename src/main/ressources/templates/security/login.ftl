@@ -1,3 +1,4 @@
+<html>
 <head>
 	<!-- Encodage -->
 	<meta charset="utf-8">

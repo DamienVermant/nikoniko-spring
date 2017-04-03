@@ -1,5 +1,6 @@
 package com.cgi.nikoniko.dao;
 
+import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -14,6 +15,20 @@ public interface IUserCrudRepository extends IBaseCrudRepository<User>{
 	 * @return
 	 */
 	User findByLogin(String login);
+
+	/**
+	 * FIND USERS BY FIRSTNAME
+	 * @param login
+	 * @return
+	 */
+	List<User> findAllByFirstname(String firstname);
+
+	/**
+	 * FIND USERS BY REGISTRATION_NUMBER
+	 * @param login
+	 * @return
+	 */
+	User findByRegistrationcgi(String registrationcgi);
 
 	/**
 	 * GET LAST USER NIKONIKO

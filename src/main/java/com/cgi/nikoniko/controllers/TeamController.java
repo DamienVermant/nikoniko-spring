@@ -3,9 +3,12 @@ package com.cgi.nikoniko.controllers;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -19,10 +22,12 @@ import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
 import com.cgi.nikoniko.dao.ITeamCrudRepository;
 import com.cgi.nikoniko.dao.IUserCrudRepository;
 import com.cgi.nikoniko.dao.IUserHasTeamCrudRepository;
+import com.cgi.nikoniko.dao.IVerticaleCrudRepository;
 import com.cgi.nikoniko.models.association.UserHasTeam;
 import com.cgi.nikoniko.models.tables.NikoNiko;
 import com.cgi.nikoniko.models.tables.Team;
 import com.cgi.nikoniko.models.tables.User;
+import com.cgi.nikoniko.models.tables.Verticale;
 import com.cgi.nikoniko.models.association.base.AssociationItemId;
 import com.cgi.nikoniko.utils.DumpFields;
 
@@ -57,6 +62,9 @@ public class TeamController extends ViewBaseController<Team> {
 
 	@Autowired
 	INikoNikoCrudRepository nikoCrud;
+
+	@Autowired
+	IVerticaleCrudRepository verticaleCrud;
 
 	public TeamController() {
 		super(Team.class, BASE_URL);
@@ -317,12 +325,100 @@ public class TeamController extends ViewBaseController<Team> {
 	@RequestMapping(path = "{idTeam}/mesnikonikos", method = RequestMethod.GET)
 	public String controlleurBidon(Model model, @PathVariable Long idTeam) {
 
-		ArrayList<NikoNiko> nikos = findNikoNikosOfATeam(idTeam);
+//		ArrayList<NikoNiko> nikos = findNikoNikosOfATeam(idTeam);
 
-		List<Long> ids = new ArrayList<Long>();
+		//##################################################################
+		//Creation calendrier
+		//##################################################################
 
-		model.addAttribute("sortedFields",NikoNiko.FIELDS);
-		model.addAttribute("items",DumpFields.listFielder(nikos));
+		LocalDate dateLocale = LocalDate.now();
+		dateLocale = dateLocale.withMonthOfYear(10);//line to modify month to show previous nikos
+
+		LocalDate maxDayOfCurrentMonth = dateLocale.dayOfMonth().withMaximumValue();
+		int firstDayOfCurrentMonth = dateLocale.withDayOfMonth(1).getDayOfWeek();
+		int lastDayOfCurrentMonth = maxDayOfCurrentMonth.getDayOfMonth();
+
+		String[] jourSemaine = {"Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"};
+		List<Integer> nbWeeks = new ArrayList<Integer>();
+		Boolean uncompleteWeek = true;
+		int firstWeekUncomplete = 0;
+		int lastWeekUncomplete = 0;
+		int numberOfWeekInMonth = 1;
+		nbWeeks.add(numberOfWeekInMonth);
+
+		ArrayList<Map<String,Object>> days = new ArrayList<Map<String,Object>>();
+
+		if (firstDayOfCurrentMonth!=1) {
+			firstWeekUncomplete = 1;
+			model.addAttribute("nbJoursSemaineAIgnorer",firstDayOfCurrentMonth-1);
+		}
+
+		if (maxDayOfCurrentMonth.getDayOfWeek()!=7) {
+			lastWeekUncomplete = 1;
+			model.addAttribute("nbJoursSemaineAAjouter",7-maxDayOfCurrentMonth.getDayOfWeek());
+		}
+
+		for (int i = 1; i <= lastDayOfCurrentMonth; i++) {
+			days.add(new HashMap<String, Object>());
+
+			days.get(i-1).put(jourSemaine[dateLocale.withDayOfMonth(i).getDayOfWeek()-1], i);
+
+			//Put niko stats here
+			days.get(i-1).put("nikoBad", 50);
+			days.get(i-1).put("nikoNeutral", 0);
+			days.get(i-1).put("nikoGood", 25);
+
+			if (dateLocale.withDayOfMonth(i).getDayOfWeek()==1) {//if Monday
+				numberOfWeekInMonth++;
+				nbWeeks.add(numberOfWeekInMonth);
+				days.get(i-1).put("endOfWeek", numberOfWeekInMonth);
+			} else {
+				days.get(i-1).put("endOfWeek", numberOfWeekInMonth);
+			}
+
+			if (uncompleteWeek) {
+				days.get(i-1).put("uncompleteWeek", 1);
+				if (dateLocale.withDayOfMonth(i).getDayOfWeek()==7) {
+					uncompleteWeek = false;
+				}
+			} else {
+				days.get(i-1).put("uncompleteWeek", 0);
+			}
+
+			if (dateLocale.withDayOfMonth(i).getDayOfWeek()== 1
+				&& i >= (lastDayOfCurrentMonth-5)) {
+				uncompleteWeek = true;
+			}
+		}
+
+
+		model.addAttribute("days",days);
+
+		model.addAttribute("nbweeks",nbWeeks);
+		model.addAttribute("numberOfWeekInMonth",numberOfWeekInMonth);
+		model.addAttribute("jourSemaine",jourSemaine);
+
+		model.addAttribute("firstWeekUncomplete",firstWeekUncomplete);
+		model.addAttribute("lastWeekUncomplete",lastWeekUncomplete);
+
+
+		//##################################################################
+		//Fin creation calendrier
+		//##################################################################
+
+
+		model.addAttribute("nikos",DumpFields.listFielder(
+				(ArrayList<NikoNiko>)nikoCrud.findAllByMood(2)));
+
+
+//		model.addAttribute("teamName", teamCrud.findByName("Trololololo").getSerial());
+//		model.addAttribute("teamName", teamCrud.findBySerial("264523kl").getName());
+//		model.addAttribute("userregistrated",userCrud.findByRegistrationcgi("NOUVEAUUSER").getLogin());
+//		model.addAttribute("users",DumpFields.listFielder((ArrayList<User>)userCrud.findAllByFirstname("Tony")));
+//		model.addAttribute("verticales",DumpFields.listFielder((ArrayList<Verticale>)verticaleCrud.findAllByName("test")));
+
+//		model.addAttribute("sortedFields",NikoNiko.FIELDS);
+//		model.addAttribute("items",DumpFields.listFielder(nikos));
 
 		return "nikoniko/testFindNikopage";
 	}

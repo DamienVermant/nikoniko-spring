@@ -215,7 +215,7 @@ public class MenuController  {
 		else {
 
 			NikoNiko lastNiko = nikoCrud.findOne(idMaxNiko);
-			Date entryDate = lastNiko.getEntry_date();
+			Date entryDate = lastNiko.getEntryDate();
 
 			java.util.Date eDate = new java.util.Date(entryDate.getTime());
 
