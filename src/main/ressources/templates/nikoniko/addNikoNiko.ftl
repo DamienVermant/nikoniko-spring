@@ -86,13 +86,13 @@
 	<div class="row-fluid">
 		<div class="col-lg-12">
 			<center>
-				<#include "../includable/security/securityToken.ftl">
-				<TEXTAREA style="margin-top: 30px" name="comment" rows=5 cols=60 placeholder="Ecrire votre commentaire..."></TEXTAREA> <br>
-					<button class="buttons" onclick="location.href='/menu'"> Voter </button>
-					<#if mood = 0 || status == false>
-						<button name="mood" value=0 class="buttons" onclick="location.href='/menu'"> Voter plus tard </button>
+				<#if mood = 0 || status == false>
+						<div> Voter plus tard : <input type="radio" name="mood" value="0" > </div>
 					<#else>
 					</#if>
+				<#include "../includable/security/securityToken.ftl">
+				<TEXTAREA style="margin-top: 30px" name="comment" rows=5 cols=60 placeholder="Ecrire votre commentaire..."></TEXTAREA> <br>
+					<button class="buttons" onclick="location.href='/menu'"> Valider </button>
 				</form>
 			</center>
 		</div>

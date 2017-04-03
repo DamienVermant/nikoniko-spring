@@ -2,6 +2,8 @@ package com.cgi.nikoniko.controllers;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -64,6 +66,8 @@ public class UserController extends ViewBaseController<User> {
 	public final static String ADD_VERTICAL = "addVerticale";
 
 	public final static String REDIRECT = "redirect:";
+	
+	public final static LocalDate TODAY_DATE = new LocalDate();
 
 	public final static double TIME = 0.999999;
 
@@ -252,13 +256,13 @@ public class UserController extends ViewBaseController<User> {
 
 		Long idMax = userCrud.getLastLastNikoNikoUser(idUser);
 
-		NikoNiko lastLastNiko = nikonikoCrud.findOne(userCrud.getLastLastNikoNikoUser(idUser));
-
-		if (lastLastNiko == null) {
+		if (idMax == null) {
 			return false;
 		}
 
 		else {
+			
+			NikoNiko lastLastNiko = nikonikoCrud.findOne(userCrud.getLastLastNikoNikoUser(idUser));
 
 			Integer mood = lastLastNiko.getMood();
 
@@ -280,7 +284,6 @@ public class UserController extends ViewBaseController<User> {
 	public Boolean checkDateNikoNiko(Long idUser){
 
 		Boolean updateNiko = null;
-		LocalDate todayDate = new LocalDate();
 
 		Long idMaxNiko = userCrud.getLastNikoNikoUser(idUser);
 
@@ -294,7 +297,7 @@ public class UserController extends ViewBaseController<User> {
 			Date entryDate = lastNiko.getEntryDate();
 			LocalDate dateEntry = new LocalDate(entryDate);
 
-			if (todayDate.isAfter(dateEntry)) {
+			if (TODAY_DATE.isAfter(dateEntry)) {
 
 					updateNiko = false;
 				}
@@ -317,7 +320,8 @@ public class UserController extends ViewBaseController<User> {
 	*/
 	public String addNikoNikoInDB(Long idUser, Integer mood, String comment){
 
-		Date date = new Date();
+		
+		Date date = TODAY_DATE.toDate();
 		User user = new User();
 
 		user = userCrud.findOne(idUser);
@@ -829,6 +833,7 @@ public class UserController extends ViewBaseController<User> {
 
 		return "nikoniko/addNikoNikoLast";
 	}
+	
 
 	/**
 	 * UPDATE THE PREVIOUS NIKONIKO VOTE BY USER
@@ -841,7 +846,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @throws IOException
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
-	@RequestMapping(path = "{userId}/addNikoNikoLast", method = RequestMethod.POST)
+	@RequestMapping(path = "{userId}/addLast", method = RequestMethod.POST)
 	public String lastNikoNikoForUserPOST(Model model,@PathVariable Long userId,
 						HttpServletResponse response, int mood, String comment) throws IOException {
 
@@ -856,6 +861,10 @@ public class UserController extends ViewBaseController<User> {
 	 * @return
 	 */
 	public String updateLastNikoNiko(Long idUser, Integer mood, String comment){
+		
+		if (userCrud.getLastLastNikoNikoUser(idUser) == null) {
+			return REDIRECT + PATH + MENU_PATH;
+		}
 
 		if (mood == null) {
 			return REDIRECT + PATH + MENU_PATH;
