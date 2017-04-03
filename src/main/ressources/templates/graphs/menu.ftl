@@ -1,3 +1,5 @@
+<html>
+
 <head>
     <!-- Encodage -->
     <meta charset="utf-8">
@@ -5,49 +7,17 @@
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
-
-
-    <!-- Redirection ???? -->
-    <link rel="stylesheet" href="menu/">
-
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
 
+    <!-- Title -->
+    <title>Se connecter</title>
 
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
-      google.charts.load('current', {'packages':['corechart']});
-      google.charts.setOnLoadCallback(drawChart);
-
-      function drawChart() {
-
-        var data = google.visualization.arrayToDataTable([
-          ['NikoNiko', 'Number of Smile'],
-          ['Good', ${good}],
-          ['Medium', ${medium}],
-          ['Bad', ${bad}]
-        ]);
-
-        var options = {
-          backgroundColor:'transparent',
-          legend: 'none',
-          slices: {
-            0: { color: '#00CC00' },
-            1: { color: 'orange' },
-            2: { color: '#EE0000' }
-          }
-        };
-
-        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
-
-        chart.draw(data, options);
-      }
-    </script>
-  </head>
-
+</head>
+<body>
 <style>
-    <#include "employee.css">
+    <#include "static/admin.css">
 </style>
 
 <!-- HEAD -->
@@ -63,9 +33,7 @@
             <div class="row-fluid">
                 <div class="col-lg-12">
                     <div class="align">
-                    <button onclick="location.href='changer_mdp.html'" class="password"> Préférences (KO) </button>
-                    <button onclick="location.href='vote.html'" class="vote"> Modifier vote (KO) </button>
-                    <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
+                        <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
                     </div>
                 </div>
             </div>
@@ -75,10 +43,36 @@
 
 <hr>
 
-<div class="welcome"> Graphique
-    <div class="piechart" id="piechart" style="width: 700px; height: 400px;"></div>
-</div>
-<button href="${back}"> Back </button>
-
+<div class="welcome"> Bienvenue : ${auth} (connecté en tant que  : ${roles}) </div>
 
 <hr>
+
+<!-- MENU -->
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="col-lg-12">
+            <div class="row-fluid">
+                <div class="text" href=""> Visualisation des graphes (NOT ACTIVE)</div>
+                <ul>
+                    <li> <a href="${go_user_votes}"> Voir vote d'un utilisateur </a> </li>
+                    <li> <a href="${go_users_votes}"> Voir vote de tous les utilisateurs </a> </li>
+                    <li> <a href="${go_equipe_votes}"> Voir vote d'une équipe </a> </li>
+                    <li> <a href="${go_verticale_votes}"> Voir vote d'une verticale </a> </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr>
+
+<!-- FOOTER -->
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="col-lg-12">
+            <div class="copyright">&copy; Niko-Niko CGI 2017</div>
+        </div>
+    </div>
+</div>
+    </body>
+</html>

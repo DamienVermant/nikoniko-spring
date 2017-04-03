@@ -15,6 +15,9 @@ public interface ITeamCrudRepository extends IBaseCrudRepository<Team>{
 			+ "INNER JOIN user_has_team ON nikoniko.user_id = user_has_team.idLeft "
 			+ "INNER JOIN team ON team.id= user_has_team.idRight WHERE team.id= :idTeam",nativeQuery=true)
 	public List<BigInteger> getNikoNikoFromTeam(@Param("idTeam") long idTeam);
+	
+	@Query(value = "SELECT verticale.id FROM verticale INNER JOIN team ON verticale.id = team.verticale_id where team.id = :idTeam", nativeQuery=true)
+	public Long getTeamVertical(@Param("idTeam") long idTeam);
 
 	/**
 	 * FIND TEAM BY HIS NAME

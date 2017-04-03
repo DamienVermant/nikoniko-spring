@@ -5,9 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Days;
+import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
@@ -59,6 +57,10 @@ public class MenuController  {
 	public final static String GO_USERTEAM = PATH + "user_has_team" + PATH;
 	public final static String GO_USERROLE = PATH + "user_has_role" + PATH;
 	public final static String GO_ROLEFUNC = PATH + "role_has_function" + PATH;
+
+	// TODO : CHANGE TYPE OF TIME
+	// 0.99999... = 1
+	public final static double TIME = 0.9999999999;
 
 
 	// TODO : GESTION DES PATHS ET DES @SECURED
@@ -203,7 +205,7 @@ public class MenuController  {
 	public Boolean checkDateNikoNiko(Long idUser){
 
 		Boolean updateNiko = true;
-		Date todayDate = new Date();
+		LocalDate todayDate = new LocalDate();
 
 		Long idMaxNiko = userCrud.getLastNikoNikoUser(idUser);
 
@@ -215,16 +217,11 @@ public class MenuController  {
 		else {
 
 			NikoNiko lastNiko = nikoCrud.findOne(idMaxNiko);
+
 			Date entryDate = lastNiko.getEntryDate();
+			LocalDate dateEntry = new LocalDate(entryDate);
 
-			java.util.Date eDate = new java.util.Date(entryDate.getTime());
-
-			DateTime eDateClean = new DateTime(eDate,DateTimeZone.forID( "Europe/Paris" ));
-			DateTime todayDateClean = new DateTime(todayDate,DateTimeZone.forID( "Europe/Paris" ));
-
-			Days diff = Days.daysBetween(eDateClean, todayDateClean);
-
-			if (entryDate == null || (diff.getDays()) > 1) {
+			if (entryDate == null || (todayDate.isAfter(dateEntry))) {
 				updateNiko = false;
 			}
 		}
@@ -248,6 +245,5 @@ public class MenuController  {
 		}
 
 	}
-
 
 }

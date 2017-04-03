@@ -17,6 +17,8 @@
 								<td>
 									${item[key]?c}
 								</td>
+							<#elseif item[key]?is_date_like>
+								<td>${item[key]?string("yyyy/MM/dd")}</td>
 							<#else>
 								<td>
 									${item[key]}

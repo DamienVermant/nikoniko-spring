@@ -1,6 +1,5 @@
 package com.cgi.nikoniko.controllers;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -20,7 +19,6 @@ import com.cgi.nikoniko.dao.IUserCrudRepository;
 import com.cgi.nikoniko.dao.IUserHasTeamCrudRepository;
 import com.cgi.nikoniko.models.tables.ChangeDates;
 import com.cgi.nikoniko.models.tables.NikoNiko;
-import com.cgi.nikoniko.models.tables.User;
 import com.cgi.nikoniko.utils.DumpFields;
 
 @Controller
@@ -61,13 +59,17 @@ public class NikoNikoController extends ViewBaseController<NikoNiko> {
 	@Secured({"ROLE_ADMIN","ROLE_VP"})
 	@RequestMapping(path = {PATH, ROUTE_LIST}, method = RequestMethod.GET)
 	public String index(Model model) {
+
+		ArrayList<NikoNiko> emptyList = new ArrayList<NikoNiko>();
+
+		model.addAttribute("model", "nikoniko");
 		model.addAttribute("page",super.baseName + " " + LIST_ACTION.toUpperCase());
 		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
-		model.addAttribute("items",DumpFields.listFielder(super.getItems()));
+		model.addAttribute("items",DumpFields.listFielder(emptyList));
 		model.addAttribute("go_show", SHOW_ACTION);
 		model.addAttribute("go_create", CREATE_ACTION);
 		model.addAttribute("go_delete", DELETE_ACTION);
-		return super.listView;
+		return listView;
 	}
 	/**
 	 *
@@ -145,5 +147,7 @@ public class NikoNikoController extends ViewBaseController<NikoNiko> {
 		}
 		return "redirect:/nikoniko/1/link";
 	}
+
+
 
 }

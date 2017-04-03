@@ -36,6 +36,7 @@
 					</#list>
 					<td>
 						<form action = "" method = "POST">
+							<#include "../includable/security/securityToken.ftl">
 							<input type="hidden" name = "idUser" value = "${item["id"]}">
 							<input type="submit" value="add"><br>
 						</form>

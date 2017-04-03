@@ -24,24 +24,23 @@
 					<#list days as map>
 				    	<#assign keys = map?keys>
 				    		<#list map?keys as key>
-									<#if map["uncompleteWeek"] == 1>
-										<#if jour == key && week == map["endOfWeek"]>
-												<td class = "fillableDay">
-													Good :  ${map["nikoGood"]} <br>
-													Neutral :  ${map["nikoNeutral"]} <br>
-													Bad 1:  ${map["nikoBad"]} <br>
-												</td>
-										</#if>
-									<#else>
-										<#if jour == key && week == map["endOfWeek"]>
-												<td class = "fillableDay">
-													Good :  ${map["nikoGood"]} <br>
-													Neutral :  ${map["nikoNeutral"]} <br>
-													Bad 2 :  ${map["nikoBad"]} <br>
-												</td>
-										</#if>
+								<#if map["uncompleteWeek"] == 1>
+									<#if jour == key && week == map["endOfWeek"]>
+											<td class = "fillableDay">
+												Good :  ${map["nikoGood"]} <br>
+												Neutral :  ${map["nikoNeutral"]} <br>
+												Bad 1:  ${map["nikoBad"]} <br>
+											</td>
 									</#if>
-
+								<#else>
+									<#if jour == key && week == map["endOfWeek"]>
+											<td class = "fillableDay">
+												Good :  ${map["nikoGood"]} <br>
+												Neutral :  ${map["nikoNeutral"]} <br>
+												Bad 2 :  ${map["nikoBad"]} <br>
+											</td>
+									</#if>
+								</#if>
 							</#list>
 						</#list>
 					</td>

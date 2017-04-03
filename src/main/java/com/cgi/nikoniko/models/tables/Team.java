@@ -13,12 +13,17 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.cgi.nikoniko.models.association.UserHasTeam;
 import com.cgi.nikoniko.models.tables.modelbase.DatabaseItem;
 
 @Entity
 @Table(name = Team.TABLE)
 public class Team extends DatabaseItem{
+	
+	@Transient
+	public static final Date DEFAULT_DATE = new Date();
 
 	@Transient
 	public static final String DEFAULT_COLORS = "red,orange,green";
@@ -46,9 +51,11 @@ public class Team extends DatabaseItem{
 	private String serial;
 
 	@Column(name = "start_date", nullable = false)
+	@DateTimeFormat(pattern="yyyy/MM/dd")
 	private Date start_date;
 
 	@Column(name = "end_date", nullable = true)
+	@DateTimeFormat(pattern="yyyy/MM/dd")
 	private Date end_date;
 
 	@Column(name = "stickers_colors", nullable = false)

@@ -1,5 +1,7 @@
 package com.cgi.nikoniko.controllers.base.view;
 
+import java.util.ArrayList;
+
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,8 +22,8 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 	protected String listView;
 	private String baseView;
 
-	private String updateView;
-	private String updateRedirect;
+	protected String updateView;
+	protected String updateRedirect;
 
 	private String deleteView;
 	protected String deleteRedirect;
@@ -48,8 +50,6 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 		this.createRedirect = REDIRECT + baseURL + PATH_LIST_FILE;
 	}
 
-	// TODO : Gérer la généricité des différentes fonctions (certaines ne peuvent plus être générics)
-
 	/**
 	 *
 	 * @param model
@@ -58,9 +58,20 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 	@Secured({"ROLE_ADMIN"})
 	@RequestMapping(path = {PATH, ROUTE_LIST}, method = RequestMethod.GET)
 	public String index(Model model) {
+		
+		ArrayList<T> emptyList = new ArrayList<T>();
+		
+		model.addAttribute("model", this.baseName.toLowerCase());
 		model.addAttribute("page",this.baseName + " " + LIST_ACTION.toUpperCase());
 		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
-		model.addAttribute("items",DumpFields.listFielder(super.getItems()));
+		
+		if (this.baseName.toLowerCase().equals("role")) {
+			model.addAttribute("items",super.getItems());
+		}
+		else {
+			model.addAttribute("items",DumpFields.listFielder(emptyList));
+		}
+		
 		model.addAttribute("go_show", SHOW_ACTION);
 		model.addAttribute("go_create", CREATE_ACTION);
 		model.addAttribute("go_delete", DELETE_ACTION);
@@ -92,6 +103,22 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 	@RequestMapping(path = ROUTE_CREATE, method = RequestMethod.POST)
 	public String createItemPost(Model model, T item) {
+		
+		// TODO : TO REMOVE IF DATE CREATE AND UPDATE WORKS, JUST FOR DATE TEST
+		
+//		if (item.getClass().getSimpleName().equals("Team")) {
+//			DateTime date = new DateTime(0000, 01, 01, 01, 01, 01);
+//			((Team) item).setEnd_date(date.toDate());
+//			
+//			try {
+//				insertItem(item);
+//			} catch (Exception e) {
+//				 e.printStackTrace();
+//			}
+//			return createRedirect;
+//		}
+		
+		
 		try {
 			insertItem(item);
 		} catch (Exception e) {

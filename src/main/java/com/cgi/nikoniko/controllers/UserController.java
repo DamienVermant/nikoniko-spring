@@ -10,9 +10,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Days;
+import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
@@ -55,6 +53,9 @@ public class UserController extends ViewBaseController<User> {
 
 	public final static String SHOW_NIKONIKO = "showNikoNikos";
 	public final static String SHOW_GRAPH = "showGraph";
+	public final static String SHOW_GRAPH_MONTH = "showGraphMonth";
+	public final static String SHOW_GRAPH_WEEK = "showGraphWeek";
+	public final static String SHOW_GRAPH_DATE = "showDate";
 	public final static String SHOW_GRAPH_ALL = "showGraphAll";
 	public final static String SHOW_GRAPH_VERTICALE = "showGraphVerticale";
 	public final static String SHOW_GRAPH_TEAM = "showGraphTeam";
@@ -69,7 +70,7 @@ public class UserController extends ViewBaseController<User> {
 
 	public final static String REDIRECT = "redirect:";
 
-	public final static int TIME = 1;
+	public final static double TIME = 0.999999;
 
 	@Autowired
 	INikoNikoCrudRepository nikonikoCrud;
@@ -205,7 +206,7 @@ public class UserController extends ViewBaseController<User> {
 		if (userCrud.findByLogin(super.checkSession().getName()).getId()!= userId) {
 			response.sendError(HttpStatus.BAD_REQUEST.value(),("Don't try to hack url!").toUpperCase());
 		}
-
+		model.addAttribute("status", this.checkDateNikoNiko(userCrud.findByLogin(super.checkSession().getName()).getId()));
 		model.addAttribute("mood" , this.getUserLastMood(userCrud.findByLogin(super.checkSession().getName()).getId()));
 		model.addAttribute("page",user.getFirstname() + " " + CREATE_ACTION.toUpperCase());
 		model.addAttribute("sortedFields",NikoNiko.FIELDS);
@@ -263,7 +264,7 @@ public class UserController extends ViewBaseController<User> {
 	public Boolean checkDateNikoNiko(Long idUser){
 
 		Boolean updateNiko = null;
-		Date todayDate = new Date();
+		LocalDate todayDate = new LocalDate();
 
 		Long idMaxNiko = userCrud.getLastNikoNikoUser(idUser);
 
@@ -275,22 +276,16 @@ public class UserController extends ViewBaseController<User> {
 
 			NikoNiko lastNiko = nikonikoCrud.findOne(idMaxNiko);
 			Date entryDate = lastNiko.getEntryDate();
+			LocalDate dateEntry = new LocalDate(entryDate);
 
-			java.util.Date eDate = new java.util.Date(entryDate.getTime());
+			if (todayDate.isAfter(dateEntry)) {
 
-			DateTime eDateClean = new DateTime(eDate,DateTimeZone.forID( "Europe/Paris" ));
-			DateTime todayDateClean = new DateTime(todayDate,DateTimeZone.forID( "Europe/Paris" ));
-
-			Days diff = Days.daysBetween(eDateClean, todayDateClean);
-
-			if (diff.getDays() <= TIME) {
-
-					updateNiko = true;
+					updateNiko = false;
 				}
 
 				else {
 
-					updateNiko = false;
+					updateNiko = true;
 				}
 			}
 
@@ -684,15 +679,48 @@ public class UserController extends ViewBaseController<User> {
 		User user = super.getItem(idUser);
 		Set<NikoNiko> niko =  user.getNikoNikos();
 		List<NikoNiko> listOfNiko = new ArrayList<NikoNiko>(niko);
+		List<NikoNiko> nikotoday = getNikoToday(listOfNiko);
 
 		int good = 0;
 		int medium = 0;
 		int bad = 0;
 
-		for (int i = 0; i < listOfNiko.size(); i++) {
-			if (listOfNiko.get(i).getMood() == 3) {
+		for (int i = 0; i < nikotoday.size(); i++) {
+			if (nikotoday.get(i).getMood() == 3) {
 				good++;
-			}else if(listOfNiko.get(i).getMood() == 2){
+			}else if(nikotoday.get(i).getMood() == 2){
+				medium++;
+			}else{
+				bad++;
+			}
+		}
+
+		model.addAttribute("title", "Mes votes !" );
+		model.addAttribute("mood", this.getUserLastMood(userCrud.findByLogin(super.checkSession().getName()).getId()));
+		model.addAttribute("good", good);
+		model.addAttribute("medium", medium);
+		model.addAttribute("bad", bad);
+		model.addAttribute("back", PATH + MENU_PATH);
+		return "graphs" + PATH + "pie";
+	}
+
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
+	@RequestMapping(path = "{idUser}" + PATH + SHOW_GRAPH_MONTH, method = RequestMethod.GET)
+	public String showPieMonth(Model model, @PathVariable Long idUser) {
+
+		User user = super.getItem(idUser);
+		Set<NikoNiko> niko =  user.getNikoNikos();
+		List<NikoNiko> listOfNiko = new ArrayList<NikoNiko>(niko);
+		List<NikoNiko> nikomonth = getNikoMonth(listOfNiko);
+
+		int good = 0;
+		int medium = 0;
+		int bad = 0;
+
+		for (int i = 0; i < nikomonth.size(); i++) {
+			if (nikomonth.get(i).getMood() == 3) {
+				good++;
+			}else if(nikomonth.get(i).getMood() == 2){
 				medium++;
 			}else{
 				bad++;
@@ -847,7 +875,193 @@ public class UserController extends ViewBaseController<User> {
 	}
 
 
+	/**
+	 * Get nikoniko's list from today
+	 * @param listOfNiko
+	 * @return
+	 */
+	public List<NikoNiko> getNikoToday(List<NikoNiko> listOfNiko){
 
+		LocalDate nikodate = new LocalDate();
+		LocalDate date;
+		List<NikoNiko> nikotoday = new ArrayList<NikoNiko>();
+
+		for (int i = 0; i < listOfNiko.size(); i++) {
+				Date firstniko = listOfNiko.get(i).getEntryDate();
+				nikodate = new LocalDate(firstniko);
+				date = new LocalDate();
+				if (nikodate.isEqual(date)) {
+					nikotoday.add(listOfNiko.get(i));
+				}
+		}
+
+		return nikotoday;
+	}
+
+	/**
+	 * Get nikoniko's list from this week
+	 * @param listOfNiko
+	 * @return
+	 */
+	public List<NikoNiko> getNikoWeek(List<NikoNiko> listOfNiko){
+
+		LocalDate nikodate = new LocalDate();
+		LocalDate date= new LocalDate();
+		LocalDate interval1 = date.withDayOfWeek(1);
+		LocalDate interval2 = date.withDayOfWeek(7);
+
+
+		List<NikoNiko> nikoWeek = new ArrayList<NikoNiko>();
+
+		for (int i = 0; i < listOfNiko.size(); i++) {
+				Date firstniko = listOfNiko.get(i).getEntryDate();
+				nikodate = new LocalDate(firstniko);
+
+
+
+				if (nikodate.isAfter(interval1) && nikodate.isBefore(interval2)
+						|| nikodate.isEqual(interval1)
+						|| nikodate.isEqual(interval2)) {
+					nikoWeek.add(listOfNiko.get(i));
+				}
+		}
+
+		return nikoWeek;
+	}
+
+	/**
+	 * Get nikoniko's list from this month
+	 * @param listOfNiko
+	 * @return
+	 */
+	public List<NikoNiko> getNikoMonth(List<NikoNiko> listOfNiko){
+
+		int[] monthDays= {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+		LocalDate nikodate = new LocalDate();
+		LocalDate date= new LocalDate();
+
+		int year = date.getYear();
+		int j;
+		if (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0)){
+            monthDays[1] = 29;
+        };
+        LocalDate interval1 = date.withDayOfMonth(1);
+		LocalDate interval2 = date.withDayOfMonth(monthDays[nikodate.getMonthOfYear()-1]);
+
+
+		List<NikoNiko> nikoMonth = new ArrayList<NikoNiko>();
+
+		for (int i = 0; i < listOfNiko.size(); i++) {
+				Date firstniko = listOfNiko.get(i).getEntryDate();
+				nikodate = new LocalDate(firstniko);
+
+				if (nikodate.isAfter(interval1) && nikodate.isBefore(interval2)
+						|| nikodate.isEqual(interval1)
+						|| nikodate.isEqual(interval2)) {
+					nikoMonth.add(listOfNiko.get(i));
+				}
+		}
+
+		return nikoMonth;
+	}
+
+	/**
+	 * Get nikoniko's list from one week of the year
+	 * @param listOfNiko
+	 * @param year
+	 * @param week
+	 * @return
+	 */
+	public List<NikoNiko> getNikoWeekChoose(List<NikoNiko> listOfNiko,int year, int week){
+
+		LocalDate nikodate = new LocalDate();
+		LocalDate date= new LocalDate().withYear(year).withWeekOfWeekyear(week);
+		LocalDate interval1 = date.withDayOfWeek(1);
+		LocalDate interval2 = date.withDayOfWeek(7);
+
+
+		List<NikoNiko> nikoWeek = new ArrayList<NikoNiko>();
+
+		for (int i = 0; i < listOfNiko.size(); i++) {
+				Date firstniko = listOfNiko.get(i).getEntryDate();
+				nikodate = new LocalDate(firstniko);
+
+
+
+				if (nikodate.isAfter(interval1) && nikodate.isBefore(interval2)
+						|| nikodate.isEqual(interval1)
+						|| nikodate.isEqual(interval2)) {
+					nikoWeek.add(listOfNiko.get(i));
+				}
+		}
+
+		return nikoWeek;
+	}
+
+	/**
+	 * Get nikoniko's list from one month of the year
+	 * @param listOfNiko
+	 * @param yearc
+	 * @param month
+	 * @return
+	 */
+	public List<NikoNiko> getNikoMonthChoose(List<NikoNiko> listOfNiko,int yearc, int month){
+
+		int[] monthDays= {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+		LocalDate nikodate = new LocalDate();
+		LocalDate date= new LocalDate().withYear(yearc).withMonthOfYear(month);
+
+		int year = date.getYear();
+		int j;
+		if (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0)){
+            monthDays[1] = 29;
+        };
+        LocalDate interval1 = date.withDayOfMonth(1);
+		LocalDate interval2 = date.withDayOfMonth(monthDays[nikodate.getMonthOfYear()-1]);
+
+
+		List<NikoNiko> nikoMonth = new ArrayList<NikoNiko>();
+
+		for (int i = 0; i < listOfNiko.size(); i++) {
+				Date firstniko = listOfNiko.get(i).getEntryDate();
+				nikodate = new LocalDate(firstniko);
+
+				if (nikodate.isAfter(interval1) && nikodate.isBefore(interval2)
+						|| nikodate.isEqual(interval1)
+						|| nikodate.isEqual(interval2)) {
+					nikoMonth.add(listOfNiko.get(i));
+				}
+		}
+
+		return nikoMonth;
+	}
+
+	/**
+	 * Get nikoniko's list from one day of the year
+	 * @param listOfNiko
+	 * @param year
+	 * @param month
+	 * @param day
+	 * @return
+	 */
+	public List<NikoNiko> getNikoPreciseDate(List<NikoNiko> listOfNiko, int year, int month, int day){
+
+		LocalDate nikodate = new LocalDate();
+		LocalDate date = new LocalDate().withYear(year).withMonthOfYear(month).withDayOfMonth(day);
+		List<NikoNiko> niko = new ArrayList<NikoNiko>();
+
+		for (int i = 0; i < listOfNiko.size(); i++) {
+				Date firstniko = listOfNiko.get(i).getEntryDate();
+				nikodate = new LocalDate(firstniko);
+				if (nikodate.isEqual(date)) {
+					niko.add(listOfNiko.get(i));
+				}
+		}
+
+		return niko;
+	}
 
 	// TODO : RELATION USER -> VERTICAL
 
@@ -888,185 +1102,100 @@ public class UserController extends ViewBaseController<User> {
 
 	}
 
+
 	// TODO : ARRAYLIST CAN BE CONVERT TO A LONG
 	public ArrayList<Verticale> getVerticalForUser(Long idUser){
-
 		ArrayList<Verticale> verticaleList = new ArrayList<Verticale>();
-
 		Long idVerticale = userCrud.getUserVertical(idUser);
-
 		verticaleList.add(verticaleCrud.findOne(idVerticale));
-
 		return verticaleList;
+	}
 
+	/**
+	 * SHOW VERTICAL TO ADD USER
+	 * @param model
+	 * @param idUser
+	 * @return
+	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
+	@RequestMapping(path = "{idUser}" + PATH + ADD_VERTICAL, method = RequestMethod.GET)
+	public <T> String addVerticalForUserGET(Model model, @PathVariable Long idUser) {
+
+	Object userBuffer = new Object();
+	userBuffer = userCrud.findOne(idUser);
+	model.addAttribute("items", DumpFields.listFielder((ArrayList<Verticale>) verticaleCrud.findAll()));
+	model.addAttribute("sortedFields",Verticale.FIELDS);
+	model.addAttribute("page", ((User) userBuffer).getRegistrationcgi());
+	model.addAttribute("go_show", SHOW_ACTION);
+	model.addAttribute("go_create", CREATE_ACTION);
+	model.addAttribute("go_delete", DELETE_ACTION);
+	model.addAttribute("back", DOT + PATH + SHOW_VERTICAL);
+	model.addAttribute("add", ADD_VERTICAL);
+
+	return BASE_USER + PATH + ADD_VERTICAL;
+	}
+
+	/**
+	 * ADD ONE VERTICALE TO USER
+	 * @param model
+	 * @param idUser
+	 * @param idTeam
+	 * @return
+	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
+	@RequestMapping(path = "{idUser}" + PATH + ADD_VERTICAL, method = RequestMethod.POST)
+	public <T> String addVerticalForUserPOST(Model model, @PathVariable Long idUser, Long idVertical) {
+		return setVerticalForUser(idUser, idVertical);
+	}
+
+	private String setVerticalForUser(Long idUser, Long idVertical) {
+
+		String redirect = REDIRECT + PATH + BASE_USER + PATH + idUser + PATH + SHOW_VERTICAL;
+
+		User userBuffer = new User();
+		Verticale verticaleBuffer = new Verticale();
+
+		userBuffer = userCrud.findOne(idUser);
+		verticaleBuffer = verticaleCrud.findOne(idVertical);
+
+		userBuffer.setVerticale(verticaleBuffer);
+		userCrud.save(userBuffer);
+
+
+		return redirect;
+	}
+
+	/////////////////////////////////////////////////////////////////////
+
+	/**
+	 *
+	 * @param model
+	 * @return
+	 */
+
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
+	@RequestMapping(path = {PATH, ROUTE_LIST}, method = RequestMethod.POST)
+	public String showUsers(Model model,String name){
+
+		model.addAttribute("model", "");
+		model.addAttribute("page",this.baseName + " " + LIST_ACTION.toUpperCase());
+		model.addAttribute("sortedFields",User.FIELDS);
+		model.addAttribute("items",this.searchUser(name));
+		model.addAttribute("go_show", SHOW_ACTION);
+		model.addAttribute("go_create", CREATE_ACTION);
+		model.addAttribute("go_delete", DELETE_ACTION);
+		return listView;
 
 	}
 
-///**NAME : quiTeamPOST
-//*
-//* Delete the selected relation team-user and redirect to the userhasteams view (by using quitTeam())
-//* SHOW POST THAT UPDATE USER RELATION WITH TEAM WHEN A USER QUIT A TEAM
-//*
-//* @param model
-//* @param idUser
-//* @param idTeam
-//* @return
-//*/
-//
-//@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP"})
-//@RequestMapping(path = "{idUser}" + PATH + SHOW_TEAM, method = RequestMethod.POST)
-//public String quiTeamPOST(Model model,@PathVariable Long idUser, Long idTeam) {
-//return quitTeam(idUser, idTeam);
-//}
-//
-///**NAME : addUserInTeamGET
-//*
-//* ADD USER FOR CURRENT TEAM
-//*
-//* @param model
-//* @param idUser
-//* @return
-//*/
-//
-//@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
-//@RequestMapping(path = "{idUser}" + PATH + ADD_TEAM, method = RequestMethod.GET)
-//public <T> String addUserInTeamGET(Model model, @PathVariable Long idUser) {
-//
-//Object userBuffer = new Object();
-//userBuffer = userCrud.findOne(idUser);
-//model.addAttribute("items", DumpFields.listFielder((ArrayList<Team>) teamCrud.findAll()));
-//model.addAttribute("sortedFields",Team.FIELDS);
-//model.addAttribute("page", ((User) userBuffer).getRegistration_cgi());
-//model.addAttribute("go_show", SHOW_ACTION);
-//model.addAttribute("go_create", CREATE_ACTION);
-//model.addAttribute("go_delete", DELETE_ACTION);
-//model.addAttribute("back", DOT + PATH + SHOW_TEAM);
-//model.addAttribute("add", ADD_TEAM);
-//
-//return BASE_USER + PATH + ADD_TEAM;
-//}
-//
-///**NAME : addUserInTeamPOST
-//*
-//* ADD USER FOR CURRENT TEAM
-//*
-//* @param model
-//* @param idUser
-//* @param idTeam
-//* @return
-//*/
-//
-//@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
-//@RequestMapping(path = "{idUser}" + PATH + ADD_TEAM, method = RequestMethod.POST)
-//public <T> String addUserInTeamPOST(Model model, @PathVariable Long idUser, Long idTeam) {
-//return setUsersForTeam(idTeam, idUser);
-//}
-//
-///**NAME : findAllTeamsForUser
-//*
-//* Find all teams related to a user by checking relation table user_has_team
-//*
-//* @param idValue
-//* @return teamList (list of user associated to a team)
-//*/
-//public ArrayList<Team> findAllTeamsForUser(Long idValue) {
-//
-//List<Long> ids = new ArrayList<Long>();
-//ArrayList<Team> teamList = new ArrayList<Team>();
-//
-//List<BigInteger> idsBig = userTeamCrud.findAssociatedTeam(idValue);
-//
-//if (!idsBig.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
-//for (BigInteger id : idsBig) {
-//ids.add(id.longValue());
-//}
-//teamList = (ArrayList<Team>) teamCrud.findAll(ids);
-//}
-//
-//return teamList;
-//}
-//
-///**NAME : setUsersForTeam
-//*
-//* Put an user in a new team by creating a new  association in user_has_team (or modify if exists)
-//*
-//* @param idTeam
-//* @param idUser
-//* @return
-//*/
-//public String setUsersForTeam(Long idTeam,Long idUser){
-//
-//userTeamCrud.save(new UserHasTeam(userCrud.findOne(idUser), teamCrud.findOne(idTeam), new Date()));
-//
-//String redirect = REDIRECT + PATH + BASE_USER + PATH + idUser + PATH + SHOW_TEAM;
-//
-//return redirect;
-//}
-//
-///**NAME : quitTeam
-//*
-//* Set the leaving date in user_has_team table when a user leave a team
-//*
-//* @param idUser
-//* @param idTeam
-//* @return redirect (path redirection after action)
-//*/
-//public String quitTeam(Long idUser, Long idTeam){
-//
-//Date date = new Date();
-//
-//UserHasTeam userHasTeamBuffer = userTeamCrud.findOne(new AssociationItemId(idUser, idTeam));
-//userHasTeamBuffer.setLeavingDate(date);
-//
-//userTeamCrud.save(userHasTeamBuffer);
-//
-//String redirect = REDIRECT + PATH + BASE_USER + PATH + idUser + PATH + SHOW_TEAM;
-//
-//return redirect;
-//}
-//
-///** NAME : getTeamsForUser
-//*
-//* FUNCTION RETURNING ALL TEAM RELATED WITH ONE USER WITH leaving_date = null
-//*
-//* @param idUser
-//* @return
-//*/
-//public ArrayList<Map<String, Object>> getTeamsForUser(Long idUser){
-//
-//ArrayList<Long> ids = new ArrayList<Long>();
-//ArrayList<Team> teamList = new ArrayList<Team>();
-//ArrayList<UserHasTeam> userHasTeamList = new ArrayList<UserHasTeam>();
-//ArrayList<UserHasTeam> userHasTeamListClean = new ArrayList<UserHasTeam>();
-//
-//teamList = findAllTeamsForUser(idUser);
-//
-//for (int i = 0; i < teamList.size(); i++) {
-//userHasTeamList.add(userTeamCrud.findAssociatedUserTeamALL(idUser, teamList.get(i).getId()));
-//
-//if(userHasTeamList.get(i).getLeavingDate() == null){
-//
-//userHasTeamListClean.add(userHasTeamList.get(i));
-//ids.add(userHasTeamList.get(i).getIdRight());
-//
-//}
-//}
-//return DumpFields.listFielder((List<Team>) teamCrud.findAll(ids));
-//}
+	public ArrayList<User> searchUser(String name){
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
+		ArrayList<User> userList = new ArrayList<User>();
+		userList = userCrud.getUsers(name);
 
+		return userList;
 
+	}
 
-
-
-
-
-
-
-
-
-
-
-
+	/////////////////////////////////////////////////////////////////////
 }
