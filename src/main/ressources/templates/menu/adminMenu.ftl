@@ -13,7 +13,6 @@
 
 	<!-- Title -->
 	<title>Se connecter</title>
-
 </head>
 <body>
 <style>

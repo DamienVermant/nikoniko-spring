@@ -84,6 +84,11 @@
 				- <a href="${add_nikoniko}"> Pas de vote enregistré... On vote ? </a>
 			<#else>
 			</#if>
+			
+			<#if lastNiko == true>
+			 	- <a href="${add_last}"> Voter pour la vieille ? </a>
+			<#else>
+			</#if>
 		</div>
 	</div>
 </div>
@@ -97,4 +102,5 @@
 	</div>
 </div>
 
-
+</body>
+</html>

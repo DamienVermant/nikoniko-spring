@@ -104,20 +104,6 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 	@RequestMapping(path = ROUTE_CREATE, method = RequestMethod.POST)
 	public String createItemPost(Model model, T item) {
 		
-		// TODO : TO REMOVE IF DATE CREATE AND UPDATE WORKS, JUST FOR DATE TEST
-		
-//		if (item.getClass().getSimpleName().equals("Team")) {
-//			DateTime date = new DateTime(0000, 01, 01, 01, 01, 01);
-//			((Team) item).setEnd_date(date.toDate());
-//			
-//			try {
-//				insertItem(item);
-//			} catch (Exception e) {
-//				 e.printStackTrace();
-//			}
-//			return createRedirect;
-//		}
-		
 		
 		try {
 			insertItem(item);
