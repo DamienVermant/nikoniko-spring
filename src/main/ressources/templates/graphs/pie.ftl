@@ -90,8 +90,10 @@
             <div class="col-lg-12">
                 <div class="alignleft">
                 <button onclick="location.href='showGraph'" class="myresults"> My Results today </button>
-                <button onclick="location.href='showGraphMonth'" class="myresults"> My Month</button>
-                <button onclick="location.href='showGraphAll'" class="allresults"> ALL Results </button>
+                <button onclick="location.href='showGraphWeek'" class="myresults"> My Month</button>
+                <#if role != "employee">
+                    <button onclick="location.href='showGraphAll'" class="allresults"> ALL Results </button>
+                </#if>
                 <button onclick="location.href='showGraphVerticale'" class="resultsverticale"> Results Verticale </button>
                 <button onclick="location.href='showGraphTeam/0'" class="resultsteam"> Results team </button>
                 </div>

@@ -17,11 +17,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
 import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
+import com.cgi.nikoniko.dao.IRoleCrudRepository;
 import com.cgi.nikoniko.dao.ITeamCrudRepository;
 import com.cgi.nikoniko.dao.IUserCrudRepository;
+import com.cgi.nikoniko.dao.IUserHasRoleCrudRepository;
 import com.cgi.nikoniko.dao.IUserHasTeamCrudRepository;
 import com.cgi.nikoniko.dao.IVerticaleCrudRepository;
 import com.cgi.nikoniko.models.tables.NikoNiko;
+import com.cgi.nikoniko.models.tables.RoleCGI;
 import com.cgi.nikoniko.models.tables.Team;
 import com.cgi.nikoniko.models.tables.User;
 
@@ -45,6 +48,12 @@ public class GraphController extends ViewBaseController<User>{
 
 	@Autowired
 	IUserCrudRepository userCrud;
+
+	@Autowired
+	IUserHasRoleCrudRepository userRoleCrud;
+
+	@Autowired
+	IRoleCrudRepository roleCrud;
 
 	@Autowired
 	INikoNikoCrudRepository nikonikoCrud;
@@ -119,15 +128,17 @@ public class GraphController extends ViewBaseController<User>{
 	 * @param idUser
 	 * @return
 	 */
-
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
 	@RequestMapping(path = "{idUser}" + PATH + SHOW_GRAPH, method = RequestMethod.GET)
 	public String showPie(Model model, @PathVariable Long idUser) {
 
 		User user = super.getItem(idUser);
+		user.getRoles();
 		Set<NikoNiko> niko =  user.getNikoNikos();
 		List<NikoNiko> listOfNiko = new ArrayList<NikoNiko>(niko);
 		List<NikoNiko> nikotoday = getNikoToday(listOfNiko);
+
+		String role = testRole(idUser);
 
 		int good = 0;
 		int medium = 0;
@@ -144,6 +155,7 @@ public class GraphController extends ViewBaseController<User>{
 		}
 
 		model.addAttribute("title", "Mes votes !" );
+		model.addAttribute("role", role);
 		model.addAttribute("mood", this.getUserLastMood(userCrud.findByLogin(super.checkSession().getName()).getId()));
 		model.addAttribute("good", good);
 		model.addAttribute("medium", medium);
@@ -153,22 +165,26 @@ public class GraphController extends ViewBaseController<User>{
 	}
 
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
-	@RequestMapping(path = "{idUser}" + PATH + SHOW_GRAPH_MONTH, method = RequestMethod.GET)
-	public String showPieMonth(Model model, @PathVariable Long idUser) {
+	@RequestMapping(path = "{idUser}" + PATH + SHOW_GRAPH + PATH + "{year}" + PATH + "{month}" + PATH + "{day}", method = RequestMethod.GET)
+	public String showPieWithDate(Model model,
+								@PathVariable Long idUser, @PathVariable int year,
+								@PathVariable int month, @PathVariable int day) {
 
 		User user = super.getItem(idUser);
 		Set<NikoNiko> niko =  user.getNikoNikos();
 		List<NikoNiko> listOfNiko = new ArrayList<NikoNiko>(niko);
-		List<NikoNiko> nikomonth = getNikoMonth(listOfNiko);
+		List<NikoNiko> nikotoday = getNikoPreciseDate(listOfNiko, year, month, day);
+
+		String role = testRole(idUser);
 
 		int good = 0;
 		int medium = 0;
 		int bad = 0;
 
-		for (int i = 0; i < nikomonth.size(); i++) {
-			if (nikomonth.get(i).getMood() == 3) {
+		for (int i = 0; i < nikotoday.size(); i++) {
+			if (nikotoday.get(i).getMood() == 3) {
 				good++;
-			}else if(nikomonth.get(i).getMood() == 2){
+			}else if(nikotoday.get(i).getMood() == 2){
 				medium++;
 			}else{
 				bad++;
@@ -176,6 +192,43 @@ public class GraphController extends ViewBaseController<User>{
 		}
 
 		model.addAttribute("title", "Mes votes !" );
+		model.addAttribute("role", role);
+		model.addAttribute("mood", this.getUserLastMood(userCrud.findByLogin(super.checkSession().getName()).getId()));
+		model.addAttribute("good", good);
+		model.addAttribute("medium", medium);
+		model.addAttribute("bad", bad);
+		model.addAttribute("back", PATH + MENU_PATH);
+		return "graphs" + PATH + "pie";
+	}
+
+
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
+	@RequestMapping(path = "{idUser}" + PATH + SHOW_GRAPH_WEEK, method = RequestMethod.GET)
+	public String showPieMonth(Model model, @PathVariable Long idUser) {
+
+		User user = super.getItem(idUser);
+		Set<NikoNiko> niko =  user.getNikoNikos();
+		List<NikoNiko> listOfNiko = new ArrayList<NikoNiko>(niko);
+		List<NikoNiko> nikoweek = getNikoWeek(listOfNiko);
+
+		String role = testRole(idUser);
+
+		int good = 0;
+		int medium = 0;
+		int bad = 0;
+
+		for (int i = 0; i < nikoweek.size(); i++) {
+			if (nikoweek.get(i).getMood() == 3) {
+				good++;
+			}else if(nikoweek.get(i).getMood() == 2){
+				medium++;
+			}else{
+				bad++;
+			}
+		}
+
+		model.addAttribute("title", "Mes votes !" );
+		model.addAttribute("role", role);
 		model.addAttribute("mood", this.getUserLastMood(userCrud.findByLogin(super.checkSession().getName()).getId()));
 		model.addAttribute("good", good);
 		model.addAttribute("medium", medium);
@@ -197,6 +250,8 @@ public class GraphController extends ViewBaseController<User>{
 
 		List<NikoNiko> listOfNiko = (List<NikoNiko>) nikonikoCrud.findAll();
 
+		String role = testRole(idUser);
+
 		int good = 0;
 		int medium = 0;
 		int bad = 0;
@@ -212,6 +267,7 @@ public class GraphController extends ViewBaseController<User>{
 		}
 
 		model.addAttribute("title", "Tous les votes");
+		model.addAttribute("role", role);
 		model.addAttribute("mood", this.getUserLastMood(userCrud.findByLogin(super.checkSession().getName()).getId()));
 		model.addAttribute("good", good);
 		model.addAttribute("medium", medium);
@@ -228,37 +284,34 @@ public class GraphController extends ViewBaseController<User>{
 	 */
 	@RequestMapping(path = "{userId}" + PATH + SHOW_GRAPH_VERTICALE, method = RequestMethod.GET)
 	public String getNikoFromVerticale(Model model, @PathVariable Long userId){
+
+		int nbMood = 0;
 		User user = super.getItem(userId);
 		Long verticaleId = user.getVerticale().getId();
-		List<BigInteger> listId = verticaleCrud.getNikoNikoFromVerticale(verticaleId);
-		List<Long> listNikoId = new ArrayList<Long>();
-		List<NikoNiko> listNiko = new ArrayList<NikoNiko>();
-		int nbMood = 0;
 
-		if (!listId.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
-			nbMood =1;
-			for (BigInteger id : listId) {
-				listNikoId.add(id.longValue());
-			}
-			listNiko =  (List<NikoNiko>) nikonikoCrud.findAll(listNikoId);
-		}
+		List<NikoNiko> listNiko = findNikoNikosOfAVerticale(verticaleId);
 
+		String role = testRole(userId);
 
 		int good = 0;
 		int medium = 0;
 		int bad = 0;
 
-		for (int i = 0; i < listNiko.size(); i++) {
-			if (listNiko.get(i).getMood() == 3) {
-				good++;
-			}else if(listNiko.get(i).getMood() == 2){
-				medium++;
-			}else{
-				bad++;
+		if(listNiko.size() != 0){
+			nbMood = 1;
+			for (int i = 0; i < listNiko.size(); i++) {
+				if (listNiko.get(i).getMood() == 3) {
+					good++;
+				}else if(listNiko.get(i).getMood() == 2){
+					medium++;
+				}else{
+					bad++;
+				}
 			}
 		}
 
 		model.addAttribute("title", verticaleCrud.findOne(verticaleId).getName());
+		model.addAttribute("role", role);
 		model.addAttribute("mood", nbMood);
 		model.addAttribute("good", good);
 		model.addAttribute("medium", medium);
@@ -276,6 +329,7 @@ public class GraphController extends ViewBaseController<User>{
 		ArrayList<String> teamName = new ArrayList<String>();
 
 		teamList = findAllTeamsForUser(userId);
+		String role = testRole(userId);
 
 		for (int i = 0; i < teamList.size(); i++) {
 			teamName.add(teamList.get(i).getName());
@@ -311,6 +365,7 @@ public class GraphController extends ViewBaseController<User>{
 		}
 
 		model.addAttribute("title", teamCrud.findOne(teamId).getName());
+		model.addAttribute("role", role);
 		model.addAttribute("nameteam", teamName);
 		model.addAttribute("mood", nbMood);
 		model.addAttribute("good", good);
@@ -503,6 +558,58 @@ public class GraphController extends ViewBaseController<User>{
 	}
 
 	return niko;
+	}
+
+	public List<NikoNiko> findNikoNikosOfAVerticale(Long idVert){
+
+		List<BigInteger> listId = verticaleCrud.getNikoNikoFromVerticale(idVert);
+		List<Long> listNikoId = new ArrayList<Long>();
+		List<NikoNiko> listNiko = new ArrayList<NikoNiko>();
+		int nbMood = 0;
+
+		if (!listId.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
+			nbMood =1;
+			for (BigInteger id : listId) {
+				listNikoId.add(id.longValue());
+			}
+			listNiko =  (List<NikoNiko>) nikonikoCrud.findAll(listNikoId);
+		}
+
+		return listNiko;
+	}
+
+	public String testRole(Long idUser){
+
+		String role;
+
+		List<Long> ids = new ArrayList<Long>();
+		ArrayList<RoleCGI> roleList = new ArrayList<RoleCGI>();
+
+		List<BigInteger> idsBig = userRoleCrud.findAssociatedRole(idUser);
+
+		if (!idsBig.isEmpty()) {
+			for (BigInteger id : idsBig) {
+				ids.add(id.longValue());
+
+			}
+			roleList = (ArrayList<RoleCGI>) roleCrud.findAll(ids);
+		}
+
+		ArrayList<String> roleNames = new ArrayList<String>();
+		for (int i = 0; i <roleList.size(); i++) {
+			roleNames.add(roleList.get(i).getName());
+		}
+
+		if (roleNames.contains("ROLE_ADMIN")) {
+			role = "admin";
+		}
+		else if (roleNames.contains("ROLE_VP")) {
+			role = "vp";
+		}
+		else {
+			role = "employee";
+		}
+		return role;
 	}
 
 }

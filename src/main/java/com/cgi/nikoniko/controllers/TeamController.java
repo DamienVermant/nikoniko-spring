@@ -338,13 +338,8 @@ public class TeamController extends ViewBaseController<Team> {
 	}
 
 	/**
-<<<<<<< HEAD
 	 * SHOW VERTICAL TO ADD TEAM
 	 *
-=======
-	 * SHOW VERTICAL TO ADD USER
-	 *
->>>>>>> 36083fece454a2c7bb52b9edc1b9e2a2b5abe381
 	 * @param model
 	 * @param idUser
 	 * @return
