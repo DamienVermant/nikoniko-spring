@@ -267,7 +267,7 @@ public class UserController extends ViewBaseController<User> {
 	public Boolean checkDateNikoNiko(Long idUser){
 
 		Boolean updateNiko = null;
-		Date todayDate = new Date();
+		LocalDate todayDate = new LocalDate();
 
 		Long idMaxNiko = userCrud.getLastNikoNikoUser(idUser);
 
@@ -279,15 +279,9 @@ public class UserController extends ViewBaseController<User> {
 
 			NikoNiko lastNiko = nikonikoCrud.findOne(idMaxNiko);
 			Date entryDate = lastNiko.getEntry_date();
+			LocalDate dateEntry = new LocalDate(entryDate);
 
-			java.util.Date eDate = new java.util.Date(entryDate.getTime());
-
-			DateTime eDateClean = new DateTime(eDate,DateTimeZone.forID( "Europe/Paris" ));
-			DateTime todayDateClean = new DateTime(todayDate,DateTimeZone.forID( "Europe/Paris" ));
-
-			Days diff = Days.daysBetween(eDateClean, todayDateClean);
-
-			if (diff.getDays() > TIME) {
+			if (todayDate.isAfter(dateEntry)) {
 
 					updateNiko = false;
 				}

@@ -99,12 +99,18 @@
     <div class="col_lg_2">
         <div class="row-fluid">
             <div class="col-lg-12">
-                <div class="align">
+                <div class="alignleft">
                     <#list nameteam>
                         <table>
+                            <div class="deroul">
+                                    <span>survolez-moi</span>
+                                    <div>
                             <#items as nameteam>
-                                    <td><button onclick="location.href='./${nameteam?counter-1}'" class="myresults"> ${nameteam} </button></td>
+
+                                    <button onclick="location.href='./${nameteam?counter-1}'" class="myresults"> ${nameteam} </button>
+
                             </#items>
+                            </div></div>
                         </table>
                     </#list>
                 </div>
