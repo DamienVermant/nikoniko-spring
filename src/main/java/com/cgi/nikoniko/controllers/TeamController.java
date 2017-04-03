@@ -399,6 +399,11 @@ public class TeamController extends ViewBaseController<Team> {
 
 
 	/**
+	 * PARTIE DE ERWAN
+	 */
+
+
+	/**
 	 * SELECTION NIKONIKO PAR RAPPORT A UN ENSEMBLE (TEAM, VERTICALE, ETC...)
 	 */
 
@@ -451,7 +456,7 @@ public class TeamController extends ViewBaseController<Team> {
 		//##################################################################
 
 		LocalDate dateLocale = LocalDate.now();
-		dateLocale = dateLocale.withMonthOfYear(10);//line to modify month to show previous nikos
+		dateLocale = dateLocale.withMonthOfYear(4);//line to modify month to show previous nikos
 
 		LocalDate maxDayOfCurrentMonth = dateLocale.dayOfMonth().withMaximumValue();
 		int firstDayOfCurrentMonth = dateLocale.withDayOfMonth(1).getDayOfWeek();
@@ -483,13 +488,27 @@ public class TeamController extends ViewBaseController<Team> {
 			days.get(i-1).put(jourSemaine[dateLocale.withDayOfMonth(i).getDayOfWeek()-1], i);
 
 			//fonction a importer
-//			UserController.getNikoPreciseDate((List<NikoNiko>)nikos,1,2,3);
+			List<NikoNiko> nikostemp = getNikoPreciseDate((List<NikoNiko>)nikos,dateLocale.getYear(),dateLocale.getMonthOfYear(),i);
+			int countNikosBad = 0;
+			int countNikosNeut = 0;
+			int countNikosGood = 0;
 
+			for (NikoNiko nikotemp : nikostemp) {
+				if (nikotemp.getMood()==1) {
+					countNikosBad = countNikosBad+1;
+				}
+				if (nikotemp.getMood()==2) {
+					countNikosNeut = countNikosNeut+1;
+				}
+				if (nikotemp.getMood()==3) {
+					countNikosGood = countNikosGood+1;
+				}
+			}
 
 			//Put niko stats here
-			days.get(i-1).put("nikoBad", 50);
-			days.get(i-1).put("nikoNeutral", 0);
-			days.get(i-1).put("nikoGood", 25);
+			days.get(i-1).put("nikoBad", countNikosBad);
+			days.get(i-1).put("nikoNeutral", countNikosNeut);
+			days.get(i-1).put("nikoGood", countNikosGood);
 
 			if (dateLocale.withDayOfMonth(i).getDayOfWeek()==1) {//if Monday
 				numberOfWeekInMonth++;
@@ -546,6 +565,22 @@ public class TeamController extends ViewBaseController<Team> {
 		return "nikoniko/testFindNikopage";
 	}
 
+	public List<NikoNiko> getNikoPreciseDate(List<NikoNiko> listOfNiko, int year, int month, int day){
+
+		LocalDate nikodate = new LocalDate();
+		LocalDate date = new LocalDate().withYear(year).withMonthOfYear(month).withDayOfMonth(day);
+		List<NikoNiko> niko = new ArrayList<NikoNiko>();
+
+		for (int i = 0; i < listOfNiko.size(); i++) {
+				Date firstniko = listOfNiko.get(i).getEntryDate();
+				nikodate = new LocalDate(firstniko);
+				if (nikodate.isEqual(date)) {
+					niko.add(listOfNiko.get(i));
+				}
+		}
+
+		return niko;
+	}
 
 
 }

@@ -29,7 +29,7 @@
 											<td class = "fillableDay">
 												Good :  ${map["nikoGood"]} <br>
 												Neutral :  ${map["nikoNeutral"]} <br>
-												Bad 1:  ${map["nikoBad"]} <br>
+												Bad :  ${map["nikoBad"]} <br>
 											</td>
 									</#if>
 								<#else>
@@ -37,7 +37,7 @@
 											<td class = "fillableDay">
 												Good :  ${map["nikoGood"]} <br>
 												Neutral :  ${map["nikoNeutral"]} <br>
-												Bad 2 :  ${map["nikoBad"]} <br>
+												Bad :  ${map["nikoBad"]} <br>
 											</td>
 									</#if>
 								</#if>
