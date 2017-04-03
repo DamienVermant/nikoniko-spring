@@ -36,7 +36,8 @@
             0: { color: '#00CC00' },
             1: { color: 'orange' },
             2: { color: '#EE0000' }
-          }
+          },
+          pieSliceText: 'value'
         };
 
         var chart = new google.visualization.PieChart(document.getElementById('piechart'));
@@ -89,7 +90,7 @@
             <div class="col-lg-12">
                 <div class="alignleft">
                 <button onclick="location.href='showGraph'" class="myresults"> My Results today </button>
-                <button onclick="location.href='showGraphMonth'" class="myresultsMonth"> My Results Month</button>
+                <button onclick="location.href='showGraphMonth'" class="myresults"> My Month</button>
                 <button onclick="location.href='showGraphAll'" class="allresults"> ALL Results </button>
                 <button onclick="location.href='showGraphVerticale'" class="resultsverticale"> Results Verticale </button>
                 <button onclick="location.href='showGraphTeam/0'" class="resultsteam"> Results team </button>

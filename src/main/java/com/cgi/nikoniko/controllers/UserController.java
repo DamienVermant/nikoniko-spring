@@ -877,6 +877,12 @@ public class UserController extends ViewBaseController<User> {
 		return "graphs" + PATH + LAST_WORD;
 	}
 
+
+	/**
+	 * Get nikoniko's list from today
+	 * @param listOfNiko
+	 * @return
+	 */
 	public List<NikoNiko> getNikoToday(List<NikoNiko> listOfNiko){
 
 		LocalDate nikodate = new LocalDate();
@@ -895,6 +901,11 @@ public class UserController extends ViewBaseController<User> {
 		return nikotoday;
 	}
 
+	/**
+	 * Get nikoniko's list from this week
+	 * @param listOfNiko
+	 * @return
+	 */
 	public List<NikoNiko> getNikoWeek(List<NikoNiko> listOfNiko){
 
 		LocalDate nikodate = new LocalDate();
@@ -921,6 +932,11 @@ public class UserController extends ViewBaseController<User> {
 		return nikoWeek;
 	}
 
+	/**
+	 * Get nikoniko's list from this month
+	 * @param listOfNiko
+	 * @return
+	 */
 	public List<NikoNiko> getNikoMonth(List<NikoNiko> listOfNiko){
 
 		int[] monthDays= {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
@@ -953,6 +969,13 @@ public class UserController extends ViewBaseController<User> {
 		return nikoMonth;
 	}
 
+	/**
+	 * Get nikoniko's list from one week of the year
+	 * @param listOfNiko
+	 * @param year
+	 * @param week
+	 * @return
+	 */
 	public List<NikoNiko> getNikoWeekChoose(List<NikoNiko> listOfNiko,int year, int week){
 
 		LocalDate nikodate = new LocalDate();
@@ -979,6 +1002,13 @@ public class UserController extends ViewBaseController<User> {
 		return nikoWeek;
 	}
 
+	/**
+	 * Get nikoniko's list from one month of the year
+	 * @param listOfNiko
+	 * @param yearc
+	 * @param month
+	 * @return
+	 */
 	public List<NikoNiko> getNikoMonthChoose(List<NikoNiko> listOfNiko,int yearc, int month){
 
 		int[] monthDays= {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
@@ -1011,6 +1041,14 @@ public class UserController extends ViewBaseController<User> {
 		return nikoMonth;
 	}
 
+	/**
+	 * Get nikoniko's list from one day of the year
+	 * @param listOfNiko
+	 * @param year
+	 * @param month
+	 * @param day
+	 * @return
+	 */
 	public List<NikoNiko> getNikoPreciseDate(List<NikoNiko> listOfNiko, int year, int month, int day){
 
 		LocalDate nikodate = new LocalDate();
