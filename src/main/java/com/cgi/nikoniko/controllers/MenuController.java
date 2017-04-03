@@ -85,7 +85,7 @@ public class MenuController  {
 		model.addAttribute("auth",this.getUserInformations().getFirstname());
 		model.addAttribute("go_own_nikoniko", PATH + "user" + PATH + this.getUserInformations().getId() + PATH + "link");
 		model.addAttribute("add_nikoniko", PATH + "user" + PATH + this.getUserInformations().getId() + PATH + "add");
-		model.addAttribute("pie_chart", PATH + "user" + PATH + this.getUserInformations().getId() + PATH + SHOW_GRAPH);
+		model.addAttribute("pie_chart", PATH + "graph" + PATH + this.getUserInformations().getId() + PATH + SHOW_GRAPH);
 
 		model.addAttribute("go_users", GO_USERS);
 		model.addAttribute("go_nikonikos", GO_NIKOS);
