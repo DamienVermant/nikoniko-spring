@@ -5,7 +5,9 @@
 </head>
 <body>
 <body>
-	<h1>Calendrier des nikonikos du mois</h1>
+	<h1>Calendrier des nikonikos du mois : ${currentMonth}</h1>
+	<a href="?month=5&year=year&action=next">Next Month</a> Mois en cours
+	<a href="?month=month&year=2020&action=previous">Previous Month</a>
 
 	<table class="table table-bordered table-hover">
 		<tr>

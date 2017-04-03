@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
 import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
@@ -447,7 +448,10 @@ public class TeamController extends ViewBaseController<Team> {
 	 * @return
 	 */
 	@RequestMapping(path = "{idTeam}/mesnikonikos", method = RequestMethod.GET)
-	public String controlleurBidon(Model model, @PathVariable Long idTeam) {
+	public String controlleurBidon(Model model, @PathVariable Long idTeam,
+			@RequestParam(defaultValue = "null") String month,
+			@RequestParam(defaultValue = "null") String year,
+			@RequestParam(defaultValue = "") String action) {
 
 		ArrayList<NikoNiko> nikos = findNikoNikosOfATeam(idTeam);
 
@@ -456,7 +460,60 @@ public class TeamController extends ViewBaseController<Team> {
 		//##################################################################
 
 		LocalDate dateLocale = LocalDate.now();
+
+		int currentMonth = dateLocale.getMonthOfYear();
+		int currentYear = dateLocale.getYear();
+
+		Boolean monthIsAccepted = true;
+		Boolean yearIsAccepted = true;
+
+		//##############################################################
+		//Check if values in month and year are integers
+		//##############################################################
+
+		try {
+			Integer.parseInt(month);
+		} catch (Exception e) {
+			monthIsAccepted = false;
+		}
+
+		try {
+			Integer.parseInt(year);
+		} catch (Exception e) {
+			yearIsAccepted = false;
+		}
+
+		//##############################################################
+		//Switch to the selected month and year
+		//##############################################################
+
+
+		if (action.equals("previous")) {
+//			model.addAttribute("test","youpi previous");
+		}else if (action.equals("next")) {
+//			model.addAttribute("test","youpi next");
+		} else {
+
+		}
+
+
+		if (!monthIsAccepted) {
+			model.addAttribute("currentMonth",currentMonth);
+		} else {
+			currentMonth = Integer.parseInt(month);
+			model.addAttribute("currentMonth",currentMonth);
+		}
+
+
+		if (!yearIsAccepted) {
+			model.addAttribute("test2","Année en cours : " + currentYear);
+		} else {
+			currentYear = Integer.parseInt(year);
+			model.addAttribute("test2","Année en cours : " + currentYear);
+		}
+
 		dateLocale = dateLocale.withMonthOfYear(4);//line to modify month to show previous nikos
+
 
 		LocalDate maxDayOfCurrentMonth = dateLocale.dayOfMonth().withMaximumValue();
 		int firstDayOfCurrentMonth = dateLocale.withDayOfMonth(1).getDayOfWeek();

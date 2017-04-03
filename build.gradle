@@ -30,7 +30,7 @@ dependencies {
 	compile group: 'joda-time', name: 'joda-time', version: '2.9.9'
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
 	compile('org.springframework.boot:spring-boot-starter-data-rest')
-	compile group: 'org.freemarker', name: 'freemarker', version: '2.3.23'
+	compile('org.springframework.boot:spring-boot-starter-freemarker')
 	compile('org.springframework.boot:spring-boot-starter-jdbc')
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile('org.springframework.boot:spring-boot-starter-security')
