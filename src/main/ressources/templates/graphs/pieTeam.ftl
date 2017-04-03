@@ -89,6 +89,7 @@
             <div class="col-lg-12">
                 <div class="alignleft">
                 <button onclick="location.href='../showGraph'" class="myresults"> My Results </button>
+                <button onclick="location.href='showGraphMonth'" class="myresultsMonth"> My Results Month</button>
                 <button onclick="location.href='../showGraphAll'" class="allresults"> ALL Results </button>
                 <button onclick="location.href='../showGraphVerticale'" class="resultsverticale"> Results Verticale </button>
                 </div>

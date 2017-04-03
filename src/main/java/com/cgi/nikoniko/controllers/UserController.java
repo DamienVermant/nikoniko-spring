@@ -925,7 +925,7 @@ public class UserController extends ViewBaseController<User> {
 		LocalDate nikodate = new LocalDate();
 		LocalDate date= new LocalDate();
 		LocalDate interval1 = date.withDayOfWeek(1);
-		LocalDate interval2 = date.withDayOfWeek(5);
+		LocalDate interval2 = date.withDayOfWeek(7);
 
 
 		List<NikoNiko> nikoWeek = new ArrayList<NikoNiko>();
@@ -978,7 +978,63 @@ public class UserController extends ViewBaseController<User> {
 		return nikoMonth;
 	}
 
+	public List<NikoNiko> getNikoWeekChoose(List<NikoNiko> listOfNiko,int year, int week){
 
+		LocalDate nikodate = new LocalDate();
+		LocalDate date= new LocalDate().withYear(year).withWeekOfWeekyear(week);
+		LocalDate interval1 = date.withDayOfWeek(1);
+		LocalDate interval2 = date.withDayOfWeek(7);
+
+
+		List<NikoNiko> nikoWeek = new ArrayList<NikoNiko>();
+
+		for (int i = 0; i < listOfNiko.size(); i++) {
+				Date firstniko = listOfNiko.get(i).getEntry_date();
+				nikodate = new LocalDate(firstniko);
+
+
+
+				if (nikodate.isAfter(interval1) && nikodate.isBefore(interval2)
+						|| nikodate.isEqual(interval1)
+						|| nikodate.isEqual(interval2)) {
+					nikoWeek.add(listOfNiko.get(i));
+				}
+		}
+
+		return nikoWeek;
+	}
+
+	public List<NikoNiko> getNikoMonthChoose(List<NikoNiko> listOfNiko,int yearc, int month){
+
+		int[] monthDays= {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+		LocalDate nikodate = new LocalDate();
+		LocalDate date= new LocalDate().withYear(yearc).withMonthOfYear(month);
+
+		int year = date.getYear();
+		int j;
+		if (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0)){
+            monthDays[1] = 29;
+        };
+        LocalDate interval1 = date.withDayOfMonth(1);
+		LocalDate interval2 = date.withDayOfMonth(monthDays[nikodate.getMonthOfYear()-1]);
+
+
+		List<NikoNiko> nikoMonth = new ArrayList<NikoNiko>();
+
+		for (int i = 0; i < listOfNiko.size(); i++) {
+				Date firstniko = listOfNiko.get(i).getEntry_date();
+				nikodate = new LocalDate(firstniko);
+
+				if (nikodate.isAfter(interval1) && nikodate.isBefore(interval2)
+						|| nikodate.isEqual(interval1)
+						|| nikodate.isEqual(interval2)) {
+					nikoMonth.add(listOfNiko.get(i));
+				}
+		}
+
+		return nikoMonth;
+	}
 
 	// TODO : RELATION USER -> VERTICAL
 
