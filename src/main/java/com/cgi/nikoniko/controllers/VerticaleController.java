@@ -415,7 +415,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	 * @param action: Used to select the month to show from the current one (previous or next)
 	 * @return 		: Calendar view of all nikonikos of a team shown per day for a given month
 	 */
-	@RequestMapping(path = "nikonikovert/{idVert}/month", method = RequestMethod.GET)
+	@RequestMapping(path = "nikonikovert" + PATH + "{idVert}"+ PATH + "month", method = RequestMethod.GET)
 	public String nikoNikoCalendar(Model model, @PathVariable Long idVert,
 			@RequestParam(defaultValue = "null") String month,
 			@RequestParam(defaultValue = "null") String year,

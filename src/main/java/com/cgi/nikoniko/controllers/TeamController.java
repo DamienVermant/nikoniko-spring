@@ -455,7 +455,7 @@ public class TeamController extends ViewBaseController<Team> {
 	 * @return 		: Calendar view of all nikonikos of a team shown per day for a given month
 	 * @throws IOException
 	 */
-	@RequestMapping(path = "nikonikoteam/{idTeam}/month", method = RequestMethod.GET)
+	@RequestMapping(path = "nikonikoteam" + PATH + "{idTeam}"+ PATH + "month", method = RequestMethod.GET)
 	public String nikoNikoCalendar(Model model, @PathVariable Long idTeam,
 			@RequestParam(defaultValue = "null") String month,
 			@RequestParam(defaultValue = "null") String year,

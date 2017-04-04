@@ -45,7 +45,7 @@ import com.cgi.nikoniko.utils.DumpFields;
 public class UserController extends ViewBaseController<User> {
 
 	public final static String DOT = ".";
-	public final static String PATH = "/";
+//	public final static String PATH = "/";
 	public final static String BASE_USER = "user";
 	public final static String VERTICALE = "verticale";
 	public final static String BASE_URL = PATH + BASE_USER;
@@ -1208,14 +1208,13 @@ public class UserController extends ViewBaseController<User> {
 	/**
 	 *
 	 * @param model	:
-	 * @param idTeam: Id of the team
 	 * @param month	: Month number
 	 * @param year	: Year number
 	 * @param action: Used to select the month to show from the current one (previous or next)
 	 * @return 		: Calendar view of all nikonikos of a team shown per day for a given month
 	 * @throws IOException
 	 */
-	@RequestMapping(path = "nikoniko/month", method = RequestMethod.GET)
+	@RequestMapping(path = "nikoniko"+ PATH + "month", method = RequestMethod.GET)
 	public String nikoNikoCalendar(Model model,
 			@RequestParam(defaultValue = "null") String month,
 			@RequestParam(defaultValue = "null") String year,
