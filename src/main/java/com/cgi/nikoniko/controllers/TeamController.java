@@ -1,5 +1,6 @@
 package com.cgi.nikoniko.controllers;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
@@ -7,8 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -449,12 +453,23 @@ public class TeamController extends ViewBaseController<Team> {
 	 * @param year	: Year number
 	 * @param action: Used to select the month to show from the current one (previous or next)
 	 * @return 		: Calendar view of all nikonikos of a team shown per day for a given month
+	 * @throws IOException
 	 */
-	@RequestMapping(path = "{idTeam}/mesnikonikos", method = RequestMethod.GET)
+	@RequestMapping(path = "nikonikoteam/{idTeam}/month", method = RequestMethod.GET)
 	public String nikoNikoCalendar(Model model, @PathVariable Long idTeam,
 			@RequestParam(defaultValue = "null") String month,
 			@RequestParam(defaultValue = "null") String year,
-			@RequestParam(defaultValue = "") String action) {
+			@RequestParam(defaultValue = "") String action,
+			HttpServletResponse response) throws IOException {
+
+		//TODO : if ROLE_USER/_CHEF_PROJET, check if visibility is "on" for this team
+		//		 if privacy not "on", don't show this view
+		try {
+			teamCrud.findOne(idTeam).getName();
+		} catch (Exception e) {
+			response.sendError(HttpStatus.BAD_REQUEST.value(),("This team doesn't exist!").toUpperCase());
+			return "";
+		}
 
 		//##################################################################
 		//Initialisation
@@ -482,8 +497,6 @@ public class TeamController extends ViewBaseController<Team> {
 
 		ArrayList<Map<String,Object>> days = new ArrayList<Map<String,Object>>();
 
-		//TODO : if ROLE_USER/_CHEF_PROJET, check if visibility is "on" for this team
-		//		 if privacy not "on", don't show this view
 		ArrayList<NikoNiko> nikos = findNikoNikosOfATeam(idTeam);
 
 		//###################################################################
@@ -653,6 +666,7 @@ public class TeamController extends ViewBaseController<Team> {
 		model.addAttribute("monthToUse",monthToUse);
 		model.addAttribute("monthName",moisAnnee[monthToUse-1]);
 		model.addAttribute("nbweeks",nbWeeks);
+		model.addAttribute("teamName",teamCrud.findOne(idTeam).getName());
 
 		return "nikoniko/teamCalendarView";
 	}

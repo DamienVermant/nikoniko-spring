@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
 import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
@@ -1198,4 +1200,225 @@ public class UserController extends ViewBaseController<User> {
 	}
 
 	/////////////////////////////////////////////////////////////////////
+
+	/**
+	 * ERWAN CHANGES
+	 */
+
+	/**
+	 *
+	 * @param model	:
+	 * @param idTeam: Id of the team
+	 * @param month	: Month number
+	 * @param year	: Year number
+	 * @param action: Used to select the month to show from the current one (previous or next)
+	 * @return 		: Calendar view of all nikonikos of a team shown per day for a given month
+	 * @throws IOException
+	 */
+	@RequestMapping(path = "nikoniko/month", method = RequestMethod.GET)
+	public String nikoNikoCalendar(Model model,
+			@RequestParam(defaultValue = "null") String month,
+			@RequestParam(defaultValue = "null") String year,
+			@RequestParam(defaultValue = "") String action,
+			HttpServletResponse response) throws IOException {
+
+		Long idUser = userCrud.findByLogin(super.checkSession().getName()).getId();
+
+		//TODO : Check if the calendar for this idUser can be see by the user of the current session
+		try {
+			userCrud.findOne(idUser).getLogin(); //TODO : use id of user's Session instead
+		} catch (Exception e) {
+			response.sendError(HttpStatus.BAD_REQUEST.value(),("This user doesn't exist!").toUpperCase());
+			return "";
+		}
+
+		//##################################################################
+		//Initialisation
+		//##################################################################
+		LocalDate dateLocale = LocalDate.now();
+
+		String[] moisAnnee = {	"Janvier","Fevrier","Mars","Avril","Mai","Juin",
+								"Juillet","Aout","Septembre","Octobre","Novembre","Décembre"};
+		String[] jourSemaine = {"Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"};
+
+		int firstWeekUncomplete = 0;
+		int lastWeekUncomplete = 0;
+		int numberOfWeekInMonth = 1;
+		int currentMonth = dateLocale.getMonthOfYear();
+		int currentYear = dateLocale.getYear();
+		int monthToUse = currentMonth;
+		int yearToUse = currentYear;
+
+		Boolean uncompleteWeek = true;
+		Boolean monthIsAccepted = true;
+		Boolean yearIsAccepted = true;
+
+		List<Integer> nbWeeks = new ArrayList<Integer>();
+		nbWeeks.add(numberOfWeekInMonth);
+
+		ArrayList<Map<String,Object>> days = new ArrayList<Map<String,Object>>();
+		ArrayList<NikoNiko> nikos = new ArrayList<NikoNiko>();
+
+		nikos.addAll(userCrud.findOne(idUser).getNikoNikos());
+
+		//###################################################################
+		//#Check if given requestPAram values of month and year are integers#
+		//###################################################################
+
+		try {
+			Integer.parseInt(month);
+		} catch (Exception e) {
+			monthIsAccepted = false;
+		}
+
+		try {
+			Integer.parseInt(year);
+		} catch (Exception e) {
+			yearIsAccepted = false;
+		}
+
+		//##################################################################################
+		//#Switch to the selected month and year (or default value if incorrect input data)#
+		//##################################################################################
+
+		if (action.equals("previous")) {
+			if (monthIsAccepted) {
+				monthToUse = Integer.parseInt(month) - 1;
+
+				if (yearIsAccepted) {
+					yearToUse = Integer.parseInt(year);
+				} else {
+					yearToUse = currentYear;
+				}
+
+				if (monthToUse == 0) {//January=>December
+					monthToUse = 12;
+					if (yearIsAccepted) {
+						yearToUse = Integer.parseInt(year) - 1;
+					} else {
+						yearToUse = currentYear - 1;
+					}
+				}
+			} else {
+				monthToUse = currentMonth;
+				if (yearIsAccepted) {
+					yearToUse = Integer.parseInt(year);
+				} else {
+					yearToUse = currentYear;
+				}
+			}
+		}else if (action.equals("next")) {
+			if (monthIsAccepted) {
+				monthToUse = Integer.parseInt(month) + 1;
+
+				if (yearIsAccepted) {
+					yearToUse = Integer.parseInt(year);
+				} else {
+					yearToUse = currentYear;
+				}
+
+				if (monthToUse == 13) {//December=>January
+					monthToUse = 1;
+					if (yearIsAccepted) {
+						yearToUse = Integer.parseInt(year) + 1;
+					} else {
+						yearToUse = currentYear + 1;
+					}
+				}
+			} else {
+				//Prevoir un throw error 400
+				monthToUse = currentMonth;
+				if (yearIsAccepted) {
+					yearToUse = Integer.parseInt(year);
+				} else {
+					yearToUse = currentYear;
+				}
+			}
+		} else {
+			monthToUse = currentMonth;
+			yearToUse = currentYear;
+		}
+
+		dateLocale = dateLocale.withMonthOfYear(monthToUse).withYear(yearToUse);
+
+		LocalDate maxDayOfCurrentMonth = dateLocale.dayOfMonth().withMaximumValue();
+		int firstDayOfCurrentMonth = dateLocale.withDayOfMonth(1).getDayOfWeek();
+		int lastDayOfCurrentMonth = maxDayOfCurrentMonth.getDayOfMonth();
+
+		//###########################################################
+		//#Select nikoniko's mood per day with the chosen month/year#
+		//###########################################################
+
+		for (int i = 1; i <= lastDayOfCurrentMonth; i++) {
+			days.add(new HashMap<String, Object>());
+
+			days.get(i-1).put(jourSemaine[dateLocale.withDayOfMonth(i).getDayOfWeek()-1], i);
+
+			//fonction a importer
+			List<NikoNiko> nikostemp = getNikoPreciseDate((List<NikoNiko>)nikos,dateLocale.getYear(),dateLocale.getMonthOfYear(),i);
+
+			int nikoMood = 0;
+
+			for (NikoNiko nikotemp : nikostemp) {
+				nikoMood = nikotemp.getMood();
+			}
+
+			days.get(i-1).put("nikoOfDay", nikoMood);
+
+			if (dateLocale.withDayOfMonth(i).getDayOfWeek()==1) {//if Monday
+				numberOfWeekInMonth++;
+				nbWeeks.add(numberOfWeekInMonth);
+				days.get(i-1).put("endOfWeek", numberOfWeekInMonth);
+			} else {
+				days.get(i-1).put("endOfWeek", numberOfWeekInMonth);
+			}
+
+			if (uncompleteWeek) {
+				days.get(i-1).put("uncompleteWeek", 1);
+				if (dateLocale.withDayOfMonth(i).getDayOfWeek()==7) {
+					uncompleteWeek = false;
+				}
+			} else {
+				days.get(i-1).put("uncompleteWeek", 0);
+			}
+
+			if (dateLocale.withDayOfMonth(i).getDayOfWeek()== 1
+				&& i >= (lastDayOfCurrentMonth-5)) {
+				uncompleteWeek = true;
+			}
+		}
+
+		//#########################################################
+		//#Give attributes to the view for the selected month/year#
+		//#########################################################
+
+		if (firstDayOfCurrentMonth!=1) {
+			firstWeekUncomplete = 1;
+			model.addAttribute("nbJoursSemaineAIgnorer",firstDayOfCurrentMonth-1);
+		}
+
+		if (maxDayOfCurrentMonth.getDayOfWeek()!=7) {
+			lastWeekUncomplete = 1;
+			model.addAttribute("nbJoursSemaineAAjouter",7-maxDayOfCurrentMonth.getDayOfWeek());
+		}
+
+		//ArrayList of maps
+		model.addAttribute("days",days);
+		//Lists
+		model.addAttribute("numberOfWeekInMonth",numberOfWeekInMonth);
+		model.addAttribute("jourSemaine",jourSemaine);
+		//Checks/booleans
+		model.addAttribute("firstWeekUncomplete",firstWeekUncomplete);
+		model.addAttribute("lastWeekUncomplete",lastWeekUncomplete);
+		//Others
+		model.addAttribute("yearToUse",yearToUse);
+		model.addAttribute("monthToUse",monthToUse);
+		model.addAttribute("monthName",moisAnnee[monthToUse-1]);
+		model.addAttribute("nbweeks",nbWeeks);
+
+		return "nikoniko/userCalendarView";
+	}
+	/**
+	 * END OF ERWAN CHANGES
+	 */
 }

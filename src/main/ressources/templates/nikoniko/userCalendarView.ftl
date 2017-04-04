@@ -7,7 +7,7 @@
 </head>
 <body>
 <body>
-	<h1>Nikonikos de la team ${teamName} durant ${monthName} ${yearToUse}</h1>
+	<h1>Vos nikonikos pour ${monthName} ${yearToUse}</h1>
 	<a href="?month=${monthToUse}&year=${yearToUse?c}&action=previous">Previous Month</a> Mois en cours
 	<a href="?month=${monthToUse}&year=${yearToUse?c}&action=next">Next Month</a>
 
@@ -34,10 +34,8 @@
 												<div class = "dayHeader" align="right">
 														${map[key]}
 												</div>
-												<div class = "daynikos" onclick = "location.href='nikonikoteam/day/${yearToUse?c}/${monthToUse}/${map[key]}'">
-														Good :  ${map["nikoGood"]} <br>
-														Neutral :  ${map["nikoNeutral"]} <br>
-														Bad :  ${map["nikoBad"]} <br>
+												<div class = "daynikos" onclick = "location.href='nikoniko/day/${yearToUse?c}/${monthToUse}/${map[key]}'">
+														myMood :  ${map["nikoOfDay"]}
 												</div>
 											</td>
 									</#if>
@@ -47,10 +45,8 @@
 												<div class = "dayHeader" align="right">
 														${map[key]}
 												</div>
-												<div class = "daynikos" onclick = "location.href='nikonikoteam/day/${yearToUse?c}/${monthToUse}/${map[key]}'">
-														Good :  ${map["nikoGood"]} <br>
-														Neutral :  ${map["nikoNeutral"]} <br>
-														Bad :  ${map["nikoBad"]} <br>
+												<div class = "daynikos" onclick = "location.href='nikoniko/day/${yearToUse?c}/${monthToUse}/${map[key]}'">
+														myMood :  ${map["nikoOfDay"]}
 												</div>
 											</td>
 									</#if>
