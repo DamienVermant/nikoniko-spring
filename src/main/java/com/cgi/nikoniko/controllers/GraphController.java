@@ -236,6 +236,9 @@ public class GraphController extends ViewBaseController<User>{
 		model.addAttribute("good", good);
 		model.addAttribute("medium", medium);
 		model.addAttribute("bad", bad);
+		model.addAttribute("year", year);
+		model.addAttribute("month", month);
+		model.addAttribute("day", day);
 		model.addAttribute("back", PATH + MENU_PATH);
 		return "graphs" + PATH + "piedate";
 	}
@@ -324,6 +327,9 @@ public class GraphController extends ViewBaseController<User>{
 		model.addAttribute("good", good);
 		model.addAttribute("medium", medium);
 		model.addAttribute("bad", bad);
+		model.addAttribute("year", year);
+		model.addAttribute("month", month);
+		model.addAttribute("day", day);
 		model.addAttribute("back", PATH + MENU_PATH);
 		return "graphs" + PATH + "piedate";
 	}
@@ -411,6 +417,9 @@ public class GraphController extends ViewBaseController<User>{
 		model.addAttribute("good", good);
 		model.addAttribute("medium", medium);
 		model.addAttribute("bad", bad);
+		model.addAttribute("year", year);
+		model.addAttribute("month", month);
+		model.addAttribute("day", day);
 		model.addAttribute("back", PATH + MENU_PATH);
 		return "graphs" + PATH + "piedate";
 	}
@@ -525,6 +534,9 @@ public class GraphController extends ViewBaseController<User>{
 		model.addAttribute("good", good);
 		model.addAttribute("medium", medium);
 		model.addAttribute("bad", bad);
+		model.addAttribute("year", year);
+		model.addAttribute("month", month);
+		model.addAttribute("day", day);
 		model.addAttribute("back", PATH + MENU_PATH);
 
 		return "graphs" + PATH + "pieTeamdate";
