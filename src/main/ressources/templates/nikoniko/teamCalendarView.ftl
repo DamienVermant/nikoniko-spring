@@ -5,14 +5,14 @@
 </head>
 <body>
 <body>
-	<h1>Calendrier des nikonikos du mois : ${currentMonth}</h1>
-	<a href="?month=5&year=year&action=next">Next Month</a> Mois en cours
-	<a href="?month=month&year=2020&action=previous">Previous Month</a>
+	<h1>Calendrier des nikonikos du mois : ${monthName} ${yearToUse}</h1>
+	<a href="?month=${monthToUse}&year=${yearToUse?c}&action=previous">Previous Month</a> Mois en cours
+	<a href="?month=${monthToUse}&year=${yearToUse?c}&action=next">Next Month</a>
 
 	<table class="table table-bordered table-hover">
 		<tr>
 			<#list jourSemaine as jour>
-				<th>${jour}</th>
+				<th class = "daysNames">${jour}</th>
 			</#list>
 		</tr>
 		<#list nbweeks as week>
@@ -29,17 +29,29 @@
 								<#if map["uncompleteWeek"] == 1>
 									<#if jour == key && week == map["endOfWeek"]>
 											<td class = "fillableDay">
-												Good :  ${map["nikoGood"]} <br>
-												Neutral :  ${map["nikoNeutral"]} <br>
-												Bad :  ${map["nikoBad"]} <br>
+												<div class = "dayHeader" align="right">
+														${map[key]}
+
+												</div>
+												<div class = "daynikos" onclick = "location.href='?REDIRECTION_DYN_A_FAIRE'">
+														Good :  ${map["nikoGood"]} <br>
+														Neutral :  ${map["nikoNeutral"]} <br>
+														Bad :  ${map["nikoBad"]} <br>
+												</div>
 											</td>
 									</#if>
 								<#else>
 									<#if jour == key && week == map["endOfWeek"]>
 											<td class = "fillableDay">
-												Good :  ${map["nikoGood"]} <br>
-												Neutral :  ${map["nikoNeutral"]} <br>
-												Bad :  ${map["nikoBad"]} <br>
+												<div class = "dayHeader" align="right">
+														${map[key]}
+
+												</div>
+												<div class = "daynikos" onclick = "location.href='?REDIRECTION_DYN_A_FAIRE'">
+														Good :  ${map["nikoGood"]} <br>
+														Neutral :  ${map["nikoNeutral"]} <br>
+														Bad :  ${map["nikoBad"]} <br>
+												</div>
 											</td>
 									</#if>
 								</#if>

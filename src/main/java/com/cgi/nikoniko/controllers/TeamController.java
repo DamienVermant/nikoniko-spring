@@ -441,35 +441,54 @@ public class TeamController extends ViewBaseController<Team> {
 		return userList;
 	}
 
-	/**se trouve a l adresse team/idTeam/mesnikonikos
+	/**
 	 *
-	 * @param model
-	 * @param idTeam
-	 * @return
+	 * @param model	:
+	 * @param idTeam: Id of the team
+	 * @param month	: Month number
+	 * @param year	: Year number
+	 * @param action: Used to select the month to show from the current one (previous or next)
+	 * @return 		: Calendar view of all nikonikos of a team shown per day for a given month
 	 */
 	@RequestMapping(path = "{idTeam}/mesnikonikos", method = RequestMethod.GET)
-	public String controlleurBidon(Model model, @PathVariable Long idTeam,
+	public String nikoNikoCalendar(Model model, @PathVariable Long idTeam,
 			@RequestParam(defaultValue = "null") String month,
 			@RequestParam(defaultValue = "null") String year,
 			@RequestParam(defaultValue = "") String action) {
 
-		ArrayList<NikoNiko> nikos = findNikoNikosOfATeam(idTeam);
-
 		//##################################################################
-		//Creation calendrier
+		//Initialisation
 		//##################################################################
-
 		LocalDate dateLocale = LocalDate.now();
 
+		String[] moisAnnee = {	"Janvier","Fevrier","Mars","Avril","Mai","Juin",
+								"Juillet","Aout","Septembre","Octobre","Novembre","Décembre"};
+		String[] jourSemaine = {"Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"};
+
+		int firstWeekUncomplete = 0;
+		int lastWeekUncomplete = 0;
+		int numberOfWeekInMonth = 1;
 		int currentMonth = dateLocale.getMonthOfYear();
 		int currentYear = dateLocale.getYear();
+		int monthToUse = currentMonth;
+		int yearToUse = currentYear;
 
+		Boolean uncompleteWeek = true;
 		Boolean monthIsAccepted = true;
 		Boolean yearIsAccepted = true;
 
-		//##############################################################
-		//Check if values in month and year are integers
-		//##############################################################
+		List<Integer> nbWeeks = new ArrayList<Integer>();
+		nbWeeks.add(numberOfWeekInMonth);
+
+		ArrayList<Map<String,Object>> days = new ArrayList<Map<String,Object>>();
+
+		//TODO : if ROLE_USER/_CHEF_PROJET, check if visibility is "on" for this team
+		//		 if privacy not "on", don't show this view
+		ArrayList<NikoNiko> nikos = findNikoNikosOfATeam(idTeam);
+
+		//###################################################################
+		//#Check if given requestPAram values of month and year are integers#
+		//###################################################################
 
 		try {
 			Integer.parseInt(month);
@@ -483,61 +502,77 @@ public class TeamController extends ViewBaseController<Team> {
 			yearIsAccepted = false;
 		}
 
-		//##############################################################
-		//Switch to the selected month and year
-		//##############################################################
-
+		//##################################################################################
+		//#Switch to the selected month and year (or default value if incorrect input data)#
+		//##################################################################################
 
 		if (action.equals("previous")) {
-//			model.addAttribute("test","youpi previous");
+			if (monthIsAccepted) {
+				monthToUse = Integer.parseInt(month) - 1;
+
+				if (yearIsAccepted) {
+					yearToUse = Integer.parseInt(year);
+				} else {
+					yearToUse = currentYear;
+				}
+
+				if (monthToUse == 0) {//January=>December
+					monthToUse = 12;
+					if (yearIsAccepted) {
+						yearToUse = Integer.parseInt(year) - 1;
+					} else {
+						yearToUse = currentYear - 1;
+					}
+				}
+			} else {
+				monthToUse = currentMonth;
+				if (yearIsAccepted) {
+					yearToUse = Integer.parseInt(year);
+				} else {
+					yearToUse = currentYear;
+				}
+			}
 		}else if (action.equals("next")) {
-//			model.addAttribute("test","youpi next");
-		} else {
+			if (monthIsAccepted) {
+				monthToUse = Integer.parseInt(month) + 1;
 
+				if (yearIsAccepted) {
+					yearToUse = Integer.parseInt(year);
+				} else {
+					yearToUse = currentYear;
+				}
+
+				if (monthToUse == 13) {//December=>January
+					monthToUse = 1;
+					if (yearIsAccepted) {
+						yearToUse = Integer.parseInt(year) + 1;
+					} else {
+						yearToUse = currentYear + 1;
+					}
+				}
+			} else {
+				//Prevoir un throw error 400
+				monthToUse = currentMonth;
+				if (yearIsAccepted) {
+					yearToUse = Integer.parseInt(year);
+				} else {
+					yearToUse = currentYear;
+				}
+			}
+		} else {
+			monthToUse = currentMonth;
+			yearToUse = currentYear;
 		}
 
-
-		if (!monthIsAccepted) {
-			model.addAttribute("currentMonth",currentMonth);
-		} else {
-			currentMonth = Integer.parseInt(month);
-			model.addAttribute("currentMonth",currentMonth);
-		}
-
-
-		if (!yearIsAccepted) {
-			model.addAttribute("test2","Année en cours : " + currentYear);
-		} else {
-			currentYear = Integer.parseInt(year);
-			model.addAttribute("test2","Année en cours : " + currentYear);
-		}
-
-		dateLocale = dateLocale.withMonthOfYear(4);//line to modify month to show previous nikos
-
+		dateLocale = dateLocale.withMonthOfYear(monthToUse).withYear(yearToUse);
 
 		LocalDate maxDayOfCurrentMonth = dateLocale.dayOfMonth().withMaximumValue();
 		int firstDayOfCurrentMonth = dateLocale.withDayOfMonth(1).getDayOfWeek();
 		int lastDayOfCurrentMonth = maxDayOfCurrentMonth.getDayOfMonth();
 
-		String[] jourSemaine = {"Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"};
-		List<Integer> nbWeeks = new ArrayList<Integer>();
-		Boolean uncompleteWeek = true;
-		int firstWeekUncomplete = 0;
-		int lastWeekUncomplete = 0;
-		int numberOfWeekInMonth = 1;
-		nbWeeks.add(numberOfWeekInMonth);
-
-		ArrayList<Map<String,Object>> days = new ArrayList<Map<String,Object>>();
-
-		if (firstDayOfCurrentMonth!=1) {
-			firstWeekUncomplete = 1;
-			model.addAttribute("nbJoursSemaineAIgnorer",firstDayOfCurrentMonth-1);
-		}
-
-		if (maxDayOfCurrentMonth.getDayOfWeek()!=7) {
-			lastWeekUncomplete = 1;
-			model.addAttribute("nbJoursSemaineAAjouter",7-maxDayOfCurrentMonth.getDayOfWeek());
-		}
+		//###########################################################
+		//#Select nikoniko's mood per day with the chosen month/year#
+		//###########################################################
 
 		for (int i = 1; i <= lastDayOfCurrentMonth; i++) {
 			days.add(new HashMap<String, Object>());
@@ -546,6 +581,7 @@ public class TeamController extends ViewBaseController<Team> {
 
 			//fonction a importer
 			List<NikoNiko> nikostemp = getNikoPreciseDate((List<NikoNiko>)nikos,dateLocale.getYear(),dateLocale.getMonthOfYear(),i);
+
 			int countNikosBad = 0;
 			int countNikosNeut = 0;
 			int countNikosGood = 0;
@@ -590,36 +626,35 @@ public class TeamController extends ViewBaseController<Team> {
 			}
 		}
 
+		//#########################################################
+		//#Give attributes to the view for the selected month/year#
+		//#########################################################
 
+		if (firstDayOfCurrentMonth!=1) {
+			firstWeekUncomplete = 1;
+			model.addAttribute("nbJoursSemaineAIgnorer",firstDayOfCurrentMonth-1);
+		}
+
+		if (maxDayOfCurrentMonth.getDayOfWeek()!=7) {
+			lastWeekUncomplete = 1;
+			model.addAttribute("nbJoursSemaineAAjouter",7-maxDayOfCurrentMonth.getDayOfWeek());
+		}
+
+		//ArrayList of maps
 		model.addAttribute("days",days);
-
-		model.addAttribute("nbweeks",nbWeeks);
+		//Lists
 		model.addAttribute("numberOfWeekInMonth",numberOfWeekInMonth);
 		model.addAttribute("jourSemaine",jourSemaine);
-
+		//Checks/booleans
 		model.addAttribute("firstWeekUncomplete",firstWeekUncomplete);
 		model.addAttribute("lastWeekUncomplete",lastWeekUncomplete);
+		//Others
+		model.addAttribute("yearToUse",yearToUse);
+		model.addAttribute("monthToUse",monthToUse);
+		model.addAttribute("monthName",moisAnnee[monthToUse-1]);
+		model.addAttribute("nbweeks",nbWeeks);
 
-
-		//##################################################################
-		//Fin creation calendrier
-		//##################################################################
-
-
-		model.addAttribute("nikos",DumpFields.listFielder(
-				(ArrayList<NikoNiko>)nikoCrud.findAllByMood(2)));
-
-
-//		model.addAttribute("teamName", teamCrud.findByName("Trololololo").getSerial());
-//		model.addAttribute("teamName", teamCrud.findBySerial("264523kl").getName());
-//		model.addAttribute("userregistrated",userCrud.findByRegistrationcgi("NOUVEAUUSER").getLogin());
-//		model.addAttribute("users",DumpFields.listFielder((ArrayList<User>)userCrud.findAllByFirstname("Tony")));
-//		model.addAttribute("verticales",DumpFields.listFielder((ArrayList<Verticale>)verticaleCrud.findAllByName("test")));
-
-//		model.addAttribute("sortedFields",NikoNiko.FIELDS);
-//		model.addAttribute("items",DumpFields.listFielder(nikos));
-
-		return "nikoniko/testFindNikopage";
+		return "nikoniko/teamCalendarView";
 	}
 
 	public List<NikoNiko> getNikoPreciseDate(List<NikoNiko> listOfNiko, int year, int month, int day){
@@ -635,7 +670,6 @@ public class TeamController extends ViewBaseController<Team> {
 					niko.add(listOfNiko.get(i));
 				}
 		}
-
 		return niko;
 	}
 
