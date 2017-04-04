@@ -28,7 +28,7 @@ public class User extends SecurityUser {
 	public static final String TABLE = "user";
 
 	@Transient
-	public static final String[] FIELDS = { "id", "lastname", "firstname", "sex", "registration_cgi",
+	public static final String[] FIELDS = { "id", "lastname", "firstname", "sex", "registrationcgi",
 											"login", "password", "enable", "verticale_id"};
 
 

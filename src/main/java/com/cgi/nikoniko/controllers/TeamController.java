@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
 import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
@@ -99,12 +100,9 @@ public class TeamController extends ViewBaseController<Team> {
 		if (teamBuffer.getVerticale() == null) {
 			idverticale = 1L;
 
-			teamBuffer.setVerticale(verticaleCrud.findOne(1L));
+			teamBuffer.setVerticale(verticaleCrud.findOne(idverticale));
 			teamCrud.save(teamBuffer);
 			}
-//		else {
-//			idverticale = teamBuffer.getVerticale().getId();//CODE MORT
-//			}
 
 		model.addAttribute("page","TEAM : " + teamBuffer.getName());
 		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
@@ -167,8 +165,10 @@ public class TeamController extends ViewBaseController<Team> {
 
 		Object teamBuffer = new Object();
 		teamBuffer = teamCrud.findOne(idTeam);
+		
+		ArrayList<User> userList = new ArrayList<User>();
 
-		model.addAttribute("items", DumpFields.listFielder((ArrayList<User>) userCrud.findAll()));
+		model.addAttribute("items", DumpFields.listFielder(userList));
 		model.addAttribute("sortedFields",User.FIELDS);
 		model.addAttribute("page", ((Team) teamBuffer).getName());
 		model.addAttribute("go_show", SHOW_ACTION);
@@ -189,11 +189,50 @@ public class TeamController extends ViewBaseController<Team> {
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP"})
-	@RequestMapping(path = "{idTeam}" + PATH + ADD_USER, method = RequestMethod.POST)
-	public <T> String addUsersPost(Model model, @PathVariable Long idTeam, Long idUser) {
+	@RequestMapping(path = "{idTeam}" + PATH + ADD_USER, params = "idUser", method = RequestMethod.POST)
+	public <T> String addUsersPost(Model model, @PathVariable Long idTeam, @RequestParam Long idUser) {
 		return setUsersForTeamPost(idTeam, idUser);
 	}
 
+	/**
+	 * SHOW USERS TO ADD ON VERTICALE (SEARCH)
+	 * @param model
+	 * @param name
+	 * @return
+	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
+	@RequestMapping(path = "{idTeam}" + PATH + ADD_USER, params = "name", method = RequestMethod.POST)
+	public String addVerticalForTeamPOST(Model model,@RequestParam String name , @PathVariable Long idTeam){
+		
+		Team teamBuffer = teamCrud.findOne(idTeam);
+		
+		model.addAttribute("model", "team");
+		model.addAttribute("page", teamBuffer.getName());
+		model.addAttribute("sortedFields",User.FIELDS);
+		model.addAttribute("items",DumpFields.listFielder(this.searchUser(name)));
+		model.addAttribute("go_show", SHOW_ACTION);
+		model.addAttribute("go_create", CREATE_ACTION);
+		model.addAttribute("go_delete", DELETE_ACTION);
+		model.addAttribute("back", DOT + PATH + SHOW_USER);
+		
+		return BASE_TEAM + PATH + ADD_USER;
+
+	}
+	
+	/**
+	 * FIND A SPECIFIC USER
+	 * @param name
+	 * @return
+	 */
+	public ArrayList<User> searchUser(String name){
+
+		ArrayList<User> userList = new ArrayList<User>();
+		userList = userCrud.getUsers(name);
+
+		return userList;
+
+	}
+	
 	/**
 	 *	RETURN LIST OF ALL USERS IN A TEAM WITH A GIVEN ID
 	 * @param teamId
@@ -311,10 +350,10 @@ public class TeamController extends ViewBaseController<Team> {
 	@RequestMapping(path = "{idTeam}" + PATH + SHOW_VERTICAL, method = RequestMethod.GET)
 	public String showVerticalForUserGET(Model model, @PathVariable Long idTeam) {
 
-		User userBuffer = new User();
-		userBuffer = userCrud.findOne(idTeam);
+		Team teamBuffer = new Team();
+		teamBuffer = teamCrud.findOne(idTeam);
 
-		model.addAttribute("page", userBuffer.getRegistrationcgi());
+		model.addAttribute("page", teamBuffer.getName());
 		model.addAttribute("sortedFields", Verticale.FIELDS);
 		model.addAttribute("items", this.getVerticalForUser(idTeam));
 		model.addAttribute("show_verticale", DOT + PATH + SHOW_VERTICAL);
@@ -338,13 +377,7 @@ public class TeamController extends ViewBaseController<Team> {
 	}
 
 	/**
-<<<<<<< HEAD
 	 * SHOW VERTICAL TO ADD TEAM
-	 *
-=======
-	 * SHOW VERTICAL TO ADD USER
-	 *
->>>>>>> 36083fece454a2c7bb52b9edc1b9e2a2b5abe381
 	 * @param model
 	 * @param idUser
 	 * @return
@@ -370,13 +403,7 @@ public class TeamController extends ViewBaseController<Team> {
 	}
 
 	/**
-<<<<<<< HEAD
 	 * ADD ONE VERTICALE TO TEAM
-	 *
-=======
-	 * ADD ONE VERTICALE TO USER
-	 *
->>>>>>> 36083fece454a2c7bb52b9edc1b9e2a2b5abe381
 	 * @param model
 	 * @param idUser
 	 * @param idTeam
@@ -597,5 +624,33 @@ public class TeamController extends ViewBaseController<Team> {
 		return niko;
 	}
 
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
+	@RequestMapping(path = {PATH, ROUTE_LIST}, method = RequestMethod.POST)
+	public String showUsers(Model model,String name){
+
+		model.addAttribute("model", "team");
+		model.addAttribute("page",this.baseName + " " + LIST_ACTION.toUpperCase());
+		model.addAttribute("sortedFields",Team.FIELDS);
+		model.addAttribute("items",DumpFields.listFielder(teamCrud.getTeams(name)));
+		model.addAttribute("go_show", SHOW_ACTION);
+		model.addAttribute("go_create", CREATE_ACTION);
+		model.addAttribute("go_delete", DELETE_ACTION);
+		
+		return listView;
+	}
+
+	/**
+	 * FIND A SPECIFIC USER
+	 * @param name
+	 * @return
+	 */
+	public ArrayList<Team> searchTeam(String name){
+
+		ArrayList<Team> teamList = new ArrayList<Team>();
+		teamList = teamCrud.getTeams(name);
+
+		return teamList;
+
+	}
 
 }

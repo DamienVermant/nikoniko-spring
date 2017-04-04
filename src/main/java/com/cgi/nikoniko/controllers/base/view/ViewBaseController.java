@@ -32,6 +32,8 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 	private String createRedirect;
 
 	private String showView;
+	
+	public final static int LENGHT_VIEW = 10; 
 
 
 	public ViewBaseController (Class<T> clazz, String baseURL) {
@@ -48,10 +50,11 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 		this.updateRedirect = REDIRECT + baseURL + PATH_LIST_FILE;
 		this.deleteRedirect = REDIRECT + baseURL + PATH_LIST_FILE;
 		this.createRedirect = REDIRECT + baseURL + PATH_LIST_FILE;
+		
 	}
 
 	/**
-	 *
+	 *	SHOW THE LIST OF ALL ITEMS
 	 * @param model
 	 * @return
 	 */
@@ -68,9 +71,14 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 		if (this.baseName.toLowerCase().equals("role")) {
 			model.addAttribute("items",super.getItems());
 		}
-		else {
-			model.addAttribute("items",DumpFields.listFielder(emptyList));
-		}
+		else {	
+				if (super.getItems().size() < LENGHT_VIEW) {
+					model.addAttribute("items",DumpFields.listFielder(super.getItems()));
+				}else{
+					model.addAttribute("items",DumpFields.listFielder(super.getItems().subList(0, LENGHT_VIEW)));
+				}
+				
+			}
 		
 		model.addAttribute("go_show", SHOW_ACTION);
 		model.addAttribute("go_create", CREATE_ACTION);
@@ -195,7 +203,7 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 	}
 
 	/**
-	 * Function used to check sessions informations from the session's token
+	 * FUNCTION USED TO GET CONNECT USER INFORMATION
 	 *
 	 * @return Session informations of type Authentication
 	 */

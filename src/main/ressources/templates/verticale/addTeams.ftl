@@ -5,7 +5,13 @@
 </head>
 
 <body>
-	<h1>TEAMS TO ADD IN VERTICALE : ${page}  </h1>
+		<a href="/menu">Home</a>
+		<h1>TEAMS TO ADD IN VERTICALE : ${page}  </h1>
+	<form action = "" method = "POST">
+		<#include "../includable/security/securityToken.ftl">
+			<input type="text" class="search" onkeyup="myFunction()" name="name" placeholder="Search for registration" title="Type in a name">
+		<input type="submit" value="Search">
+	</form>
 		<table class="table table-bordered table-hover">
 			<tr>
 				<#list items as item>
@@ -37,7 +43,7 @@
 					<td>
 						<form action = "" method = "POST">
 							<#include "../includable/security/securityToken.ftl">
-							<input type="hidden" name = "idTeam" value = "${item["id"]}">
+								<input type="hidden" name = "idTeam" value = "${item["id"]}">
 							<input type="submit" value="add"><br>
 						</form>
 					</td>

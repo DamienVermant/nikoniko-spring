@@ -54,11 +54,9 @@
 				<div class="text"> Administration </div>
 				<ul>
 					<li> <a href="${go_users}"> Users </a> </li>
-					<li> <a href="${go_nikonikos}"> Niko Niko </a> </li>
 					<li> <a href="${go_teams}"> Teams </a> </li>
 					<li> <a href="${go_verticales}"> Verticales </a> </li>
 					<li> <a href="${go_roles}"> Roles </a> </li>
-					<li> <a href="${go_functions}"> Functions </a> </li>
 				</ul>
 			</div>
 			<div class="row-fluid">

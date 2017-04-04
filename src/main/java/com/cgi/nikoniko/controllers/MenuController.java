@@ -62,7 +62,6 @@ public class MenuController  {
 	public final static LocalDate TODAY_DATE = new LocalDate();
 
 	// TODO : CHANGE TYPE OF TIME
-	// 0.99999... = 1
 	public final static double TIME = 0.9999999999;
 	
 	/**
@@ -254,6 +253,7 @@ public class MenuController  {
 
 	/**
 	 * GET LAST-1 NIKONIKO USER AND CHECK IF THE MOOD IS NULL OR NOT
+	 * RETURN FALSE CAN'T UPDATE, TRUE UPDATE SECOND LAST
 	 * @param idUser
 	 * @return
 	 */
@@ -270,11 +270,8 @@ public class MenuController  {
 			NikoNiko lastLastNiko = nikoCrud.findOne(userCrud.getLastLastNikoNikoUser(idUser));
 			NikoNiko lastNiko = nikoCrud.findOne(userCrud.getLastNikoNikoUser(idUser));
 			
-			Date entryDateLast = lastNiko.getEntryDate();
-			LocalDate dateEntryLast = new LocalDate(entryDateLast);
-			
-			Date entryDateLastLast = lastLastNiko.getEntryDate();
-			LocalDate dateEntryLastLast = new LocalDate(entryDateLastLast);
+			LocalDate dateEntryLast = new LocalDate(lastNiko.getEntryDate());
+			LocalDate dateEntryLastLast = new LocalDate(lastLastNiko.getEntryDate());
 			
 			int day = Days.daysBetween(new LocalDate(dateEntryLastLast), new LocalDate(dateEntryLast)).getDays() ;
 			

@@ -21,6 +21,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
 import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
@@ -43,6 +44,10 @@ import com.cgi.nikoniko.utils.DumpFields;
 @Controller
 @RequestMapping(UserController.BASE_URL)
 public class UserController extends ViewBaseController<User> {
+	
+	
+/////////////////// GLOBAL CONSTANT /////////////////////////////////	
+	
 
 	public final static String DOT = ".";
 	public final static String PATH = "/";
@@ -55,7 +60,6 @@ public class UserController extends ViewBaseController<User> {
 
 	public final static String SHOW_NIKONIKO = "showNikoNikos";
 	public final static String SHOW_GRAPH = "showGraph";
-
 	public final static String SHOW_TEAM = "showTeam";
 	public final static String SHOW_ROLE = "showRole";
 	public final static String SHOW_LINK = "link";
@@ -70,7 +74,11 @@ public class UserController extends ViewBaseController<User> {
 	public final static LocalDate TODAY_DATE = new LocalDate();
 
 	public final static double TIME = 0.999999;
+	
 
+/////////////////// NECESSARY CRUD /////////////////////////////////
+	
+	
 	@Autowired
 	INikoNikoCrudRepository nikonikoCrud;
 
@@ -91,15 +99,55 @@ public class UserController extends ViewBaseController<User> {
 
 	@Autowired
 	IRoleCrudRepository roleCrud;
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	*
+	* FONCTIONS RELATED TO USER ONLY
+	*
+	*/
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	
+	/**
+	 * LIST USER METHOD POST
+	 * @param model
+	 * @param name
+	 * @return
+	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
+	@RequestMapping(path = {PATH, ROUTE_LIST}, method = RequestMethod.POST)
+	public String showUsers(Model model,String name){
 
-	public UserController() {
-		super(User.class,BASE_URL);
+		model.addAttribute("model", "user");
+		model.addAttribute("page",this.baseName + " " + LIST_ACTION.toUpperCase());
+		model.addAttribute("sortedFields",User.FIELDS);
+		model.addAttribute("items",DumpFields.listFielder(this.searchUser(name)));
+		model.addAttribute("go_show", SHOW_ACTION);
+		model.addAttribute("go_create", CREATE_ACTION);
+		model.addAttribute("go_delete", DELETE_ACTION);
+		
+		return listView;
+
+	}
+	
+	/**
+	 * FIND A SPECIFIC USER
+	 * @param name
+	 * @return
+	 */
+	public ArrayList<User> searchUser(String name){
+
+		ArrayList<User> userList = new ArrayList<User>();
+		userList = userCrud.getUsers(name);
+
+		return userList;
+
 	}
 
-	protected UserController(Class<User> clazz, String baseURL) {
-		super(clazz, baseURL);
-	}
-
+	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
@@ -110,6 +158,7 @@ public class UserController extends ViewBaseController<User> {
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	
 	/**
 	 * SHOW USER ACTIONS FOR A SPECIFIC PROFILE
 	 *
@@ -244,7 +293,6 @@ public class UserController extends ViewBaseController<User> {
 			mood = nikonikoCrud.findOne(idMax).getMood();
 			return mood;
 		}
-
 	}
 
 	/**
@@ -364,6 +412,71 @@ public class UserController extends ViewBaseController<User> {
 		}
 	}
 
+	/**
+	 * RETURN PAGE VOTE TO VOTE FOR THE PREVIOUS NIKONIKO
+	 * @param model
+	 * @param userId
+	 * @param response
+	 * @return
+	 * @throws IOException
+	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
+	@RequestMapping(path = "{userId}/addLast", method = RequestMethod.GET)
+	public String lastNikoNikoForUserGET(Model model,@PathVariable Long userId,
+						HttpServletResponse response) throws IOException {
+
+		return "nikoniko/addNikoNikoLast";
+	}
+	
+	/**
+	 * UPDATE THE PREVIOUS NIKONIKO VOTE BY USER
+	 * @param model
+	 * @param userId
+	 * @param response
+	 * @param mood
+	 * @param comment
+	 * @return
+	 * @throws IOException
+	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
+	@RequestMapping(path = "{userId}/addLast", method = RequestMethod.POST)
+	public String lastNikoNikoForUserPOST(Model model,@PathVariable Long userId,
+						HttpServletResponse response, int mood, String comment) throws IOException {
+
+		return this.updateLastNikoNiko(userId, mood, comment);
+	}
+
+	/**
+	 * FUNCTION FOR UPDATE THE PREVIOUS NIKONIKO VOTE BY USER
+	 * @param idUser
+	 * @param mood
+	 * @param comment
+	 * @return
+	 */
+	public String updateLastNikoNiko(Long idUser, Integer mood, String comment){
+		
+		if (userCrud.getLastLastNikoNikoUser(idUser) == null) {
+			return REDIRECT + PATH + MENU_PATH;
+		}
+
+		if (mood == null) {
+			return REDIRECT + PATH + MENU_PATH;
+		}
+
+		else {
+
+			NikoNiko lastNiko = nikonikoCrud.findOne(userCrud.getLastLastNikoNikoUser(idUser));
+
+			lastNiko.setMood(mood);
+			lastNiko.setComment(comment);
+			nikonikoCrud.save(lastNiko);
+
+			return REDIRECT + PATH + MENU_PATH;
+
+		}
+	}
+
+	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
@@ -374,6 +487,7 @@ public class UserController extends ViewBaseController<User> {
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	
 	/**
 	 *
 	 * RELATION USER HAS TEAM
@@ -425,7 +539,7 @@ public class UserController extends ViewBaseController<User> {
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 	@RequestMapping(path = "{idUser}" + PATH + ADD_TEAM, method = RequestMethod.GET)
-	public <T> String addUserInTeamGET(Model model, @PathVariable Long idUser) {
+	public String addUserInTeamGET(Model model, @PathVariable Long idUser) {
 
 		Object userBuffer = new Object();
 		userBuffer = userCrud.findOne(idUser);
@@ -450,9 +564,34 @@ public class UserController extends ViewBaseController<User> {
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
-	@RequestMapping(path = "{idUser}" + PATH + ADD_TEAM, method = RequestMethod.POST)
-	public <T> String addUserInTeamPOST(Model model, @PathVariable Long idUser, Long idTeam) {
+	@RequestMapping(path = "{idUser}" + PATH + ADD_TEAM,  params = "idTeam", method = RequestMethod.POST)
+	public String addUserInTeamPOST(Model model, @PathVariable Long idUser, @RequestParam Long idTeam) {
 		return setUsersForTeam(idTeam, idUser);
+	}
+	
+	/**
+	 * SHOW USERS TO ADD ON VERTICALE (SEARCH)
+	 * @param model
+	 * @param name
+	 * @return
+	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
+	@RequestMapping(path = "{idUser}" + PATH + ADD_TEAM, params = "name", method = RequestMethod.POST)
+	public String addVerticalForTeamPOST(Model model,@RequestParam String name , @PathVariable Long idUser){
+		
+		User userBuffer = userCrud.findOne(idUser);
+		
+		model.addAttribute("model", "user");
+		model.addAttribute("page", userBuffer.getRegistrationcgi());
+		model.addAttribute("sortedFields",Team.FIELDS);
+		model.addAttribute("items",DumpFields.listFielder(this.searchTeam(name)));
+		model.addAttribute("go_show", SHOW_ACTION);
+		model.addAttribute("go_create", CREATE_ACTION);
+		model.addAttribute("go_delete", DELETE_ACTION);
+		model.addAttribute("back", DOT + PATH + SHOW_TEAM);
+		
+		return BASE_USER + PATH + ADD_TEAM;
+
 	}
 
 	/**
@@ -545,6 +684,21 @@ public class UserController extends ViewBaseController<User> {
 		return DumpFields.listFielder((List<Team>) teamCrud.findAll(ids));
 	}
 
+	/**
+	 * FIND A SPECIFIC TEAM
+	 * @param name
+	 * @return
+	 */
+	public ArrayList<Team> searchTeam(String name){
+
+		ArrayList<Team> teamList = new ArrayList<Team>();
+		teamList = teamCrud.getTeams(name);
+
+		return teamList;
+
+	}
+	
+	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
@@ -555,6 +709,7 @@ public class UserController extends ViewBaseController<User> {
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	
 	/**
 	 * SHOW ALL ROLES RELATED TO ONE USER
 	 * @param model
@@ -661,8 +816,7 @@ public class UserController extends ViewBaseController<User> {
 		return BASE_USER + PATH + ADD_ROLE;
 	}
 
-	// TODO : RELATION USER -> VERTICAL
-
+	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
@@ -673,6 +827,7 @@ public class UserController extends ViewBaseController<User> {
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	
 	/**
 	 * SHOW VERTICALE FOR ONE USER
 	 *
@@ -744,7 +899,7 @@ public class UserController extends ViewBaseController<User> {
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 	@RequestMapping(path = "{idUser}" + PATH + ADD_VERTICAL, method = RequestMethod.POST)
-	public <T> String addVerticalForUserPOST(Model model, @PathVariable Long idUser, Long idVertical) {
+	public String addVerticalForUserPOST(Model model, @PathVariable Long idUser, Long idVertical) {
 		return setVerticalForUser(idUser, idVertical);
 	}
 
@@ -771,118 +926,15 @@ public class UserController extends ViewBaseController<User> {
 		return redirect;
 	}
 
-	/////////////////////////////////////////////////////////////////////
-
-	/**
-	 *
-	 * SEARCH USER, STATUS : WORK
-	 *
-	 */
-
-	/////////////////////////////////////////////////////////////////////
-
-	/**
-	 * LIST USER METHOD POST
-	 * @param model
-	 * @param name
-	 * @return
-	 */
-	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
-	@RequestMapping(path = {PATH, ROUTE_LIST}, method = RequestMethod.POST)
-	public String showUsers(Model model,String name){
-
-		model.addAttribute("model", "");
-		model.addAttribute("page",this.baseName + " " + LIST_ACTION.toUpperCase());
-		model.addAttribute("sortedFields",User.FIELDS);
-		model.addAttribute("items",this.searchUser(name));
-		model.addAttribute("go_show", SHOW_ACTION);
-		model.addAttribute("go_create", CREATE_ACTION);
-		model.addAttribute("go_delete", DELETE_ACTION);
-		return listView;
-
-	}
-
-	/**
-	 * FIND A SPECIFIC USER
-	 * @param name
-	 * @return
-	 */
-	public ArrayList<User> searchUser(String name){
-
-		ArrayList<User> userList = new ArrayList<User>();
-		userList = userCrud.getUsers(name);
-
-		return userList;
-
-	}
-
-	////////////////////////////// IN WORK //////////////////////////////
-
-	/**
-	 * RETURN PAGE VOTE TO VOTE FOR THE PREVIOUS NIKONIKO
-	 * @param model
-	 * @param userId
-	 * @param response
-	 * @return
-	 * @throws IOException
-	 */
-	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
-	@RequestMapping(path = "{userId}/addLast", method = RequestMethod.GET)
-	public String lastNikoNikoForUserGET(Model model,@PathVariable Long userId,
-						HttpServletResponse response) throws IOException {
-
-		return "nikoniko/addNikoNikoLast";
-	}
 	
-
-	/**
-	 * UPDATE THE PREVIOUS NIKONIKO VOTE BY USER
-	 * @param model
-	 * @param userId
-	 * @param response
-	 * @param mood
-	 * @param comment
-	 * @return
-	 * @throws IOException
-	 */
-	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
-	@RequestMapping(path = "{userId}/addLast", method = RequestMethod.POST)
-	public String lastNikoNikoForUserPOST(Model model,@PathVariable Long userId,
-						HttpServletResponse response, int mood, String comment) throws IOException {
-
-		return this.updateLastNikoNiko(userId, mood, comment);
+/////////////////// CONTROLLERS /////////////////////////////////
+	
+	
+	public UserController() {
+		super(User.class,BASE_URL);
 	}
 
-	/**
-	 * FUNCTION FOR UPDATE THE PREVIOUS NIKONIKO VOTE BY USER
-	 * @param idUser
-	 * @param mood
-	 * @param comment
-	 * @return
-	 */
-	public String updateLastNikoNiko(Long idUser, Integer mood, String comment){
-		
-		if (userCrud.getLastLastNikoNikoUser(idUser) == null) {
-			return REDIRECT + PATH + MENU_PATH;
-		}
-
-		if (mood == null) {
-			return REDIRECT + PATH + MENU_PATH;
-		}
-
-		else {
-
-			NikoNiko lastNiko = nikonikoCrud.findOne(userCrud.getLastLastNikoNikoUser(idUser));
-
-			lastNiko.setMood(mood);
-			lastNiko.setComment(comment);
-			nikonikoCrud.save(lastNiko);
-
-			return REDIRECT + PATH + MENU_PATH;
-
-		}
+	protected UserController(Class<User> clazz, String baseURL) {
+		super(clazz, baseURL);
 	}
-
-	//////////////////////////////////////////////////////////////////////
-
 }

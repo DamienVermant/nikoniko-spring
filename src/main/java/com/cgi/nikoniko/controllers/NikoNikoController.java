@@ -1,5 +1,7 @@
 package com.cgi.nikoniko.controllers;
 
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -12,6 +14,7 @@ import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
 import com.cgi.nikoniko.dao.IChangeDatesCrudRepository;
 import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
 import com.cgi.nikoniko.models.tables.NikoNiko;
+import com.cgi.nikoniko.models.tables.Verticale;
 import com.cgi.nikoniko.utils.DumpFields;
 
 @Controller
@@ -60,4 +63,41 @@ public class NikoNikoController extends ViewBaseController<NikoNiko> {
 
 		return BASE_NIKONIKO + PATH + SHOW_PATH;
 	}
+
+
+
+
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
+	@RequestMapping(path = {PATH, ROUTE_LIST}, method = RequestMethod.POST)
+	public String showVerticales(Model model,String name){
+
+		model.addAttribute("model", "nikoniko");
+		model.addAttribute("page",this.baseName + " " + LIST_ACTION.toUpperCase());
+		model.addAttribute("sortedFields",NikoNiko.FIELDS);
+		model.addAttribute("items",this.searchNikoNikos(name));
+		model.addAttribute("go_show", SHOW_ACTION);
+		model.addAttribute("go_create", CREATE_ACTION);
+		model.addAttribute("go_delete", DELETE_ACTION);
+		
+		return listView;
+	}
+
+	/**
+	 * FIND A SPECIFIC USER
+	 * @param id
+	 * @return
+	 */
+	public ArrayList<NikoNiko> searchNikoNikos(String name){
+
+		ArrayList<NikoNiko> nikonikoList = new ArrayList<NikoNiko>();
+		nikonikoList = nikoCrud.getNikoNiko(name);
+
+		return nikonikoList;
+
+	}
+
+
+
+
+
 }

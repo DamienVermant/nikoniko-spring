@@ -71,4 +71,13 @@ public interface IUserCrudRepository extends IBaseCrudRepository<User>{
 	 */
 	@Query(value = "SELECT COUNT(*) from nikoniko where nikoniko.user_id = :idUser", nativeQuery=true)
 	public int getNikoNikoNumberUser(@Param("idUser") long idUser);
+	
+	/**
+	 * GET ALL USERS ASSOCIATED WITH THE SAME VERTICALE
+	 * @param idVerticale
+	 * @return
+	 */
+	@Query(value = "SELECT * FROM user WHERE verticale_id = :idVerticale", nativeQuery=true)
+	public ArrayList<User> getAssociatedUsers(@Param("idVerticale") long idVerticale);
+	
 }
