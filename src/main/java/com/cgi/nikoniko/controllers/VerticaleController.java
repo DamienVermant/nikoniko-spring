@@ -1,17 +1,26 @@
 package com.cgi.nikoniko.controllers;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
 import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
@@ -41,10 +50,10 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	public final static String SHOW_NIKO = "showNiko";
 
 	public static final String SHOW_PATH = "show";
-	
+
 	public final static String ADD_USER = "addUsers";
 	public final static String ADD_TEAM = "addTeams";
-	
+
 	public final static Long DEFAULT_ID_VERTICAL = (long) 1;
 
 	@Autowired
@@ -112,7 +121,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 		model.addAttribute("back", DOT + PATH + SHOW_PATH);
 		return BASE_VERTICALE + PATH + SHOW_USER;
 	}
-	
+
 	/**
 	 * ADD USER TO ONE VERTICALE
 	 * @param model
@@ -125,7 +134,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	public String getUsersForVerticalePOST(Model model, @PathVariable Long verticaleId, Long idUser) {
 		return deleteUserFromVertical(idUser, verticaleId);
 	}
-	
+
 	/**
 	 * SHOW TEAMS RELATED TO ONE VERTICALE
 	 * @param model
@@ -183,7 +192,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 		super.deleteItem(id);
 		return deleteRedirect;
 	}
-	
+
 	/**
 	 * SHOW USERS TO ADD ON VERTICALE
 	 * @param model
@@ -193,7 +202,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 	@RequestMapping(path = "{idVerticale}" + PATH + ADD_USER, method = RequestMethod.GET)
 	public <T> String addVerticalForUserGET(Model model, @PathVariable Long idVerticale) {
-	
+
 	Object verticaleBuffer = new Object();
 	verticaleBuffer = verticaleCrud.findOne(idVerticale);
 	model.addAttribute("items", DumpFields.listFielder((ArrayList<User>) userCrud.findAll()));
@@ -204,10 +213,10 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	model.addAttribute("go_delete", DELETE_ACTION);
 	model.addAttribute("back", DOT + PATH + SHOW_USER);
 	model.addAttribute("add", ADD_USER);
-	
+
 	return BASE_VERTICALE + PATH + ADD_USER;
 	}
-	
+
 	/**
 	 * ADD ONE USER TO VERTICALE
 	 * @param model
@@ -228,22 +237,22 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	 * @return
 	 */
 	private String setUserforVertical(Long idUser, Long idVertical) {
-		
+
 		String redirect = REDIRECT + PATH + BASE_VERTICALE + PATH + idVertical + PATH + SHOW_USER;
-		
+
 		User userBuffer = new User();
 		Verticale verticaleBuffer = new Verticale();
-		
+
 		userBuffer = userCrud.findOne(idUser);
 		verticaleBuffer = verticaleCrud.findOne(idVertical);
-		
+
 		userBuffer.setVerticale(verticaleBuffer);
 		userCrud.save(userBuffer);
-	
-		
+
+
 		return redirect;
 	}
-	
+
 	/**
 	 * NAME ??
 	 * @param idUser
@@ -251,20 +260,20 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	 * @return
 	 */
 	public String deleteUserFromVertical(Long idUser, Long idVerticale){
-		
+
 		String redirect = REDIRECT + PATH + BASE_VERTICALE + PATH + idVerticale + PATH + SHOW_USER;
-		
+
 		User userBuffer = userCrud.findOne(idUser);
 		Verticale verticaleBuffer = verticaleCrud.findOne(DEFAULT_ID_VERTICAL);
-		
+
 		userBuffer.setVerticale(verticaleBuffer);
-		
+
 		userCrud.save(userBuffer);
-		
+
 		return redirect;
-		
-	}	
-	
+
+	}
+
 	/**
 	 * SHOW USERS TO ADD ON VERTICALE
 	 * @param model
@@ -274,7 +283,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 	@RequestMapping(path = "{idVerticale}" + PATH + ADD_TEAM, method = RequestMethod.GET)
 	public <T> String addVerticalForTeamGET(Model model, @PathVariable Long idVerticale) {
-	
+
 	Object verticaleBuffer = new Object();
 	verticaleBuffer = verticaleCrud.findOne(idVerticale);
 	model.addAttribute("items", DumpFields.listFielder((ArrayList<Team>) teamCrud.findAll()));
@@ -285,10 +294,10 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	model.addAttribute("go_delete", DELETE_ACTION);
 	model.addAttribute("back", DOT + PATH + SHOW_TEAM);
 	model.addAttribute("add", ADD_TEAM);
-	
+
 	return BASE_VERTICALE + PATH + ADD_TEAM;
 	}
-	
+
 	/**
 	 * DELETE TEAM FROM A VERTICALE
 	 * @param model
@@ -301,7 +310,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	public String getTeamsForVerticalePOST(Model model, @PathVariable Long verticaleId, Long idTeam) {
 		return deleteTeamFromVertical(idTeam, verticaleId);
 	}
-	
+
 	/**
 	 * ADD ONE TEAM TO VERTICALE
 	 * @param model
@@ -322,22 +331,22 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	 * @return
 	 */
 	private String setTeamforVertical(Long idTeam, Long idVertical) {
-		
+
 		String redirect = REDIRECT + PATH + BASE_VERTICALE + PATH + idVertical + PATH + SHOW_TEAM;
-		
+
 		Team teamBuffer = new Team();
 		Verticale verticaleBuffer = new Verticale();
-		
+
 		teamBuffer = teamCrud.findOne(idTeam);
 		verticaleBuffer = verticaleCrud.findOne(idVertical);
-		
+
 		teamBuffer.setVerticale(verticaleBuffer);
 		teamCrud.save(teamBuffer);
-	
-		
+
+
 		return redirect;
 	}
-	
+
 	/**
 	 * FUNCTION USED TO DELETE TEAM FROM VERTICALE
 	 * @param idTeam
@@ -345,93 +354,18 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	 * @return
 	 */
 	public String deleteTeamFromVertical(Long idTeam, Long idVerticale){
-		
+
 		String redirect = REDIRECT + PATH + BASE_VERTICALE + PATH + idVerticale + PATH + SHOW_TEAM;
-		
+
 		Team teamBuffer = teamCrud.findOne(idTeam);
 		Verticale verticaleBuffer = verticaleCrud.findOne(DEFAULT_ID_VERTICAL);
-		
+
 		teamBuffer.setVerticale(verticaleBuffer);
-		
+
 		teamCrud.save(teamBuffer);
-		
+
 		return redirect;
-		
-	}		
 
-
-
-
-	/**
-	 * SELECTION NIKONIKO PAR RAPPORT A UN ENSEMBLE (TEAM, VERTICALE, ETC...)
-	 */
-
-	public ArrayList<NikoNiko> findNikoNikosOfAVerticale(Long idVert){
-		ArrayList<NikoNiko> vertNikonikos = new ArrayList<NikoNiko>();
-
-		ArrayList<Team> vertTeams = new ArrayList<Team>();
-
-		if (!verticaleCrud.findOne(idVert).getTeams().isEmpty()) {
-			vertTeams.addAll(verticaleCrud.findOne(idVert).getTeams());
-
-			for (Team team : vertTeams) {
-				vertNikonikos.addAll(findNikoNikosOfATeam(team.getId()));
-			}
-		}
-				return vertNikonikos;
 	}
-
-	public ArrayList<NikoNiko> findNikoNikosOfATeam(Long idTeam){
-
-		ArrayList<User> usersOfTeam = findUsersOfATeam(idTeam);
-
-		ArrayList<NikoNiko> nikonikos = new ArrayList<NikoNiko>();
-		//Partie a externaliser en fonction findAllNikoNikoForAUser(idUser) => probablement deja existante
-		if (!usersOfTeam.isEmpty()) {
-			for (User user : usersOfTeam) {
-				if (!user.getNikoNikos().isEmpty()) {
-					nikonikos.addAll(user.getNikoNikos());
-				}
-			}
-		}
-		//fin de partie a externaliser
-
-		return nikonikos;
-	}
-
-	public ArrayList<User> findUsersOfATeam(Long idValue) {
-
-		List<Long> ids = new ArrayList<Long>();
-		ArrayList<User> userList = new ArrayList<User>();
-		List<BigInteger> idsBig = userTeamCrud.findAssociatedUser(idValue);
-
-		if (!idsBig.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
-			for (BigInteger id : idsBig) {
-				ids.add(id.longValue());
-			}
-			userList = (ArrayList<User>) userCrud.findAll(ids);
-		}
-		return userList;
-	}
-
-	/**se trouve a l adresse verticale/idTeam/mesnikonikos
-	 *
-	 * @param model
-	 * @param idTeam
-	 * @return
-	 */
-	@RequestMapping(path = "{idVert}/mesnikonikos", method = RequestMethod.GET)
-	public String controlleurBidon(Model model, @PathVariable Long idVert) {
-
-		ArrayList<NikoNiko> nikos = findNikoNikosOfAVerticale(idVert);
-
-		List<Long> ids = new ArrayList<Long>();
-
-		model.addAttribute("sortedFields",NikoNiko.FIELDS);
-		model.addAttribute("items",DumpFields.listFielder(nikos));
-
-		return "nikoniko/testFindNikopage";
-	}
-
 
 }

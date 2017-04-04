@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
 import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
@@ -811,68 +813,5 @@ public class UserController extends ViewBaseController<User> {
 
 	}
 
-	////////////////////////////// IN WORK //////////////////////////////
-
-	/**
-	 * RETURN PAGE VOTE TO VOTE FOR THE PREVIOUS NIKONIKO
-	 * @param model
-	 * @param userId
-	 * @param response
-	 * @return
-	 * @throws IOException
-	 */
-	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
-	@RequestMapping(path = "{userId}/addLast", method = RequestMethod.GET)
-	public String lastNikoNikoForUserGET(Model model,@PathVariable Long userId,
-						HttpServletResponse response) throws IOException {
-
-		return "nikoniko/addNikoNikoLast";
-	}
-
-	/**
-	 * UPDATE THE PREVIOUS NIKONIKO VOTE BY USER
-	 * @param model
-	 * @param userId
-	 * @param response
-	 * @param mood
-	 * @param comment
-	 * @return
-	 * @throws IOException
-	 */
-	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
-	@RequestMapping(path = "{userId}/addNikoNikoLast", method = RequestMethod.POST)
-	public String lastNikoNikoForUserPOST(Model model,@PathVariable Long userId,
-						HttpServletResponse response, int mood, String comment) throws IOException {
-
-		return this.updateLastNikoNiko(userId, mood, comment);
-	}
-
-	/**
-	 * FUNCTION FOR UPDATE THE PREVIOUS NIKONIKO VOTE BY USER
-	 * @param idUser
-	 * @param mood
-	 * @param comment
-	 * @return
-	 */
-	public String updateLastNikoNiko(Long idUser, Integer mood, String comment){
-
-		if (mood == null) {
-			return REDIRECT + PATH + MENU_PATH;
-		}
-
-		else {
-
-			NikoNiko lastNiko = nikonikoCrud.findOne(userCrud.getLastLastNikoNikoUser(idUser));
-
-			lastNiko.setMood(mood);
-			lastNiko.setComment(comment);
-			nikonikoCrud.save(lastNiko);
-
-			return REDIRECT + PATH + MENU_PATH;
-
-		}
-	}
-
-	//////////////////////////////////////////////////////////////////////
-
+	/////////////////////////////////////////////////////////////////////
 }

@@ -1,5 +1,6 @@
 package com.cgi.nikoniko.controllers;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
@@ -7,14 +8,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
 import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
@@ -365,13 +370,8 @@ public class TeamController extends ViewBaseController<Team> {
 	}
 
 	/**
-<<<<<<< HEAD
-	 * ADD ONE VERTICALE TO TEAM
-	 *
-=======
 	 * ADD ONE VERTICALE TO USER
 	 *
->>>>>>> 36083fece454a2c7bb52b9edc1b9e2a2b5abe381
 	 * @param model
 	 * @param idUser
 	 * @param idTeam
@@ -449,148 +449,5 @@ public class TeamController extends ViewBaseController<Team> {
 		}
 		return userList;
 	}
-
-	/**se trouve a l adresse team/idTeam/mesnikonikos
-	 *
-	 * @param model
-	 * @param idTeam
-	 * @return
-	 */
-	@RequestMapping(path = "{idTeam}/mesnikonikos", method = RequestMethod.GET)
-	public String controlleurBidon(Model model, @PathVariable Long idTeam) {
-
-		ArrayList<NikoNiko> nikos = findNikoNikosOfATeam(idTeam);
-
-		//##################################################################
-		//Creation calendrier
-		//##################################################################
-
-		LocalDate dateLocale = LocalDate.now();
-		dateLocale = dateLocale.withMonthOfYear(4);//line to modify month to show previous nikos
-
-		LocalDate maxDayOfCurrentMonth = dateLocale.dayOfMonth().withMaximumValue();
-		int firstDayOfCurrentMonth = dateLocale.withDayOfMonth(1).getDayOfWeek();
-		int lastDayOfCurrentMonth = maxDayOfCurrentMonth.getDayOfMonth();
-
-		String[] jourSemaine = {"Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"};
-		List<Integer> nbWeeks = new ArrayList<Integer>();
-		Boolean uncompleteWeek = true;
-		int firstWeekUncomplete = 0;
-		int lastWeekUncomplete = 0;
-		int numberOfWeekInMonth = 1;
-		nbWeeks.add(numberOfWeekInMonth);
-
-		ArrayList<Map<String,Object>> days = new ArrayList<Map<String,Object>>();
-
-		if (firstDayOfCurrentMonth!=1) {
-			firstWeekUncomplete = 1;
-			model.addAttribute("nbJoursSemaineAIgnorer",firstDayOfCurrentMonth-1);
-		}
-
-		if (maxDayOfCurrentMonth.getDayOfWeek()!=7) {
-			lastWeekUncomplete = 1;
-			model.addAttribute("nbJoursSemaineAAjouter",7-maxDayOfCurrentMonth.getDayOfWeek());
-		}
-
-		for (int i = 1; i <= lastDayOfCurrentMonth; i++) {
-			days.add(new HashMap<String, Object>());
-
-			days.get(i-1).put(jourSemaine[dateLocale.withDayOfMonth(i).getDayOfWeek()-1], i);
-
-			//fonction a importer
-			List<NikoNiko> nikostemp = getNikoPreciseDate((List<NikoNiko>)nikos,dateLocale.getYear(),dateLocale.getMonthOfYear(),i);
-			int countNikosBad = 0;
-			int countNikosNeut = 0;
-			int countNikosGood = 0;
-
-			for (NikoNiko nikotemp : nikostemp) {
-				if (nikotemp.getMood()==1) {
-					countNikosBad = countNikosBad+1;
-				}
-				if (nikotemp.getMood()==2) {
-					countNikosNeut = countNikosNeut+1;
-				}
-				if (nikotemp.getMood()==3) {
-					countNikosGood = countNikosGood+1;
-				}
-			}
-
-			//Put niko stats here
-			days.get(i-1).put("nikoBad", countNikosBad);
-			days.get(i-1).put("nikoNeutral", countNikosNeut);
-			days.get(i-1).put("nikoGood", countNikosGood);
-
-			if (dateLocale.withDayOfMonth(i).getDayOfWeek()==1) {//if Monday
-				numberOfWeekInMonth++;
-				nbWeeks.add(numberOfWeekInMonth);
-				days.get(i-1).put("endOfWeek", numberOfWeekInMonth);
-			} else {
-				days.get(i-1).put("endOfWeek", numberOfWeekInMonth);
-			}
-
-			if (uncompleteWeek) {
-				days.get(i-1).put("uncompleteWeek", 1);
-				if (dateLocale.withDayOfMonth(i).getDayOfWeek()==7) {
-					uncompleteWeek = false;
-				}
-			} else {
-				days.get(i-1).put("uncompleteWeek", 0);
-			}
-
-			if (dateLocale.withDayOfMonth(i).getDayOfWeek()== 1
-				&& i >= (lastDayOfCurrentMonth-5)) {
-				uncompleteWeek = true;
-			}
-		}
-
-
-		model.addAttribute("days",days);
-
-		model.addAttribute("nbweeks",nbWeeks);
-		model.addAttribute("numberOfWeekInMonth",numberOfWeekInMonth);
-		model.addAttribute("jourSemaine",jourSemaine);
-
-		model.addAttribute("firstWeekUncomplete",firstWeekUncomplete);
-		model.addAttribute("lastWeekUncomplete",lastWeekUncomplete);
-
-
-		//##################################################################
-		//Fin creation calendrier
-		//##################################################################
-
-
-		model.addAttribute("nikos",DumpFields.listFielder(
-				(ArrayList<NikoNiko>)nikoCrud.findAllByMood(2)));
-
-
-//		model.addAttribute("teamName", teamCrud.findByName("Trololololo").getSerial());
-//		model.addAttribute("teamName", teamCrud.findBySerial("264523kl").getName());
-//		model.addAttribute("userregistrated",userCrud.findByRegistrationcgi("NOUVEAUUSER").getLogin());
-//		model.addAttribute("users",DumpFields.listFielder((ArrayList<User>)userCrud.findAllByFirstname("Tony")));
-//		model.addAttribute("verticales",DumpFields.listFielder((ArrayList<Verticale>)verticaleCrud.findAllByName("test")));
-
-//		model.addAttribute("sortedFields",NikoNiko.FIELDS);
-//		model.addAttribute("items",DumpFields.listFielder(nikos));
-
-		return "nikoniko/testFindNikopage";
-	}
-
-	public List<NikoNiko> getNikoPreciseDate(List<NikoNiko> listOfNiko, int year, int month, int day){
-
-		LocalDate nikodate = new LocalDate();
-		LocalDate date = new LocalDate().withYear(year).withMonthOfYear(month).withDayOfMonth(day);
-		List<NikoNiko> niko = new ArrayList<NikoNiko>();
-
-		for (int i = 0; i < listOfNiko.size(); i++) {
-				Date firstniko = listOfNiko.get(i).getEntryDate();
-				nikodate = new LocalDate(firstniko);
-				if (nikodate.isEqual(date)) {
-					niko.add(listOfNiko.get(i));
-				}
-		}
-
-		return niko;
-	}
-
 
 }

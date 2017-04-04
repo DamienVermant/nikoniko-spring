@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html>
 <head>
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -5,12 +7,14 @@
 </head>
 <body>
 <body>
-	<h1>Calendrier des nikonikos du mois</h1>
+	<h1>Vos nikonikos pour ${monthName} ${yearToUse}</h1>
+	<a href="?month=${monthToUse}&year=${yearToUse?c}&action=previous">Previous Month</a> Mois en cours
+	<a href="?month=${monthToUse}&year=${yearToUse?c}&action=next">Next Month</a>
 
 	<table class="table table-bordered table-hover">
 		<tr>
 			<#list jourSemaine as jour>
-				<th>${jour}</th>
+				<th class = "daysNames">${jour}</th>
 			</#list>
 		</tr>
 		<#list nbweeks as week>
@@ -27,17 +31,23 @@
 								<#if map["uncompleteWeek"] == 1>
 									<#if jour == key && week == map["endOfWeek"]>
 											<td class = "fillableDay">
-												Good :  ${map["nikoGood"]} <br>
-												Neutral :  ${map["nikoNeutral"]} <br>
-												Bad :  ${map["nikoBad"]} <br>
+												<div class = "dayHeader" align="right">
+														${map[key]}
+												</div>
+												<div class = "daynikos" onclick = "location.href='nikoniko/day/${yearToUse?c}/${monthToUse}/${map[key]}'">
+														myMood :  ${map["nikoOfDay"]}
+												</div>
 											</td>
 									</#if>
 								<#else>
 									<#if jour == key && week == map["endOfWeek"]>
 											<td class = "fillableDay">
-												Good :  ${map["nikoGood"]} <br>
-												Neutral :  ${map["nikoNeutral"]} <br>
-												Bad :  ${map["nikoBad"]} <br>
+												<div class = "dayHeader" align="right">
+														${map[key]}
+												</div>
+												<div class = "daynikos" onclick = "location.href='nikoniko/day/${yearToUse?c}/${monthToUse}/${map[key]}'">
+														myMood :  ${map["nikoOfDay"]}
+												</div>
 											</td>
 									</#if>
 								</#if>
@@ -59,3 +69,4 @@
 	<a href="/menu/">Back</a>
 
 </body>
+</html>
