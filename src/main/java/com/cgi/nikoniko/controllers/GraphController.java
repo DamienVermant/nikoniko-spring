@@ -237,7 +237,7 @@ public class GraphController extends ViewBaseController<User>{
 		model.addAttribute("medium", medium);
 		model.addAttribute("bad", bad);
 		model.addAttribute("back", PATH + MENU_PATH);
-		return "graphs" + PATH + "pie";
+		return "graphs" + PATH + "piedate";
 	}
 
 	/**
@@ -325,7 +325,7 @@ public class GraphController extends ViewBaseController<User>{
 		model.addAttribute("medium", medium);
 		model.addAttribute("bad", bad);
 		model.addAttribute("back", PATH + MENU_PATH);
-		return "graphs" + PATH + "pie";
+		return "graphs" + PATH + "piedate";
 	}
 
 	/**
@@ -412,7 +412,7 @@ public class GraphController extends ViewBaseController<User>{
 		model.addAttribute("medium", medium);
 		model.addAttribute("bad", bad);
 		model.addAttribute("back", PATH + MENU_PATH);
-		return "graphs" + PATH + "pie";
+		return "graphs" + PATH + "piedate";
 	}
 
 	@RequestMapping(path = SHOW_GRAPH_TEAM + PATH + "{nbTable}", method = RequestMethod.GET)
@@ -527,7 +527,7 @@ public class GraphController extends ViewBaseController<User>{
 		model.addAttribute("bad", bad);
 		model.addAttribute("back", PATH + MENU_PATH);
 
-		return "graphs" + PATH + "pieTeam";
+		return "graphs" + PATH + "pieTeamdate";
 	}
 
 	/**

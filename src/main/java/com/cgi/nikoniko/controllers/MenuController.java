@@ -53,7 +53,7 @@ public class MenuController  {
 	public final static String GO_ROLES = PATH + "role" + PATH;
 	public final static String GO_NIKOS =  PATH + "nikoniko" + PATH;
 	public final static String GO_FUNCTIONS =  PATH + "function" + PATH;
-	public final static String GO_GRAPHE = PATH + "graph" + PATH + 1 + PATH + "showGraph";
+	public final static String GO_GRAPHE = PATH + "graph" + PATH + "showGraph";
 
 	public final static String GO_USERTEAM = PATH + "user_has_team" + PATH;
 	public final static String GO_USERROLE = PATH + "user_has_role" + PATH;
