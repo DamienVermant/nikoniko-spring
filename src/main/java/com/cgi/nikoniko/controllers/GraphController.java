@@ -996,6 +996,7 @@ public class GraphController extends ViewBaseController<User>{
 		model.addAttribute("monthToUse",monthToUse);
 		model.addAttribute("monthName",moisAnnee[monthToUse-1]);
 		model.addAttribute("nbweeks",nbWeeks);
+		model.addAttribute("back", PATH + MENU_PATH);
 
 		return "nikoniko/userCalendarView";
 	}
@@ -1225,6 +1226,7 @@ public class GraphController extends ViewBaseController<User>{
 		model.addAttribute("monthName",moisAnnee[monthToUse-1]);
 		model.addAttribute("nbweeks",nbWeeks);
 		model.addAttribute("teamName",teamCrud.findOne(idTeam).getName());
+		model.addAttribute("back", PATH + MENU_PATH);
 
 		return "nikoniko/teamCalendarView";
 	}
@@ -1520,6 +1522,7 @@ public class GraphController extends ViewBaseController<User>{
 		model.addAttribute("monthName",moisAnnee[monthToUse-1]);
 		model.addAttribute("nbweeks",nbWeeks);
 		model.addAttribute("verticaleName",verticaleCrud.findOne(idVert).getName());
+		model.addAttribute("back", PATH + MENU_PATH);
 
 		return "nikoniko/verticaleCalendarView";
 	}
