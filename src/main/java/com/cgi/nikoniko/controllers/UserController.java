@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,24 +19,23 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
 import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
-import com.cgi.nikoniko.models.tables.NikoNiko;
-import com.cgi.nikoniko.models.tables.RoleCGI;
-import com.cgi.nikoniko.models.tables.User;
-import com.cgi.nikoniko.models.tables.Verticale;
 import com.cgi.nikoniko.dao.IRoleCrudRepository;
 import com.cgi.nikoniko.dao.ITeamCrudRepository;
 import com.cgi.nikoniko.dao.IUserCrudRepository;
 import com.cgi.nikoniko.dao.IUserHasRoleCrudRepository;
 import com.cgi.nikoniko.dao.IUserHasTeamCrudRepository;
 import com.cgi.nikoniko.dao.IVerticaleCrudRepository;
-import com.cgi.nikoniko.models.tables.Team;
 import com.cgi.nikoniko.models.association.UserHasRole;
 import com.cgi.nikoniko.models.association.UserHasTeam;
 import com.cgi.nikoniko.models.association.base.AssociationItemId;
+import com.cgi.nikoniko.models.tables.NikoNiko;
+import com.cgi.nikoniko.models.tables.RoleCGI;
+import com.cgi.nikoniko.models.tables.Team;
+import com.cgi.nikoniko.models.tables.User;
+import com.cgi.nikoniko.models.tables.Verticale;
 import com.cgi.nikoniko.utils.DumpFields;
 
 @Controller
