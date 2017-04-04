@@ -763,7 +763,6 @@ public class UserController extends ViewBaseController<User> {
 		userBuffer.setVerticale(verticaleBuffer);
 		userCrud.save(userBuffer);
 
-
 		return redirect;
 	}
 

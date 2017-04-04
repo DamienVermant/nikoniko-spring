@@ -64,7 +64,7 @@
 			<div class="row-fluid">
 				<div class="text"> Visualisation des graphes </div>
 				<ul>
-					<li> <a href=""> Menu visualisation </a> </li>
+					<li> <a href="${go_graphes}"> Menu visualisation </a> </li>
 				</ul>
 			</div>
 		</div>

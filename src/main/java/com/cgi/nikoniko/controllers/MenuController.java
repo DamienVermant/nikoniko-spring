@@ -53,6 +53,7 @@ public class MenuController  {
 	public final static String GO_ROLES = PATH + "role" + PATH;
 	public final static String GO_NIKOS =  PATH + "nikoniko" + PATH;
 	public final static String GO_FUNCTIONS =  PATH + "function" + PATH;
+	public final static String GO_GRAPHE = PATH + "graph" + PATH + 1 + PATH + "showGraph";
 
 	public final static String GO_USERTEAM = PATH + "user_has_team" + PATH;
 	public final static String GO_USERROLE = PATH + "user_has_role" + PATH;
@@ -61,7 +62,7 @@ public class MenuController  {
 	// TODO : CHANGE TYPE OF TIME
 	// 0.99999... = 1
 	public final static double TIME = 0.9999999999;
-	
+
 	/**
 	 * SHOW MENU
 	 * @param model
@@ -82,7 +83,7 @@ public class MenuController  {
 		model.addAttribute("auth",this.getUserInformations().getFirstname());
 		model.addAttribute("go_own_nikoniko", PATH + "user" + PATH + this.getUserInformations().getId() + PATH + "link");
 		model.addAttribute("add_nikoniko", PATH + "user" + PATH + this.getUserInformations().getId() + PATH + "add");
-		model.addAttribute("pie_chart", PATH + "graph" + PATH + this.getUserInformations().getId() + PATH + SHOW_GRAPH);
+		model.addAttribute("pie_chart", PATH + "graph" + PATH + SHOW_GRAPH);
 
 		model.addAttribute("go_users", GO_USERS);
 		model.addAttribute("go_nikonikos", GO_NIKOS);
@@ -90,11 +91,12 @@ public class MenuController  {
 		model.addAttribute("go_roles", GO_ROLES);
 		model.addAttribute("go_functions", GO_FUNCTIONS);
 		model.addAttribute("go_verticales", GO_VERTICALE);
+		model.addAttribute("go_graphes", GO_GRAPHE);
 
 		model.addAttribute("go_user_has_team", GO_USERTEAM);
 		model.addAttribute("go_user_has_role", GO_USERROLE);
 		model.addAttribute("go_role_has_function", GO_ROLEFUNC);
-		
+
 		model.addAttribute("add_last", PATH + "user" + PATH + this.getUserInformations().getId() + PATH + "addLast");
 
 		// TEST FOR SECURED REDIRECTION
@@ -195,8 +197,8 @@ public class MenuController  {
 			roleNames.add(roleList.get(i).getName());
 		}
 		return roleNames;
-	}	
-	
+	}
+
 	/**
 	 * FUNCTION THAT CHECK NIKONIKO DATE FOR UPDATE OR NEW
 	 * @param idUser
@@ -248,7 +250,7 @@ public class MenuController  {
 			mood = nikoCrud.findOne(idMax).getMood();
 			return mood;
 		}
-	}	
+	}
 
 	/**
 	 * GET LAST-1 NIKONIKO USER AND CHECK IF THE MOOD IS NULL OR NOT
@@ -256,29 +258,29 @@ public class MenuController  {
 	 * @return
 	 */
 	public Boolean getLastLastNikoNikoMood(Long idUser){
-		
+
 		Long idMax = userCrud.getLastLastNikoNikoUser(idUser);
-		
+
 		NikoNiko lastLastNiko = nikoCrud.findOne(userCrud.getLastLastNikoNikoUser(idUser));
-		
+
 		if (lastLastNiko == null) {
 			return false;
 		}
-		
+
 		else {
-			
+
 			Integer mood = lastLastNiko.getMood();
-			
+
 			if (mood == 0 || mood == null) {
 				return true;
 			}
-			
+
 			else {
-				
+
 				return false;
 			}
 		}
 	}
-	
+
 
 }

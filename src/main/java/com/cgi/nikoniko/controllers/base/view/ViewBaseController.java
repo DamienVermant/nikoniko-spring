@@ -58,20 +58,20 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 	@Secured({"ROLE_ADMIN"})
 	@RequestMapping(path = {PATH, ROUTE_LIST}, method = RequestMethod.GET)
 	public String index(Model model) {
-		
+
 		ArrayList<T> emptyList = new ArrayList<T>();
-		
+
 		model.addAttribute("model", this.baseName.toLowerCase());
 		model.addAttribute("page",this.baseName + " " + LIST_ACTION.toUpperCase());
 		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
-		
+
 		if (this.baseName.toLowerCase().equals("role")) {
 			model.addAttribute("items",super.getItems());
 		}
 		else {
 			model.addAttribute("items",DumpFields.listFielder(emptyList));
 		}
-		
+
 		model.addAttribute("go_show", SHOW_ACTION);
 		model.addAttribute("go_create", CREATE_ACTION);
 		model.addAttribute("go_delete", DELETE_ACTION);
@@ -103,8 +103,8 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 	@RequestMapping(path = ROUTE_CREATE, method = RequestMethod.POST)
 	public String createItemPost(Model model, T item) {
-		
-		
+
+
 		try {
 			insertItem(item);
 		} catch (Exception e) {

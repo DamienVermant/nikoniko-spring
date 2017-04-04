@@ -9,6 +9,8 @@ import java.util.Set;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -111,11 +113,39 @@ public class GraphController extends ViewBaseController<User>{
 
 	}
 
+	/**
+	 * RETURN USER FROM AUTHENTIFICATION
+	 * @return
+	 */
+	public User getUserInformations(){
+
+		String login = "";
+		User user = new User();
+
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+		login = auth.getName();
+		user = userCrud.findByLogin(login);
+
+		return user;
+	}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
 *
 * GRAPH GESTION
+*
+*
+*/
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+*
+* GRAPH JUST ONE DAY
 *
 *
 */
@@ -129,9 +159,10 @@ public class GraphController extends ViewBaseController<User>{
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
-	@RequestMapping(path = "{idUser}" + PATH + SHOW_GRAPH, method = RequestMethod.GET)
-	public String showPie(Model model, @PathVariable Long idUser) {
+	@RequestMapping(path = PATH + SHOW_GRAPH, method = RequestMethod.GET)
+	public String showPie(Model model) {
 
+		Long idUser = this.getUserInformations().getId();
 		User user = super.getItem(idUser);
 		user.getRoles();
 		Set<NikoNiko> niko =  user.getNikoNikos();
@@ -144,13 +175,20 @@ public class GraphController extends ViewBaseController<User>{
 		int medium = 0;
 		int bad = 0;
 
+		List<String> goodcomment = new ArrayList<String>();
+		List<String> mediumcomment = new ArrayList<String>();
+		List<String> badcomment = new ArrayList<String>();
+
 		for (int i = 0; i < nikotoday.size(); i++) {
 			if (nikotoday.get(i).getMood() == 3) {
 				good++;
+				goodcomment.add(nikotoday.get(i).getComment());
 			}else if(nikotoday.get(i).getMood() == 2){
 				medium++;
-			}else{
+				mediumcomment.add(nikotoday.get(i).getComment());
+			}else if(nikotoday.get(i).getMood() == 1){
 				bad++;
+				badcomment.add(nikotoday.get(i).getComment());
 			}
 		}
 
@@ -158,6 +196,7 @@ public class GraphController extends ViewBaseController<User>{
 		model.addAttribute("role", role);
 		model.addAttribute("mood", this.getUserLastMood(userCrud.findByLogin(super.checkSession().getName()).getId()));
 		model.addAttribute("good", good);
+		model.addAllAttributes(goodcomment);
 		model.addAttribute("medium", medium);
 		model.addAttribute("bad", bad);
 		model.addAttribute("back", PATH + MENU_PATH);
@@ -165,11 +204,11 @@ public class GraphController extends ViewBaseController<User>{
 	}
 
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
-	@RequestMapping(path = "{idUser}" + PATH + SHOW_GRAPH + PATH + "{year}" + PATH + "{month}" + PATH + "{day}", method = RequestMethod.GET)
-	public String showPieWithDate(Model model,
-								@PathVariable Long idUser, @PathVariable int year,
+	@RequestMapping(path = SHOW_GRAPH + PATH + "{year}" + PATH + "{month}" + PATH + "{day}", method = RequestMethod.GET)
+	public String showPieWithDate(Model model, @PathVariable int year,
 								@PathVariable int month, @PathVariable int day) {
 
+		Long idUser = this.getUserInformations().getId();
 		User user = super.getItem(idUser);
 		Set<NikoNiko> niko =  user.getNikoNikos();
 		List<NikoNiko> listOfNiko = new ArrayList<NikoNiko>(niko);
@@ -201,42 +240,6 @@ public class GraphController extends ViewBaseController<User>{
 		return "graphs" + PATH + "pie";
 	}
 
-
-	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
-	@RequestMapping(path = "{idUser}" + PATH + SHOW_GRAPH_WEEK, method = RequestMethod.GET)
-	public String showPieMonth(Model model, @PathVariable Long idUser) {
-
-		User user = super.getItem(idUser);
-		Set<NikoNiko> niko =  user.getNikoNikos();
-		List<NikoNiko> listOfNiko = new ArrayList<NikoNiko>(niko);
-		List<NikoNiko> nikoweek = getNikoWeek(listOfNiko);
-
-		String role = testRole(idUser);
-
-		int good = 0;
-		int medium = 0;
-		int bad = 0;
-
-		for (int i = 0; i < nikoweek.size(); i++) {
-			if (nikoweek.get(i).getMood() == 3) {
-				good++;
-			}else if(nikoweek.get(i).getMood() == 2){
-				medium++;
-			}else{
-				bad++;
-			}
-		}
-
-		model.addAttribute("title", "Mes votes !" );
-		model.addAttribute("role", role);
-		model.addAttribute("mood", this.getUserLastMood(userCrud.findByLogin(super.checkSession().getName()).getId()));
-		model.addAttribute("good", good);
-		model.addAttribute("medium", medium);
-		model.addAttribute("bad", bad);
-		model.addAttribute("back", PATH + MENU_PATH);
-		return "graphs" + PATH + "pie";
-	}
-
 	/**
 	 * ALL NIKONIKOS GRAPH
 	 * @param model
@@ -245,12 +248,20 @@ public class GraphController extends ViewBaseController<User>{
 	 */
 
 	@Secured({"ROLE_ADMIN","ROLE_VP"})
-	@RequestMapping(path = "{idUser}" + PATH + SHOW_GRAPH_ALL, method = RequestMethod.GET)
-	public String showAllPie(Model model, @PathVariable Long idUser) {
+	@RequestMapping(path = SHOW_GRAPH_ALL, method = RequestMethod.GET)
+	public String showAllPie(Model model) {
 
-		List<NikoNiko> listOfNiko = (List<NikoNiko>) nikonikoCrud.findAll();
+		Long idUser = this.getUserInformations().getId();
 
+		List<NikoNiko> listOfNikoall = (List<NikoNiko>) nikonikoCrud.findAll();
+		List<NikoNiko> listOfNiko = getNikoToday(listOfNikoall);
 		String role = testRole(idUser);
+
+		int nbMood = 0;
+
+		if (!listOfNiko.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
+			nbMood = 1;
+		}
 
 		int good = 0;
 		int medium = 0;
@@ -261,14 +272,55 @@ public class GraphController extends ViewBaseController<User>{
 				good++;
 			}else if(listOfNiko.get(i).getMood() == 2){
 				medium++;
-			}else{
+			}else if(listOfNiko.get(i).getMood() == 1){
 				bad++;
 			}
 		}
 
 		model.addAttribute("title", "Tous les votes");
 		model.addAttribute("role", role);
-		model.addAttribute("mood", this.getUserLastMood(userCrud.findByLogin(super.checkSession().getName()).getId()));
+		model.addAttribute("mood", nbMood);
+		model.addAttribute("good", good);
+		model.addAttribute("medium", medium);
+		model.addAttribute("bad", bad);
+		model.addAttribute("back", PATH + MENU_PATH);
+		return "graphs" + PATH + "pie";
+	}
+
+	@Secured({"ROLE_ADMIN","ROLE_VP"})
+	@RequestMapping(path = SHOW_GRAPH_ALL + PATH + "{year}" + PATH + "{month}" + PATH + "{day}", method = RequestMethod.GET)
+	public String showAllPieWithDate(Model model, @PathVariable int year,
+			@PathVariable int month, @PathVariable int day) {
+
+		Long idUser = this.getUserInformations().getId();
+
+		List<NikoNiko> listOfNikoall = (List<NikoNiko>) nikonikoCrud.findAll();
+		List<NikoNiko> listOfNiko = getNikoPreciseDate(listOfNikoall, year, month, day);
+		String role = testRole(idUser);
+
+		int nbMood = 0;
+
+		if (!listOfNiko.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
+			nbMood = 1;
+		}
+
+		int good = 0;
+		int medium = 0;
+		int bad = 0;
+
+		for (int i = 0; i < listOfNiko.size(); i++) {
+			if (listOfNiko.get(i).getMood() == 3) {
+				good++;
+			}else if(listOfNiko.get(i).getMood() == 2){
+				medium++;
+			}else if(listOfNiko.get(i).getMood() == 1){
+				bad++;
+			}
+		}
+
+		model.addAttribute("title", "Tous les votes");
+		model.addAttribute("role", role);
+		model.addAttribute("mood", nbMood);
 		model.addAttribute("good", good);
 		model.addAttribute("medium", medium);
 		model.addAttribute("bad", bad);
@@ -282,14 +334,16 @@ public class GraphController extends ViewBaseController<User>{
 	 * @param userId
 	 * @return
 	 */
-	@RequestMapping(path = "{userId}" + PATH + SHOW_GRAPH_VERTICALE, method = RequestMethod.GET)
-	public String getNikoFromVerticale(Model model, @PathVariable Long userId){
+	@RequestMapping(path = SHOW_GRAPH_VERTICALE, method = RequestMethod.GET)
+	public String getNikoFromVerticale(Model model){
 
+		Long userId = this.getUserInformations().getId();
 		int nbMood = 0;
 		User user = super.getItem(userId);
 		Long verticaleId = user.getVerticale().getId();
 
-		List<NikoNiko> listNiko = findNikoNikosOfAVerticale(verticaleId);
+		List<NikoNiko> listOfNikoall = findNikoNikosOfAVerticale(verticaleId);
+		List<NikoNiko> listNiko = getNikoToday(listOfNikoall);
 
 		String role = testRole(userId);
 
@@ -304,7 +358,7 @@ public class GraphController extends ViewBaseController<User>{
 					good++;
 				}else if(listNiko.get(i).getMood() == 2){
 					medium++;
-				}else{
+				}else if(listNiko.get(i).getMood() == 1){
 					bad++;
 				}
 			}
@@ -320,14 +374,54 @@ public class GraphController extends ViewBaseController<User>{
 		return "graphs" + PATH + "pie";
 	}
 
-	@RequestMapping(path = "{userId}" + PATH + SHOW_GRAPH_TEAM + PATH + "{nbTable}", method = RequestMethod.GET)
-	public String getNikoFromTeam(Model model, @PathVariable Long userId, @PathVariable int nbTable){
+	@RequestMapping(path = SHOW_GRAPH_VERTICALE + PATH + "{year}" + PATH + "{month}" + PATH + "{day}", method = RequestMethod.GET)
+	public String getNikoFromVerticaleWithDate(Model model, @PathVariable int year,
+			@PathVariable int month, @PathVariable int day){
 
-		String LAST_WORD = null;
+		Long userId = this.getUserInformations().getId();
+		int nbMood = 0;
+		User user = super.getItem(userId);
+		Long verticaleId = user.getVerticale().getId();
+
+		List<NikoNiko> listOfNikoall = findNikoNikosOfAVerticale(verticaleId);
+		List<NikoNiko> listNiko = getNikoPreciseDate(listOfNikoall, year, month, day);
+
+		String role = testRole(userId);
+
+		int good = 0;
+		int medium = 0;
+		int bad = 0;
+
+		if(listNiko.size() != 0){
+			nbMood = 1;
+			for (int i = 0; i < listNiko.size(); i++) {
+				if (listNiko.get(i).getMood() == 3) {
+					good++;
+				}else if(listNiko.get(i).getMood() == 2){
+					medium++;
+				}else if(listNiko.get(i).getMood() == 1){
+					bad++;
+				}
+			}
+		}
+
+		model.addAttribute("title", verticaleCrud.findOne(verticaleId).getName());
+		model.addAttribute("role", role);
+		model.addAttribute("mood", nbMood);
+		model.addAttribute("good", good);
+		model.addAttribute("medium", medium);
+		model.addAttribute("bad", bad);
+		model.addAttribute("back", PATH + MENU_PATH);
+		return "graphs" + PATH + "pie";
+	}
+
+	@RequestMapping(path = SHOW_GRAPH_TEAM + PATH + "{nbTable}", method = RequestMethod.GET)
+	public String getNikoFromTeam(Model model, @PathVariable int nbTable){
 
 		ArrayList<Team> teamList = new ArrayList<Team>();
 		ArrayList<String> teamName = new ArrayList<String>();
 
+		Long userId = this.getUserInformations().getId();
 		teamList = findAllTeamsForUser(userId);
 		String role = testRole(userId);
 
@@ -339,7 +433,7 @@ public class GraphController extends ViewBaseController<User>{
 
 		List<BigInteger> listId = teamCrud.getNikoNikoFromTeam(teamId);
 		List<Long> listNikoId = new ArrayList<Long>();
-		List<NikoNiko> listNiko = new ArrayList<NikoNiko>();
+		List<NikoNiko> listNikoall = new ArrayList<NikoNiko>();
 		int nbMood = 0;
 
 		if (!listId.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
@@ -347,8 +441,10 @@ public class GraphController extends ViewBaseController<User>{
 			for (BigInteger id : listId) {
 				listNikoId.add(id.longValue());
 			}
-			listNiko =  (List<NikoNiko>) nikonikoCrud.findAll(listNikoId);
+			listNikoall =  (List<NikoNiko>) nikonikoCrud.findAll(listNikoId);
 		}
+
+		List<NikoNiko> listNiko = getNikoToday(listNikoall);
 
 		int good = 0;
 		int medium = 0;
@@ -359,7 +455,7 @@ public class GraphController extends ViewBaseController<User>{
 				good++;
 			}else if(listNiko.get(i).getMood() == 2){
 				medium++;
-			}else{
+			}else if(listNiko.get(i).getMood() == 1){
 				bad++;
 			}
 		}
@@ -372,11 +468,67 @@ public class GraphController extends ViewBaseController<User>{
 		model.addAttribute("medium", medium);
 		model.addAttribute("bad", bad);
 		model.addAttribute("back", PATH + MENU_PATH);
-		LAST_WORD = "pieTeam";
 
-		return "graphs" + PATH + LAST_WORD;
+		return "graphs" + PATH + "pieTeam";
 	}
 
+	@RequestMapping(path = SHOW_GRAPH_TEAM + PATH + "{nbTable}" + PATH + "{year}" + PATH + "{month}" + PATH + "{day}", method = RequestMethod.GET)
+	public String getNikoFromTeamWithDate(Model model, @PathVariable int nbTable, @PathVariable int year,
+			@PathVariable int month, @PathVariable int day){
+
+		ArrayList<Team> teamList = new ArrayList<Team>();
+		ArrayList<String> teamName = new ArrayList<String>();
+
+		Long userId = this.getUserInformations().getId();
+		teamList = findAllTeamsForUser(userId);
+		String role = testRole(userId);
+
+		for (int i = 0; i < teamList.size(); i++) {
+			teamName.add(teamList.get(i).getName());
+		}
+
+		Long teamId = teamList.get(nbTable).getId();
+
+		List<BigInteger> listId = teamCrud.getNikoNikoFromTeam(teamId);
+		List<Long> listNikoId = new ArrayList<Long>();
+		List<NikoNiko> listNikoall = new ArrayList<NikoNiko>();
+		int nbMood = 0;
+
+		if (!listId.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
+			nbMood = 1;
+			for (BigInteger id : listId) {
+				listNikoId.add(id.longValue());
+			}
+			listNikoall =  (List<NikoNiko>) nikonikoCrud.findAll(listNikoId);
+		}
+
+		List<NikoNiko> listNiko = getNikoPreciseDate(listNikoall, year, month, day);
+
+		int good = 0;
+		int medium = 0;
+		int bad = 0;
+
+		for (int i = 0; i < listNiko.size(); i++) {
+			if (listNiko.get(i).getMood() == 3) {
+				good++;
+			}else if(listNiko.get(i).getMood() == 2){
+				medium++;
+			}else if(listNiko.get(i).getMood() == 1){
+				bad++;
+			}
+		}
+
+		model.addAttribute("title", teamCrud.findOne(teamId).getName());
+		model.addAttribute("role", role);
+		model.addAttribute("nameteam", teamName);
+		model.addAttribute("mood", nbMood);
+		model.addAttribute("good", good);
+		model.addAttribute("medium", medium);
+		model.addAttribute("bad", bad);
+		model.addAttribute("back", PATH + MENU_PATH);
+
+		return "graphs" + PATH + "pieTeam";
+	}
 
 	/**
 	 * Get nikoniko's list from today

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+
 <head>
     <!-- Encodage -->
     <meta charset="utf-8">
@@ -42,6 +45,16 @@
 
         var chart = new google.visualization.PieChart(document.getElementById('piechart'));
 
+        function selectHandler() {
+          var selectedItem = chart.getSelection()[0];
+          if (selectedItem) {
+            var topping = data.getValue(selectedItem.row, 0);
+            alert('The user selected ' + topping);
+          }
+        }
+
+        google.visualization.events.addListener(chart, 'select', selectHandler);
+
         chart.draw(data, options);
       }
     </script>
@@ -81,13 +94,11 @@
                     <#list nameteam>
                         <table>
                             <div class="dropdown">
-                                    <span>Team</span>
-                                    <div>
-                            <#items as nameteam>
-
-                                    <p><button onclick="location.href='./${nameteam?counter-1}'" class="dropdown-content"> ${nameteam} </button></p>
-
-                            </#items>
+                                <span>Team</span>
+                                <div>
+                                    <#items as nameteam>
+                                        <p><button onclick="location.href='./${nameteam?counter-1}'" class="dropdown-content"> ${nameteam} </button></p>
+                                    </#items>
                             </div></div>
                         </table>
                     </#list>
@@ -129,5 +140,5 @@
 		</div>
 	</div>
 </div>
-
+</html>
 

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <!-- Encodage -->
     <meta charset="utf-8">
@@ -19,45 +20,30 @@
 
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
-      google.charts.load('current', {'packages':['corechart']});
+      google.charts.load('current', {'packages':['bar']});
       google.charts.setOnLoadCallback(drawChart);
 
       function drawChart() {
-
         var data = google.visualization.arrayToDataTable([
-          ['NikoNiko', 'Number of Smile'],
-          ['Good', ${good}],
-          ['Medium', ${medium}],
-          ['Bad', ${bad}]
+          ['Year', 'Good', 'Medium', 'Bad'],
+          ['2014', ${good}, ${medium}, ${bad}]
         ]);
 
         var options = {
-          backgroundColor:'transparent',
-          legend: 'none',
-          slices: {
-            0: { color: '#00CC00' },
-            1: { color: 'orange' },
-            2: { color: '#EE0000' }
-          },
-          pieSliceText: 'value',
-          tooltip: { trigger: 'selectable' },
+            backgroundColor:'transparent',
+          chart: {
+
+            title: 'Semaine',
+            subtitle: '',
+          }
         };
 
-        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
-
-        function selectHandler() {
-          var selectedItem = chart.getSelection()[0];
-          if (selectedItem) {
-            var topping = data.getValue(selectedItem.row, 0);
-            alert('The user selected ' + topping);
-          }
-        }
-
-        google.visualization.events.addListener(chart, 'select', selectHandler);
+        var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
 
         chart.draw(data, options);
       }
     </script>
+
   </head>
 
 <style>
@@ -89,7 +75,7 @@
 <hr>
 <#if mood != 0>
 <div class="welcome"> ${title}
-    <div class="piechart" id="piechart" style="width: 700px; height: 400px;"></div>
+    <div id="columnchart_material" style="width: 900px; height: 500px;"></div>
 </div>
 <#else>
 <div class="welcome"> Pas de résultats disponibles...
@@ -116,11 +102,11 @@
 
 <!-- FOOTER -->
 <div class="container-fluid">
-	<div class="row-fluid">
-		<div class="col-lg-12">
-			<div class="copyright">&copy; Niko-Niko CGI 2017</div>
-		</div>
-	</div>
+    <div class="row-fluid">
+        <div class="col-lg-12">
+            <div class="copyright">&copy; Niko-Niko CGI 2017</div>
+        </div>
+    </div>
 </div>
-</html>
 
+</html>
