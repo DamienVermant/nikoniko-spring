@@ -64,9 +64,6 @@ public class NikoNikoController extends ViewBaseController<NikoNiko> {
 		return BASE_NIKONIKO + PATH + SHOW_PATH;
 	}
 
-
-
-
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 	@RequestMapping(path = {PATH, ROUTE_LIST}, method = RequestMethod.POST)
 	public String showVerticales(Model model,String name){
@@ -95,9 +92,4 @@ public class NikoNikoController extends ViewBaseController<NikoNiko> {
 		return nikonikoList;
 
 	}
-
-
-
-
-
 }

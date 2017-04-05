@@ -74,7 +74,6 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
 		model.addAttribute("item",DumpFields.fielder(super.getItem(id)));
 		model.addAttribute("show_users", DOT + PATH + SHOW_USERS);
-		model.addAttribute("show_functions", DOT + PATH + SHOW_FUNC);
 		model.addAttribute("go_index", LIST_ACTION);
 		model.addAttribute("go_delete", DELETE_ACTION);
 		model.addAttribute("go_update", UPDATE_ACTION);
@@ -101,8 +100,8 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 		model.addAttribute("show_users", DOT + PATH + SHOW_USERS);
 		model.addAttribute("go_create", CREATE_ACTION);
 		model.addAttribute("go_delete", DELETE_ACTION);
-		model.addAttribute("back", "./show");
-		model.addAttribute("add", "addUsers");
+		model.addAttribute("back", DOT + PATH + SHOW_PATH);
+		model.addAttribute("add", ADD_USER);
 
 		return BASE_ROLE + PATH + SHOW_USERS;
 	}
@@ -143,7 +142,7 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 		model.addAttribute("go_show", SHOW_ACTION);
 		model.addAttribute("go_create", CREATE_ACTION);
 		model.addAttribute("go_delete", DELETE_ACTION);
-		model.addAttribute("back", "./showUser");
+		model.addAttribute("back", DOT + PATH + SHOW_USERS);
 		model.addAttribute("add", ADD_USER);
 
 		return BASE_ROLE + PATH + ADD_USER;
