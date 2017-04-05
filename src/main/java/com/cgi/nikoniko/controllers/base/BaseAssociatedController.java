@@ -10,7 +10,7 @@ import com.cgi.nikoniko.models.association.base.AssociationItem;
 import com.cgi.nikoniko.models.association.base.AssociationItemId;
 
 public abstract class BaseAssociatedController <T extends AssociationItem> {
-
+	//TODO : delete
 	public final static String REDIRECT = "redirect:";
 
 	public final static String LIST_ACTION= "list";

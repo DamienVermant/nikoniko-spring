@@ -376,10 +376,7 @@ public class TeamController extends ViewBaseController<Team> {
 
 	/**
 	 * SHOW VERTICAL TO ADD TEAM
-<<<<<<< HEAD
 	 *
-=======
->>>>>>> 76c5726be56f1e5749cbccd23343a114ab19b815
 	 * @param model
 	 * @param idUser
 	 * @return
@@ -405,12 +402,8 @@ public class TeamController extends ViewBaseController<Team> {
 	}
 
 	/**
-<<<<<<< HEAD
 	 * ADD ONE VERTICALE TO USER
 	 *
-=======
-	 * ADD ONE VERTICALE TO TEAM
->>>>>>> 76c5726be56f1e5749cbccd23343a114ab19b815
 	 * @param model
 	 * @param idUser
 	 * @param idTeam

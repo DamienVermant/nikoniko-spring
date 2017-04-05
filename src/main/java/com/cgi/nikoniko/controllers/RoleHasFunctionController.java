@@ -16,3 +16,4 @@ public class RoleHasFunctionController extends ViewBaseAssociatedController<Role
 		super(RoleHasFunction.class,BASE_URL);
 	}
 }
+//TODO : delete
