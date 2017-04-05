@@ -5,12 +5,15 @@
 </head>
 
 <body>
+	<a href="/menu">Home</a>
 	<h1>${page}</h1>
 	<table class="table table-bordered table-hover">
 		<#list sortedFields as field>
 			<#if field != "id">
 				<#list item?keys as key>
 					<#if key == field>
+						<#if key == "login" || key == "password" || key== "id">
+						<#else>
 						<tr>
 							<th>${key}</th>
 							<#if item[key]?is_boolean>
@@ -23,13 +26,12 @@
 								</td>
 							</#if>
 						</tr>
+						</#if>
 					</#if>
 				</#list>
 			</#if>
 		</#list>
 	</table>
-    <a href="${show_nikonikos}"> Show nikonikos </a> <br>
-    <a href="${show_graphique}"> Show graphique </a> <br>
     <a href="${show_verticale}"> Show verticale </a> <br>
 	<a href="${show_roles}"> Show roles </a> <br>
 	<a href="${show_teams}"> Show teams </a> <br>

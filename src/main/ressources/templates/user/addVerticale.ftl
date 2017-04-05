@@ -5,6 +5,7 @@
 </head>
 
 <body>
+	<a href="/menu">Home</a>
 	<h1>VERTICALE TO ADD FOR USER : ${page}  </h1>
 		<table class="table table-bordered table-hover">
 			<tr>

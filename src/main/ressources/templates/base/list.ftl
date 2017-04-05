@@ -8,14 +8,14 @@
 	<h1>${page}</h1>
 	<form action = "" method = "POST">
 		<#include "../includable/security/securityToken.ftl">
-		<#if model = "user" || model = "">
+		<#if model = "user">
 			<input type="text" class="search" onkeyup="myFunction()" name="name" placeholder="Search for registration" title="Type in a name">
-		<#elseif model = "team" || model = "">
+		<#elseif model = "team">
 			<input type="text" class="search" onkeyup="myFunction()" name="name" placeholder="Search for team names" title="Type in a name">
-		<#elseif model = "verticale" || model = "">
+		<#elseif model = "verticale" >
 			<input type="text" class="search" onkeyup="myFunction()" name="name" placeholder="Search for verticales names" title="Type in a name">
 		<#elseif model = "nikoniko">
-			<input type="text" class="search" onkeyup="myFunction()" name="name" placeholder="Search for id user" title="Type in a name">
+			<input type="text" class="search" onkeyup="myFunction()" name="name" placeholder="Search for registration_cgi" title="Type in a name">
 		<#else>
 		</#if>
 		
@@ -34,7 +34,11 @@
 					<#list sortedFields as field>
 						<#list item?keys as key>
 							<#if key == field>
-								<th>${key}</th>
+								<#if key == "login" || key == "password" || key== "id">
+								<#elseif item[key]??>
+									<th>${key}</th>
+								<#else>
+								</#if>
 							</#if>
 						</#list>
 					</#list>
@@ -46,12 +50,18 @@
 					<#list sortedFields as field>
 						<#list item?keys as key>
 							<#if key == field>
-								<#if item[key]?is_boolean>
-									<td>${item[key]?c}</td>
-								<#elseif item[key]?is_date_like>
-									<td>${item[key]?string("yyyy/MM/dd")}</td>
+								<#if key == "login" || key == "password" || key== "id">
 								<#else>
-									<td>${item[key]}</td>
+									<#if item[key]??>
+										<#if item[key]?is_boolean>
+										<td>${item[key]?c}</td>
+									<#elseif item[key]?is_date_like>
+										<td>${item[key]?string("yyyy/MM/dd")}</td>
+									<#else>
+										<td>${item[key]}</td>
+									</#if>
+									<#else>
+									</#if>
 								</#if>
 							</#if>
 						</#list>

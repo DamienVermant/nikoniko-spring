@@ -5,6 +5,7 @@
 </head>
 
 <body>
+	<a href="/menu">Home</a>
 	<h1>USERS IN TEAM : ${page}  </h1>
 		<table class="table table-bordered table-hover">
 			<tr>
@@ -12,7 +13,10 @@
 					<#list sortedFields as field>
 						<#list item?keys as key>
 							<#if key == field>
-								<th>${key}</th>
+								<#if key == "login" || key == "password" || key== "id">
+								<#else>
+									<th>${key}</th>
+								</#if>
 							</#if>
 						</#list>
 					</#list>
@@ -24,13 +28,15 @@
 					<#list sortedFields as field>
 						<#list item?keys as key>
 							<#if key == field>
-								<#if item[key]?is_boolean>
-									<td>${item[key]?c}</td>
-								<#elseif item[key]?is_date_like>
-									<td>${item[key]?string("yyyy:MM:dd HH:mm:ss")}</td>
+								<#if key == "login" || key == "password" || key== "id">
 								<#else>
-									<td>${item[key]}</td>
-									
+									<#if item[key]?is_boolean>
+										<td>${item[key]?c}</td>
+									<#elseif item[key]?is_date_like>
+										<td>${item[key]?string("yyyy:MM:dd HH:mm:ss")}</td>
+									<#else>
+										<td>${item[key]}</td>
+									</#if>
 								</#if>
 							</#if>
 						</#list>
