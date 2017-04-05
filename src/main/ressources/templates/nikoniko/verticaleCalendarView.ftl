@@ -74,7 +74,7 @@
 												<div class = "dayHeader" align="right">
 														${map[key]}
 												</div>
-												<div class = "daynikos" onclick = "location.href='/graph/showGraphVerticale/${yearToUse?c}/${monthToUse}/${map[key]}'">
+												<div class = "daynikos" onclick = "location.href='/graph/showgraphverticale/${yearToUse?c}/${monthToUse}/${map[key]}'">
 														<div class = "nikoPastille">
 														<img src = "http://i.ebayimg.com/images/i/151172320059-0-1/s-l1000.jpg"> :  ${map["nikoGood"]}
 														</div>
@@ -93,7 +93,7 @@
 												<div class = "dayHeader" align="right">
 														${map[key]}
 												</div>
-												<div class = "daynikos" onclick = "location.href='/graph/showGraphVerticale/${yearToUse?c}/${monthToUse}/${map[key]}'">
+												<div class = "daynikos" onclick = "location.href='/graph/showgraphverticale/${yearToUse?c}/${monthToUse}/${map[key]}'">
 														<div class = "nikoPastille">
 														<img src = "http://i.ebayimg.com/images/i/151172320059-0-1/s-l1000.jpg"> :  ${map["nikoGood"]}
 														</div>

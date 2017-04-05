@@ -97,7 +97,7 @@
                                 <span>Team</span>
                                 <div>
                                     <#items as nameteam>
-                                        <p><button onclick="location.href='./${nameteam?counter-1}'" class="dropdown-content"> ${nameteam} </button></p>
+                                        <p><button onclick="location.href='/graph/showgraphteam/${nameteam?counter-1}/${year?c}/${month}/${day}'" class="dropdown-content"> ${nameteam} </button></p>
                                     </#items>
                             </div></div>
                         </table>
