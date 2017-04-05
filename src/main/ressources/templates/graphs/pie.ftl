@@ -101,12 +101,14 @@
         <div class="row-fluid">
             <div class="col-lg-12">
                 <div class="alignleft">
-                <button onclick="location.href='showgraph'" class="myresults"> My Results today </button>
                 <#if role != "employee">
                     <button onclick="location.href='showgraphall'" class="allresults"> ALL Results </button>
                 </#if>
+                <#if role != "admin">
+                <button onclick="location.href='showgraph'" class="myresults"> My Results today </button>
                 <button onclick="location.href='showgraphverticale'" class="resultsverticale"> Results Verticale </button>
                 <button onclick="location.href='showgraphteam/0'" class="resultsteam"> Results team </button>
+                </#if>
                 </div>
             </div>
         </div>

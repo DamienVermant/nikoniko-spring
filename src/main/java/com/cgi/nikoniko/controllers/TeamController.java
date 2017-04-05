@@ -481,4 +481,21 @@ public class TeamController extends ViewBaseController<Team> {
 		}
 		return userList;
 	}
+
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
+    @RequestMapping(path = {PATH, ROUTE_LIST}, method = RequestMethod.POST)
+    public String showTeams(Model model,String name){
+
+        model.addAttribute("model", "team");
+        model.addAttribute("page",this.baseName + " " + LIST_ACTION.toUpperCase());
+        model.addAttribute("sortedFields",Team.FIELDS);
+        model.addAttribute("items",DumpFields.listFielder(teamCrud.getTeams(name)));
+        model.addAttribute("go_show", SHOW_ACTION);
+        model.addAttribute("go_create", CREATE_ACTION);
+        model.addAttribute("go_delete", DELETE_ACTION);
+
+        return listView;
+    }
+
+
 }
