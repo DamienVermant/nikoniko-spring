@@ -74,7 +74,7 @@
 												<div class = "dayHeader">
 														${map[key]}
 												</div>
-												<div class = "daynikos" onclick = "location.href='/graph/showGraph/${yearToUse?c}/${monthToUse}/${map[key]}'">
+												<div class = "daynikos" onclick = "location.href='/graph/showgraph/${yearToUse?c}/${monthToUse}/${map[key]}'">
 														<center>
 															<#if map["nikoOfDay"]== 1>
 																<img src = "http://i.ebayimg.com/images/i/151172319961-0-1/s-l1000.jpg">
@@ -94,7 +94,7 @@
 												<div class = "dayHeader" align="right">
 														${map[key]}
 												</div>
-												<div class = "daynikos" onclick = "location.href='/graph/showGraph/${yearToUse?c}/${monthToUse}/${map[key]}'">
+												<div class = "daynikos" onclick = "location.href='/graph/showgraph/${yearToUse?c}/${monthToUse}/${map[key]}'">
 												<div class = "daynikos" onclick = "location.href='nikoniko/day/${yearToUse?c}/${monthToUse}/${map[key]}'">
 														<center>
 															<#if map["nikoOfDay"]== 1>
