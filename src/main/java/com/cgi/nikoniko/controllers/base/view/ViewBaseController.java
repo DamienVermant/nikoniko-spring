@@ -35,7 +35,6 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 
 	public final static int LENGHT_VIEW = 10;
 
-
 	public ViewBaseController (Class<T> clazz, String baseURL) {
 		super(clazz);
 

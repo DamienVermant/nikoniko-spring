@@ -32,7 +32,11 @@ import com.cgi.nikoniko.utils.DumpFields;
 @Controller
 @RequestMapping(TeamController.BASE_URL)
 public class TeamController extends ViewBaseController<Team> {
-
+	
+	
+/////////////////// GLOBAL CONSTANT /////////////////////////////////
+	
+	
 	public final static String DOT = ".";
 	public final static String PATH = "/";
 	public final static String BASE_TEAM = "team";
@@ -52,6 +56,10 @@ public class TeamController extends ViewBaseController<Team> {
 	public final static String VERTICALE = "verticale";
 
 	public final static String REDIRECT = "redirect:";
+	
+
+/////////////////// ALL CRUD /////////////////////////////////	
+	
 
 	@Autowired
 	IUserHasTeamCrudRepository userTeamCrud;
@@ -68,23 +76,33 @@ public class TeamController extends ViewBaseController<Team> {
 	@Autowired
 	IVerticaleCrudRepository verticaleCrud;
 
-	public TeamController() {
-		super(Team.class, BASE_URL);
-	}
+	
+/////////////////// FUNCTIONS RELATED WITH TEAM ONLY /////////////////////////////////	
+	
+	/**
+	 * SHOW ALL TEAM WITH A GIVEN NAME (NAME PARAMETER)
+	 * @param model
+	 * @param name
+	 * @return
+	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
+    @RequestMapping(path = {PATH, ROUTE_LIST}, method = RequestMethod.POST)
+    public String showTeams(Model model,String name){
 
-	// ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        model.addAttribute("model", "team");
+        model.addAttribute("page",this.baseName + " " + LIST_ACTION.toUpperCase());
+        model.addAttribute("sortedFields",Team.FIELDS);
+        model.addAttribute("items",DumpFields.listFielder(teamCrud.getTeams(name)));
+        model.addAttribute("go_show", SHOW_ACTION);
+        model.addAttribute("go_create", CREATE_ACTION);
+        model.addAttribute("go_delete", DELETE_ACTION);
 
-		/**
-		 *
-		 * ASSOCIATION TEAM --> USER
-		 *
-		 */
-
-	// ///////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        return listView;
+    }
+	
 	/**
 	 *
-	 * SHOW ALL USERS OF A TEAM WITH A GIVEN ID
+	 * SHOW A TEAM WITH A GIVEN ID
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP"})
 	@RequestMapping(path = ROUTE_SHOW, method = RequestMethod.GET)
@@ -114,6 +132,18 @@ public class TeamController extends ViewBaseController<Team> {
 		return BASE_TEAM + PATH + SHOW_PATH;
 	}
 
+	
+	// ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		/**
+		 *
+		 * ASSOCIATION TEAM --> USER
+		 *
+		 */
+
+	// ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 	/**
 	 * RELATIONS (TEAM HAS USER)
 	 * @param model
@@ -122,7 +152,7 @@ public class TeamController extends ViewBaseController<Team> {
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP"})
 	@RequestMapping(path = "{idTeam}" + PATH + SHOW_USER, method = RequestMethod.GET)
-	public <T> String showLinksGet(Model model, @PathVariable Long idTeam) {
+	public String showLinksGet(Model model, @PathVariable Long idTeam) {
 
 		Team teamBuffer = new Team();
 		teamBuffer = teamCrud.findOne(idTeam);
@@ -159,7 +189,7 @@ public class TeamController extends ViewBaseController<Team> {
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP"})
 	@RequestMapping(path = "{idTeam}" + PATH + ADD_USER, method = RequestMethod.GET)
-	public <T> String addUsersGet(Model model, @PathVariable Long idTeam) {
+	public String addUsersGet(Model model, @PathVariable Long idTeam) {
 
 		Object teamBuffer = new Object();
 		teamBuffer = teamCrud.findOne(idTeam);
@@ -188,7 +218,7 @@ public class TeamController extends ViewBaseController<Team> {
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP"})
 	@RequestMapping(path = "{idTeam}" + PATH + ADD_USER, params = "idUser", method = RequestMethod.POST)
-	public <T> String addUsersPost(Model model, @PathVariable Long idTeam, @RequestParam Long idUser) {
+	public String addUsersPost(Model model, @PathVariable Long idTeam, @RequestParam Long idUser) {
 		return setUsersForTeamPost(idTeam, idUser);
 	}
 
@@ -232,7 +262,7 @@ public class TeamController extends ViewBaseController<Team> {
 	}
 
 	/**
-	 *	RETURN LIST OF ALL USERS IN A TEAM WITH A GIVEN ID
+	 * RETURN LIST OF ALL USERS IN A TEAM WITH A GIVEN ID
 	 * @param teamId
 	 * @return userList (list of user associated to a team)
 	 */
@@ -326,7 +356,27 @@ public class TeamController extends ViewBaseController<Team> {
 		return DumpFields.listFielder((List<User>) userCrud.findAll(ids));
 	}
 
+	/**
+	 * FIND ALL USERS RELATED TO A TEAM
+	 * @param idValue
+	 * @return
+	 */
+	public ArrayList<User> findUsersOfATeam(Long idValue) {
 
+		List<Long> ids = new ArrayList<Long>();
+		ArrayList<User> userList = new ArrayList<User>();
+		List<BigInteger> idsBig = userTeamCrud.findAssociatedUser(idValue);
+
+		if (!idsBig.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
+			for (BigInteger id : idsBig) {
+				ids.add(id.longValue());
+			}
+			userList = (ArrayList<User>) userCrud.findAll(ids);
+		}
+		return userList;
+	}
+	
+	
 	// ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
@@ -337,6 +387,7 @@ public class TeamController extends ViewBaseController<Team> {
 
 	// ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	
 	/**
 	 * RELATION USER HAS TEAM
 	 *
@@ -382,7 +433,7 @@ public class TeamController extends ViewBaseController<Team> {
 	 */
 	@Secured({ "ROLE_ADMIN", "ROLE_GESTIONNAIRE" })
 	@RequestMapping(path = "{idTeam}" + PATH + ADD_VERTICAL, method = RequestMethod.GET)
-	public <T> String addVerticalForUserGET(Model model,
+	public String addVerticalForUserGET(Model model,
 			@PathVariable Long idTeam) {
 
 		Object teamBuffer = new Object();
@@ -409,7 +460,7 @@ public class TeamController extends ViewBaseController<Team> {
 	 */
 	@Secured({ "ROLE_ADMIN", "ROLE_GESTIONNAIRE" })
 	@RequestMapping(path = "{idTeam}" + PATH + ADD_VERTICAL, method = RequestMethod.POST)
-	public <T> String addVerticalForUserPOST(Model model,
+	public String addVerticalForUserPOST(Model model,
 			@PathVariable Long idTeam, Long idVertical) {
 		return setVerticalForTeam(idTeam, idVertical);
 	}
@@ -437,16 +488,23 @@ public class TeamController extends ViewBaseController<Team> {
 		return redirect;
 	}
 
+	
+	// ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * PARTIE DE ERWAN
-	 */
+	*
+	* ASSOCIATION TEAM --> NIKONIKO
+	*
+	*/
 
+	// ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	
 	/**
 	 * SELECTION NIKONIKO PAR RAPPORT A UN ENSEMBLE (TEAM, VERTICALE, ETC...)
+	 * @param idTeam
+	 * @return
 	 */
-
 	public ArrayList<NikoNiko> findNikoNikosOfATeam(Long idTeam){
 
 		ArrayList<User> usersOfTeam = findUsersOfATeam(idTeam);
@@ -465,35 +523,11 @@ public class TeamController extends ViewBaseController<Team> {
 		return nikonikos;
 	}
 
-	public ArrayList<User> findUsersOfATeam(Long idValue) {
 
-		List<Long> ids = new ArrayList<Long>();
-		ArrayList<User> userList = new ArrayList<User>();
-		List<BigInteger> idsBig = userTeamCrud.findAssociatedUser(idValue);
-
-		if (!idsBig.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
-			for (BigInteger id : idsBig) {
-				ids.add(id.longValue());
-			}
-			userList = (ArrayList<User>) userCrud.findAll(ids);
-		}
-		return userList;
+	/////////////////// CONSTRUCTORS /////////////////////////////////	
+	
+	
+	public TeamController() {
+		super(Team.class, BASE_URL);
 	}
-
-	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
-    @RequestMapping(path = {PATH, ROUTE_LIST}, method = RequestMethod.POST)
-    public String showTeams(Model model,String name){
-
-        model.addAttribute("model", "team");
-        model.addAttribute("page",this.baseName + " " + LIST_ACTION.toUpperCase());
-        model.addAttribute("sortedFields",Team.FIELDS);
-        model.addAttribute("items",DumpFields.listFielder(teamCrud.getTeams(name)));
-        model.addAttribute("go_show", SHOW_ACTION);
-        model.addAttribute("go_create", CREATE_ACTION);
-        model.addAttribute("go_delete", DELETE_ACTION);
-
-        return listView;
-    }
-
-
 }

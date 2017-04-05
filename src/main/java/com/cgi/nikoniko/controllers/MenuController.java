@@ -63,7 +63,6 @@ public class MenuController  {
 
 	public final static LocalDate TODAY_DATE = new LocalDate();
 
-	// TODO : CHANGE TYPE OF TIME
 	public final static double TIME = 0.9999999999;
 
 	/**
