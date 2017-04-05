@@ -908,7 +908,7 @@ public class UserController extends ViewBaseController<User> {
 	@RequestMapping(path = {PATH, ROUTE_LIST}, method = RequestMethod.POST)
 	public String showUsers(Model model,String name){
 
-		model.addAttribute("model", "");
+		model.addAttribute("model", "user");
 		model.addAttribute("page",this.baseName + " " + LIST_ACTION.toUpperCase());
 		model.addAttribute("sortedFields",User.FIELDS);
 		model.addAttribute("items",this.searchUser(name));
