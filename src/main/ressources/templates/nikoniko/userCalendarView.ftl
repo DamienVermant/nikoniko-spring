@@ -15,37 +15,46 @@
 <style>
     <#include "static/employee.css">
 </style>
-
-<div class="container-fluid">
-    <div class="row-fluid">
-        <div class="col-lg-2">
-            <img class="logo" src="https://upload.wikimedia.org/wikipedia/fr/5/51/LOGO-CGI-1993-1998.svg">
-        </div>
-        <div class="col-lg-8">
-            <div class="title">Niko-Niko</div>
-        </div>
-        <div class="col-lg-2">
-            <div class="row-fluid">
-                <div class="col-lg-12">
-                    <div class="align">
-                    <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
-                    <button onclick="location.href='${back}'" class="vote"> Retour </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <body>
-	<h1>Vos nikonikos pour ${monthName} ${yearToUse}</h1>
-	<a href="?month=${monthToUse}&year=${yearToUse?c}&action=previous">Previous Month</a> Mois en cours
-	<a href="?month=${monthToUse}&year=${yearToUse?c}&action=next">Next Month</a>
+	<div class="container-fluid">
+	    <div class="row-fluid">
+	        <div class="col-lg-2">
+	            <img class="logo" src="https://upload.wikimedia.org/wikipedia/fr/5/51/LOGO-CGI-1993-1998.svg">
+	        </div>
+	        <div class="col-lg-8">
+	            <div class="title">Niko-Niko</div>
+	        </div>
+	        <div class="col-lg-2">
+	            <div class="row-fluid">
+	                <div class="col-lg-12">
+	                    <div class="align">
+	                    <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
+	                    <button onclick="location.href='${back}'" class="vote"> Retour </button>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	<br>
 
+	<div class = "date_buttons">
+		<span class = "previous_button">
+			<a href="?month=${monthToUse}&year=${yearToUse?c}&action=previous">Mois précédent</a>
+		</span>
+		<span class = "month_year">
+			Vos résultats pour ${monthName} ${yearToUse}
+		</span>
+		<span class = "next_button">
+			<a href="?month=${monthToUse}&year=${yearToUse?c}&action=next">Mois suivant</a>
+		</span>
+	</div>
 	<table class="table table-bordered table-hover">
 		<tr>
 			<#list jourSemaine as jour>
-				<th class = "daysNames">${jour}</th>
+				<#if jour != "Samedi"&&jour != "Dimanche">
+					<th class = "daysNames">${jour}</th>
+				</#if>
 			</#list>
 		</tr>
 		<#list nbweeks as week>
@@ -60,24 +69,42 @@
 				    	<#assign keys = map?keys>
 				    		<#list map?keys as key>
 								<#if map["uncompleteWeek"] == 1>
-									<#if jour == key && week == map["endOfWeek"]>
+									<#if jour == key && week == map["endOfWeek"]&&key != "Samedi"&&key != "Dimanche">
 											<td class = "fillableDay">
-												<div class = "dayHeader" align="right">
+												<div class = "dayHeader">
 														${map[key]}
 												</div>
 												<div class = "daynikos" onclick = "location.href='nikoniko/day/${yearToUse?c}/${monthToUse}/${map[key]}'">
-														myMood :  ${map["nikoOfDay"]}
+														<center>
+															<#if map["nikoOfDay"]== 1>
+																<img src = "http://i.ebayimg.com/images/i/151172319961-0-1/s-l1000.jpg">
+															<#elseif map["nikoOfDay"]== 2>
+																<img src = "http://cdn.olshop.ag/a/store_files/11/images/product_images/info_images/171900_0_e3mwjfux8n.jpg">
+															<#elseif map["nikoOfDay"]== 3>
+																<img src = "http://i.ebayimg.com/images/i/151172320059-0-1/s-l1000.jpg">
+															<#else>
+															</#if>
+														</center>
 												</div>
 											</td>
 									</#if>
 								<#else>
-									<#if jour == key && week == map["endOfWeek"]>
+									<#if jour == key && week == map["endOfWeek"]&&key != "Samedi"&&key != "Dimanche">
 											<td class = "fillableDay">
 												<div class = "dayHeader" align="right">
 														${map[key]}
 												</div>
 												<div class = "daynikos" onclick = "location.href='nikoniko/day/${yearToUse?c}/${monthToUse}/${map[key]}'">
-														myMood :  ${map["nikoOfDay"]}
+														<center>
+															<#if map["nikoOfDay"]== 1>
+																<img src = "http://i.ebayimg.com/images/i/151172319961-0-1/s-l1000.jpg">
+															<#elseif map["nikoOfDay"]== 2>
+																<img src = "http://cdn.olshop.ag/a/store_files/11/images/product_images/info_images/171900_0_e3mwjfux8n.jpg">
+															<#elseif map["nikoOfDay"]== 3>
+																<img src = "http://i.ebayimg.com/images/i/151172320059-0-1/s-l1000.jpg">
+															<#else>
+															</#if>
+														</center>
 												</div>
 											</td>
 									</#if>

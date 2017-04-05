@@ -803,11 +803,11 @@ public class GraphController extends ViewBaseController<User>{
 			@RequestParam(defaultValue = "") String action,
 			HttpServletResponse response) throws IOException {
 
+		//TODO : Check if the calendar for this idUser can be see by the user of the current session
 		Long idUser = userCrud.findByLogin(super.checkSession().getName()).getId();
 
-		//TODO : Check if the calendar for this idUser can be see by the user of the current session
 		try {
-			userCrud.findOne(idUser).getLogin(); //TODO : use id of user's Session instead
+			userCrud.findOne(idUser).getLogin();
 		} catch (Exception e) {
 			response.sendError(HttpStatus.BAD_REQUEST.value(),("This user doesn't exist!").toUpperCase());
 			return "";
@@ -974,13 +974,17 @@ public class GraphController extends ViewBaseController<User>{
 		//#########################################################
 
 		if (firstDayOfCurrentMonth!=1) {
-			firstWeekUncomplete = 1;
-			model.addAttribute("nbJoursSemaineAIgnorer",firstDayOfCurrentMonth-1);
+			if (firstDayOfCurrentMonth!=7&&firstDayOfCurrentMonth!=6) {
+				firstWeekUncomplete = 1;
+				model.addAttribute("nbJoursSemaineAIgnorer",firstDayOfCurrentMonth-1);
+			}
 		}
 
 		if (maxDayOfCurrentMonth.getDayOfWeek()!=7) {
-			lastWeekUncomplete = 1;
-			model.addAttribute("nbJoursSemaineAAjouter",7-maxDayOfCurrentMonth.getDayOfWeek());
+			if (maxDayOfCurrentMonth.getDayOfWeek()!=6&&maxDayOfCurrentMonth.getDayOfWeek()!=5) {
+				lastWeekUncomplete = 1;
+				model.addAttribute("nbJoursSemaineAAjouter",5-maxDayOfCurrentMonth.getDayOfWeek());
+			}
 		}
 
 		//ArrayList of maps
@@ -1203,13 +1207,17 @@ public class GraphController extends ViewBaseController<User>{
 		//#########################################################
 
 		if (firstDayOfCurrentMonth!=1) {
-			firstWeekUncomplete = 1;
-			model.addAttribute("nbJoursSemaineAIgnorer",firstDayOfCurrentMonth-1);
+			if (firstDayOfCurrentMonth!=7&&firstDayOfCurrentMonth!=6) {
+				firstWeekUncomplete = 1;
+				model.addAttribute("nbJoursSemaineAIgnorer",firstDayOfCurrentMonth-1);
+			}
 		}
 
 		if (maxDayOfCurrentMonth.getDayOfWeek()!=7) {
-			lastWeekUncomplete = 1;
-			model.addAttribute("nbJoursSemaineAAjouter",7-maxDayOfCurrentMonth.getDayOfWeek());
+			if (maxDayOfCurrentMonth.getDayOfWeek()!=6&&maxDayOfCurrentMonth.getDayOfWeek()!=5) {
+				lastWeekUncomplete = 1;
+				model.addAttribute("nbJoursSemaineAAjouter",5-maxDayOfCurrentMonth.getDayOfWeek());
+			}
 		}
 
 		//ArrayList of maps
@@ -1499,13 +1507,17 @@ public class GraphController extends ViewBaseController<User>{
 		//#########################################################
 
 		if (firstDayOfCurrentMonth!=1) {
-			firstWeekUncomplete = 1;
-			model.addAttribute("nbJoursSemaineAIgnorer",firstDayOfCurrentMonth-1);
+			if (firstDayOfCurrentMonth!=7&&firstDayOfCurrentMonth!=6) {
+				firstWeekUncomplete = 1;
+				model.addAttribute("nbJoursSemaineAIgnorer",firstDayOfCurrentMonth-1);
+			}
 		}
 
 		if (maxDayOfCurrentMonth.getDayOfWeek()!=7) {
-			lastWeekUncomplete = 1;
-			model.addAttribute("nbJoursSemaineAAjouter",7-maxDayOfCurrentMonth.getDayOfWeek());
+			if (maxDayOfCurrentMonth.getDayOfWeek()!=6&&maxDayOfCurrentMonth.getDayOfWeek()!=5) {
+				lastWeekUncomplete = 1;
+				model.addAttribute("nbJoursSemaineAAjouter",5-maxDayOfCurrentMonth.getDayOfWeek());
+			}
 		}
 
 		//ArrayList of maps

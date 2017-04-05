@@ -133,10 +133,52 @@ hr {
     display: block;
 }
 
-.daysNames{
-    background-color : cyan;
+.daysNames {
+    background-color : #cc1e1e;
+    color : white;
+    text-align : center;
+    font-size : 18px;
 }
 
-.dayHeader{
+.dayHeader {
     background-color : yellow;
+    text-align : center;
+    font-weight : bold;
+    font-size : 16px;
+    margin-bottom : 5px;
+}
+.month_year {
+	color : black;
+	font-weight : bold;
+}
+.date_buttons {
+	text-align : center;
+	font-size : 30px;
+}
+.previous_button {
+	padding-right : 50px;
+}
+.next_button {
+	padding-left : 50px;
+}
+.emptyDay {
+	background-color : grey ;
+}
+.fillableDay {
+	margin : -10px;
+	height : 150px;
+	width : 90px;
+	background-color : white;
+}
+.daynikos{
+	align : center;
+	width : 100%;
+}
+.daynikos img{
+	width : 40%;
+}
+.nikoPastille {
+	width : 45%;
+	font-size : 20px;
+	font-weight : bold;
 }
