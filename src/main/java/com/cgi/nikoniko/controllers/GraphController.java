@@ -43,13 +43,13 @@ public class GraphController extends ViewBaseController<User>{
 
 	public final static String MENU_PATH = "menu";
 
-	public final static String SHOW_GRAPH = "showGraph";
-	public final static String SHOW_GRAPH_MONTH = "showGraphMonth";
-	public final static String SHOW_GRAPH_WEEK = "showGraphWeek";
-	public final static String SHOW_GRAPH_DATE = "showDate";
-	public final static String SHOW_GRAPH_ALL = "showGraphAll";
-	public final static String SHOW_GRAPH_VERTICALE = "showGraphVerticale";
-	public final static String SHOW_GRAPH_TEAM = "showGraphTeam";
+	public final static String SHOW_GRAPH = "showgraph";
+	public final static String SHOW_GRAPH_MONTH = "showgraphmonth";
+	public final static String SHOW_GRAPH_WEEK = "showgraphweek";
+	public final static String SHOW_GRAPH_DATE = "showdate";
+	public final static String SHOW_GRAPH_ALL = "showgraphall";
+	public final static String SHOW_GRAPH_VERTICALE = "showgraphverticale";
+	public final static String SHOW_GRAPH_TEAM = "showgraphteam";
 
 	public final static String BASE_GRAPH = "graph";
 	public final static String BASE_URL = PATH + BASE_GRAPH;
@@ -818,11 +818,11 @@ public class GraphController extends ViewBaseController<User>{
 			@RequestParam(defaultValue = "") String action,
 			HttpServletResponse response) throws IOException {
 
+		//TODO : Check if the calendar for this idUser can be see by the user of the current session
 		Long idUser = userCrud.findByLogin(super.checkSession().getName()).getId();
 
-		//TODO : Check if the calendar for this idUser can be see by the user of the current session
 		try {
-			userCrud.findOne(idUser).getLogin(); //TODO : use id of user's Session instead
+			userCrud.findOne(idUser).getLogin();
 		} catch (Exception e) {
 			response.sendError(HttpStatus.BAD_REQUEST.value(),("This user doesn't exist!").toUpperCase());
 			return "";
@@ -989,13 +989,17 @@ public class GraphController extends ViewBaseController<User>{
 		//#########################################################
 
 		if (firstDayOfCurrentMonth!=1) {
-			firstWeekUncomplete = 1;
-			model.addAttribute("nbJoursSemaineAIgnorer",firstDayOfCurrentMonth-1);
+			if (firstDayOfCurrentMonth!=7&&firstDayOfCurrentMonth!=6) {
+				firstWeekUncomplete = 1;
+				model.addAttribute("nbJoursSemaineAIgnorer",firstDayOfCurrentMonth-1);
+			}
 		}
 
 		if (maxDayOfCurrentMonth.getDayOfWeek()!=7) {
-			lastWeekUncomplete = 1;
-			model.addAttribute("nbJoursSemaineAAjouter",7-maxDayOfCurrentMonth.getDayOfWeek());
+			if (maxDayOfCurrentMonth.getDayOfWeek()!=6&&maxDayOfCurrentMonth.getDayOfWeek()!=5) {
+				lastWeekUncomplete = 1;
+				model.addAttribute("nbJoursSemaineAAjouter",5-maxDayOfCurrentMonth.getDayOfWeek());
+			}
 		}
 
 		//ArrayList of maps
@@ -1218,13 +1222,17 @@ public class GraphController extends ViewBaseController<User>{
 		//#########################################################
 
 		if (firstDayOfCurrentMonth!=1) {
-			firstWeekUncomplete = 1;
-			model.addAttribute("nbJoursSemaineAIgnorer",firstDayOfCurrentMonth-1);
+			if (firstDayOfCurrentMonth!=7&&firstDayOfCurrentMonth!=6) {
+				firstWeekUncomplete = 1;
+				model.addAttribute("nbJoursSemaineAIgnorer",firstDayOfCurrentMonth-1);
+			}
 		}
 
 		if (maxDayOfCurrentMonth.getDayOfWeek()!=7) {
-			lastWeekUncomplete = 1;
-			model.addAttribute("nbJoursSemaineAAjouter",7-maxDayOfCurrentMonth.getDayOfWeek());
+			if (maxDayOfCurrentMonth.getDayOfWeek()!=6&&maxDayOfCurrentMonth.getDayOfWeek()!=5) {
+				lastWeekUncomplete = 1;
+				model.addAttribute("nbJoursSemaineAAjouter",5-maxDayOfCurrentMonth.getDayOfWeek());
+			}
 		}
 
 		//ArrayList of maps
@@ -1514,13 +1522,17 @@ public class GraphController extends ViewBaseController<User>{
 		//#########################################################
 
 		if (firstDayOfCurrentMonth!=1) {
-			firstWeekUncomplete = 1;
-			model.addAttribute("nbJoursSemaineAIgnorer",firstDayOfCurrentMonth-1);
+			if (firstDayOfCurrentMonth!=7&&firstDayOfCurrentMonth!=6) {
+				firstWeekUncomplete = 1;
+				model.addAttribute("nbJoursSemaineAIgnorer",firstDayOfCurrentMonth-1);
+			}
 		}
 
 		if (maxDayOfCurrentMonth.getDayOfWeek()!=7) {
-			lastWeekUncomplete = 1;
-			model.addAttribute("nbJoursSemaineAAjouter",7-maxDayOfCurrentMonth.getDayOfWeek());
+			if (maxDayOfCurrentMonth.getDayOfWeek()!=6&&maxDayOfCurrentMonth.getDayOfWeek()!=5) {
+				lastWeekUncomplete = 1;
+				model.addAttribute("nbJoursSemaineAAjouter",5-maxDayOfCurrentMonth.getDayOfWeek());
+			}
 		}
 
 		//ArrayList of maps

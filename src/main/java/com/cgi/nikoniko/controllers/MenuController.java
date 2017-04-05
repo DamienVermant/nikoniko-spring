@@ -45,7 +45,7 @@ public class MenuController  {
 
 	public final static String REDIRECT = "redirect:";
 
-	public final static String SHOW_GRAPH = "showGraph";
+	public final static String SHOW_GRAPH = "showgraph";
 
 	public final static String GO_USERS = PATH + "user" + PATH;
 	public final static String GO_TEAMS = PATH + "team" + PATH;
@@ -53,7 +53,8 @@ public class MenuController  {
 	public final static String GO_ROLES = PATH + "role" + PATH;
 	public final static String GO_NIKOS =  PATH + "nikoniko" + PATH;
 	public final static String GO_FUNCTIONS =  PATH + "function" + PATH;
-	public final static String GO_GRAPHE = PATH + "graph" + PATH + "showGraphAll";
+	public final static String GO_GRAPHE = PATH + "graph" + PATH + "showgraphall";
+	public final static String GO_CALENDAR = PATH + "graph" + PATH + "nikoniko" + PATH + "month";
 
 	public final static String GO_USERTEAM = PATH + "user_has_team" + PATH;
 	public final static String GO_USERROLE = PATH + "user_has_role" + PATH;
@@ -92,6 +93,7 @@ public class MenuController  {
 		model.addAttribute("go_functions", GO_FUNCTIONS);
 		model.addAttribute("go_verticales", GO_VERTICALE);
 		model.addAttribute("go_graphes", GO_GRAPHE);
+		model.addAttribute("calendar", GO_CALENDAR);
 
 		model.addAttribute("go_user_has_team", GO_USERTEAM);
 		model.addAttribute("go_user_has_role", GO_USERROLE);

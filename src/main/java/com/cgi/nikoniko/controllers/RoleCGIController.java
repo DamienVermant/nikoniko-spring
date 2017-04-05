@@ -20,8 +20,6 @@ import com.cgi.nikoniko.dao.IRoleCrudRepository;
 import com.cgi.nikoniko.dao.IRoleHasFunctionCrudRepository;
 import com.cgi.nikoniko.dao.IUserCrudRepository;
 import com.cgi.nikoniko.dao.IUserHasRoleCrudRepository;
-import com.cgi.nikoniko.models.tables.FunctionCGI;
-import com.cgi.nikoniko.models.association.RoleHasFunction;
 import com.cgi.nikoniko.models.association.UserHasRole;
 import com.cgi.nikoniko.utils.DumpFields;
 
