@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <!-- Encodage -->
+<!-- Encodage -->
     <meta charset="utf-8">
 
     <!-- Bootstrap -->
@@ -96,8 +96,8 @@
                             <div class="dropdown">
                                 <span>Team</span>
                                 <div>
-                                    <#items as nameteam>
-                                        <p><button onclick="location.href='./${nameteam?counter-1}'" class="dropdown-content"> ${nameteam} </button></p>
+                                    <#items as name>
+                                        <p><button onclick="location.href='./${name?counter-1}'" class="dropdown-content"> ${name} </button></p>
                                     </#items>
                             </div></div>
                         </table>

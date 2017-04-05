@@ -39,7 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //				.authorizeRequests().anyRequest().anonymous()
 //				.antMatchers("/demo","/demo/**")
 //				.permitAll()
-				;
+//				;
 	}
 
 }
