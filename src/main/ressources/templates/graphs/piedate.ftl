@@ -61,7 +61,7 @@
   </head>
 
 <style>
-    <#include "employee.css">
+    <#include "static/employee.css">
 </style>
 
 <!-- HEAD -->
@@ -101,12 +101,12 @@
         <div class="row-fluid">
             <div class="col-lg-12">
                 <div class="alignleft">
-                <button onclick="location.href='/graph/showGraph/${year}/${month}/${day}'" class="myresults"> My Results today </button>
+                <button onclick="location.href='/graph/showGraph/${year?c}/${month}/${day}'" class="myresults"> My Results today </button>
                 <#if role != "employee">
-                    <button onclick="location.href='/graph/showGraphAll/${year}/${month}/${day}'" class="allresults"> ALL Results </button>
+                    <button onclick="location.href='/graph/showGraphAll/${year?c}/${month}/${day}'" class="allresults"> ALL Results </button>
                 </#if>
-                <button onclick="location.href='/graph/showGraphVerticale/+${year}/${month}/${day}'" class="resultsverticale"> Results Verticale </button>
-                <button onclick="location.href='/graph/showGraphTeam/0/${year}/${month}/${day}'" class="resultsteam"> Results team </button>
+                <button onclick="location.href='/graph/showGraphVerticale/${year?c}/${month}/${day}'" class="resultsverticale"> Results Verticale </button>
+                <button onclick="location.href='/graph/showGraphTeam/0/${year?c}/${month}/${day}'" class="resultsteam"> Results team </button>
                 </div>
             </div>
         </div>

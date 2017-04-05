@@ -406,7 +406,7 @@ public class GraphController extends ViewBaseController<User>{
 		int bad = 0;
 
 		if(listNiko.size() != 0){
-			nbMood = 1;
+			nbMood = 2;
 			for (int i = 0; i < listNiko.size(); i++) {
 				if (listNiko.get(i).getMood() == 3) {
 					good++;
@@ -733,20 +733,35 @@ public class GraphController extends ViewBaseController<User>{
 
 	public List<NikoNiko> findNikoNikosOfAVerticaleList(Long idVert){
 
-		List<BigInteger> listId = verticaleCrud.getNikoNikoFromVerticale(idVert);
-		List<Long> listNikoId = new ArrayList<Long>();
-		List<NikoNiko> listNiko = new ArrayList<NikoNiko>();
+//		List<BigInteger> listId = verticaleCrud.getNikoNikoFromVerticale(idVert);
+//		List<Long> listNikoId = new ArrayList<Long>();
+//		List<NikoNiko> listNiko = new ArrayList<NikoNiko>();
+//		int nbMood = 0;
+//
+//		if (!listId.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
+//			nbMood =1;
+//			for (BigInteger id : listId) {
+//				listNikoId.add(id.longValue());
+//			}
+//			listNiko =  (List<NikoNiko>) nikonikoCrud.findAll(listNikoId);
+//		}
+//
+//		return listNiko;
+
+		List<NikoNiko> vertNikonikos = new ArrayList<NikoNiko>();
+
+		List<Team> vertTeams = new ArrayList<Team>();
+
 		int nbMood = 0;
 
-		if (!listId.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
-			nbMood =1;
-			for (BigInteger id : listId) {
-				listNikoId.add(id.longValue());
-			}
-			listNiko =  (List<NikoNiko>) nikonikoCrud.findAll(listNikoId);
-		}
+		if (!verticaleCrud.findOne(idVert).getTeams().isEmpty()) {
+			vertTeams.addAll(verticaleCrud.findOne(idVert).getTeams());
 
-		return listNiko;
+			for (Team team : vertTeams) {
+				vertNikonikos.addAll(findNikoNikosOfATeam(team.getId()));
+			}
+		}
+		return vertNikonikos;
 	}
 
 	public String testRole(Long idUser){
@@ -1247,7 +1262,7 @@ public class GraphController extends ViewBaseController<User>{
 				vertNikonikos.addAll(findNikoNikosOfATeam(team.getId()));
 			}
 		}
-				return vertNikonikos;
+		return vertNikonikos;
 	}
 
 	public ArrayList<NikoNiko> findNikoNikosOfATeam(Long idTeam){

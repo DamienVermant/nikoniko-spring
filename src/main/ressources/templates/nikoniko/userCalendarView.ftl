@@ -65,7 +65,7 @@
 												<div class = "dayHeader" align="right">
 														${map[key]}
 												</div>
-												<div class = "daynikos" onclick = "location.href='nikoniko/day/${yearToUse?c}/${monthToUse}/${map[key]}'">
+												<div class = "daynikos" onclick = "location.href='/graph/showGraph/${yearToUse?c}/${monthToUse}/${map[key]}'">
 														myMood :  ${map["nikoOfDay"]}
 												</div>
 											</td>
@@ -76,7 +76,7 @@
 												<div class = "dayHeader" align="right">
 														${map[key]}
 												</div>
-												<div class = "daynikos" onclick = "location.href='nikoniko/day/${yearToUse?c}/${monthToUse}/${map[key]}'">
+												<div class = "daynikos" onclick = "location.href='/graph/showGraph/${yearToUse?c}/${monthToUse}/${map[key]}'">
 														myMood :  ${map["nikoOfDay"]}
 												</div>
 											</td>

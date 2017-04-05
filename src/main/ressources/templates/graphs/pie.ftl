@@ -61,7 +61,7 @@
   </head>
 
 <style>
-    <#include "employee.css">
+    <#include "static/employee.css">
 </style>
 
 <!-- HEAD -->
@@ -102,7 +102,6 @@
             <div class="col-lg-12">
                 <div class="alignleft">
                 <button onclick="location.href='showGraph'" class="myresults"> My Results today </button>
-                <button onclick="location.href='showGraphWeek'" class="myresults"> My Month</button>
                 <#if role != "employee">
                     <button onclick="location.href='showGraphAll'" class="allresults"> ALL Results </button>
                 </#if>

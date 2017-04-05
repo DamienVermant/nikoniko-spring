@@ -47,7 +47,7 @@
   </head>
 
 <style>
-    <#include "employee.css">
+    <#include "static/employee.css">
 </style>
 
 <!-- HEAD -->

@@ -61,7 +61,7 @@
   </head>
 
 <style>
-    <#include "employee.css">
+    <#include "static/employee.css">
 </style>
 
 <!-- HEAD -->
@@ -120,12 +120,11 @@
         <div class="row-fluid">
             <div class="col-lg-12">
                 <div class="alignleft">
-                <button onclick="location.href='../showGraph'" class="myresults"> My Results </button>
-                <button onclick="location.href='../showGraphWeek'" class="myresults"> My Month</button>
+                <button onclick="location.href='/graph/showGraph/${year?c}/${month}/${day}'" class="myresults"> My Results </button>
                 <#if role != "employee">
-                    <button onclick="location.href='../showGraphAll'" class="allresults"> ALL Results </button>
+                    <button onclick="location.href='/graph/showGraphAll/${year?c}/${month}/${day}'" class="allresults"> ALL Results </button>
                 </#if>
-                <button onclick="location.href='../showGraphVerticale'" class="resultsverticale"> Results Verticale </button>
+                <button onclick="location.href='/graph/showGraphVerticale/${year?c}/${month}/${day}'" class="resultsverticale"> Results Verticale </button>
                 </div>
             </div>
         </div>
