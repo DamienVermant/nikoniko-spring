@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -60,8 +61,9 @@ public class MenuController  {
 	public final static String GO_USERROLE = PATH + "user_has_role" + PATH;
 	public final static String GO_ROLEFUNC = PATH + "role_has_function" + PATH;
 
+	public final static LocalDate TODAY_DATE = new LocalDate();
+
 	// TODO : CHANGE TYPE OF TIME
-	// 0.99999... = 1
 	public final static double TIME = 0.9999999999;
 
 	/**
@@ -209,7 +211,6 @@ public class MenuController  {
 	public Boolean checkDateNikoNiko(Long idUser){
 
 		Boolean updateNiko = true;
-		LocalDate todayDate = new LocalDate();
 
 		Long idMaxNiko = userCrud.getLastNikoNikoUser(idUser);
 
@@ -225,7 +226,7 @@ public class MenuController  {
 			Date entryDate = lastNiko.getEntryDate();
 			LocalDate dateEntry = new LocalDate(entryDate);
 
-			if (entryDate == null || (todayDate.isAfter(dateEntry))) {
+			if (entryDate == null || (TODAY_DATE.isAfter(dateEntry))) {
 				updateNiko = false;
 			}
 		}
@@ -256,6 +257,7 @@ public class MenuController  {
 
 	/**
 	 * GET LAST-1 NIKONIKO USER AND CHECK IF THE MOOD IS NULL OR NOT
+	 * RETURN FALSE CAN'T UPDATE, TRUE UPDATE SECOND LAST
 	 * @param idUser
 	 * @return
 	 */
@@ -263,23 +265,28 @@ public class MenuController  {
 
 		Long idMax = userCrud.getLastLastNikoNikoUser(idUser);
 
-		NikoNiko lastLastNiko = nikoCrud.findOne(userCrud.getLastLastNikoNikoUser(idUser));
 
-		if (lastLastNiko == null) {
+		if (idMax == null) {
 			return false;
 		}
 
 		else {
 
-			Integer mood = lastLastNiko.getMood();
+			NikoNiko lastLastNiko = nikoCrud.findOne(userCrud.getLastLastNikoNikoUser(idUser));
+			NikoNiko lastNiko = nikoCrud.findOne(userCrud.getLastNikoNikoUser(idUser));
 
-			if (mood == 0 || mood == null) {
-				return true;
+			LocalDate dateEntryLast = new LocalDate(lastNiko.getEntryDate());
+			LocalDate dateEntryLastLast = new LocalDate(lastLastNiko.getEntryDate());
+
+			int day = Days.daysBetween(new LocalDate(dateEntryLastLast), new LocalDate(dateEntryLast)).getDays() ;
+
+
+			if (lastLastNiko.getMood() != 0 || day < 1) {
+				return false;
 			}
 
 			else {
-
-				return false;
+				return true;
 			}
 		}
 	}

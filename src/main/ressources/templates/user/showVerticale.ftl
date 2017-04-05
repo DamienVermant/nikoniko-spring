@@ -5,6 +5,7 @@
 </head>
 
 <body>
+	<a href="/menu">Home</a>
 	<h1>VERTICALE FOR USER : ${page}  </h1>
 		<table class="table table-bordered table-hover">
 			<tr>
@@ -34,16 +35,9 @@
 							</#if>
 						</#list>
 					</#list>
-					<td>
-						<form action = "" method = "POST">
-							<input type="hidden" name = "idVerticale" value = "${item["id"]}">
-							<input type="submit" value="Quitter"><br>
-							<#include "../includable/security/securityToken.ftl">
-						</form>
-					</td>
 				</tr>
 			</#list>
 		</table>
-	<a href = "${add}"> Add verticale </a> <br>
+	<a href = "${add}"> Change verticale </a> <br>
 	<a href = "${back}"> Back <a>
 </body>

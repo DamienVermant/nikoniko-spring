@@ -40,13 +40,44 @@ public interface IUserCrudRepository extends IBaseCrudRepository<User>{
 	@Query(value = "SELECT max(nikoniko.id) from nikoniko where nikoniko.user_id = :idUser", nativeQuery=true)
 	public Long getLastNikoNikoUser(@Param("idUser") long idUser);
 
+	/**
+	 * GET VERTICAL ID FOR A USER
+	 * @param idUser
+	 * @return
+	 */
 	@Query(value = "SELECT verticale.id FROM verticale INNER JOIN user ON verticale.id = user.verticale_id where user.id = :idUser", nativeQuery=true)
 	public Long getUserVertical(@Param("idUser") long idUser);
-
+	
+	/**
+	 * GET USER LIST CORRESPONDING WITH A NAME PARAMETER
+	 * @param name
+	 * @return
+	 */
 	@Query(value = "SELECT * FROM user WHERE registration_number LIKE %:name%", nativeQuery=true)
 	public ArrayList<User> getUsers(@Param("name") String name);
 
-	@Query(value = "SELECT max(nikoniko.id)-1 from nikoniko where nikoniko.user_id = :idUser", nativeQuery=true)
+	/**
+	 * GET SECOND TO LAST NIKO NIKO
+	 * @param idUser
+	 * @return
+	 */
+	@Query(value = "SELECT * from nikoniko where nikoniko.user_id = :idUser LIMIT 0,1", nativeQuery=true)
 	public Long getLastLastNikoNikoUser(@Param("idUser") long idUser);
 
+	/**
+	 * GET NUMBER OF NIKONIKO FOR USER
+	 * @param idUser
+	 * @return
+	 */
+	@Query(value = "SELECT COUNT(*) from nikoniko where nikoniko.user_id = :idUser", nativeQuery=true)
+	public int getNikoNikoNumberUser(@Param("idUser") long idUser);
+	
+	/**
+	 * GET ALL USERS ASSOCIATED WITH THE SAME VERTICALE
+	 * @param idVerticale
+	 * @return
+	 */
+	@Query(value = "SELECT * FROM user WHERE verticale_id = :idVerticale", nativeQuery=true)
+	public ArrayList<User> getAssociatedUsers(@Param("idVerticale") long idVerticale);
+	
 }

@@ -13,6 +13,8 @@
 			<#if field != "id">
 				<#list items?keys as key>
 					<#if key == field>
+					<#if key == "login" || key == "password" || key== "id">
+						<#else>
 						<tr>
 							<th>${key}</th>
 							<#if items[key]?is_boolean>
@@ -29,6 +31,7 @@
 								</td>
 							</#if>
 						</tr>
+					</#if>
 					</#if>
 				</#list>
 			</#if>
