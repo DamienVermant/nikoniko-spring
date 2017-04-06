@@ -51,7 +51,7 @@
 				<#include "../includable/security/securityToken.ftl">
 				<input type="texte" name="login" placeholder="Votre login"> <br>
 				<div class="text"> Mot de passe :</div>
-					<input type="texte" name="password" placeholder="Votre mot de passe"> <br>
+					<input type="password" name="password" placeholder="Votre mot de passe"> <br>
 					<input class="buttons" type="submit" value="Se connecter"><br>
 					<button class="buttons" onclick="affichage()" class="password"> Mot de passe oublié ?</button>
 				</div>
