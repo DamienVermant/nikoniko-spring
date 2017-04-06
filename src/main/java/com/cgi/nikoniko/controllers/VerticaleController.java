@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.cgi.nikoniko.controllers.PathClass.PathFinder;
 import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
 import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
 import com.cgi.nikoniko.dao.ITeamCrudRepository;
@@ -30,27 +31,9 @@ import com.cgi.nikoniko.utils.DumpFields;
 @RequestMapping(VerticaleController.BASE_URL)
 public class VerticaleController  extends ViewBaseController<Verticale> {
 
-
 /////////////////// GLOBAL CONSTANT /////////////////////////////////
 
-
-	public final static String DOT = ".";
-	public final static String PATH = "/";
-	public final static String BASE_URL = "/verticale";
-	public final static String MENU_PATH = "menu";
-
-	public final static String BASE_VERTICALE = "verticale";
-	public final static String SHOW_GRAPH = "showGraph";
-	public final static String SHOW_USER = "showUser";
-	public final static String SHOW_TEAM = "showTeam";
-	public final static String SHOW_NIKO = "showNiko";
-
-	public static final String SHOW_PATH = "show";
-
-	public final static String ADD_USER = "addUsers";
-	public final static String ADD_TEAM = "addTeams";
-
-	public final static int LENGHT_VIEW = 5;
+	public final static String BASE_URL = PathFinder.PATH +PathFinder.VERTICALE;
 
 	public final static Long DEFAULT_ID_VERTICAL = (long) 1;
 
@@ -81,7 +64,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	 *SHOW SPECIFIC VERTICAL WITH A GIVEN ID
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_VP"})
-	@RequestMapping(path = ROUTE_SHOW, method = RequestMethod.GET)
+	@RequestMapping(path = PathFinder.ROUTE_SHOW, method = RequestMethod.GET)
 	public String showItemGet(Model model,@PathVariable Long id) {
 
 		Verticale verticaleBuffer = new Verticale();
@@ -90,13 +73,13 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 		model.addAttribute("page","Verticale : " + verticaleBuffer.getName());
 		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
 		model.addAttribute("item",DumpFields.fielder(super.getItem(id)));
-		model.addAttribute("show_users", DOT + PATH + SHOW_USER);
-		model.addAttribute("show_team", DOT + PATH + SHOW_TEAM);
-		model.addAttribute("go_index", LIST_ACTION);
-		model.addAttribute("go_delete", DELETE_ACTION);
-		model.addAttribute("go_update", UPDATE_ACTION);
+		model.addAttribute("show_users", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_USERS);
+		model.addAttribute("show_team", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_TEAM);
+		model.addAttribute("go_index", PathFinder.LIST_ACTION);
+		model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
+		model.addAttribute("go_update", PathFinder.UPDATE_ACTION);
 
-	return BASE_VERTICALE + PATH + SHOW_PATH;
+	return PathFinder.BASE_VERTICALE + PathFinder.PATH + PathFinder.SHOW_PATH;
 }
 
 	/**
@@ -106,16 +89,16 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
-	@RequestMapping(path = {PATH, ROUTE_LIST}, method = RequestMethod.POST)
+	@RequestMapping(path = {PathFinder.PATH, PathFinder.ROUTE_LIST}, method = RequestMethod.POST)
 	public String showVerticalesPOST(Model model,String name){
 
 		model.addAttribute("model", "verticale");
-		model.addAttribute("page",this.baseName + " " + LIST_ACTION.toUpperCase());
+		model.addAttribute("page",this.baseName + " " + PathFinder.LIST_ACTION.toUpperCase());
 		model.addAttribute("sortedFields",Verticale.FIELDS);
 		model.addAttribute("items",this.searchVerticales(name));
-		model.addAttribute("go_show", SHOW_ACTION);
-		model.addAttribute("go_create", CREATE_ACTION);
-		model.addAttribute("go_delete", DELETE_ACTION);
+		model.addAttribute("go_show", PathFinder.SHOW_ACTION);
+		model.addAttribute("go_create", PathFinder.CREATE_ACTION);
+		model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
 
 		return listView;
 	}
@@ -145,7 +128,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_VP"})
-	@RequestMapping(path = "{verticaleId}"+ PATH + SHOW_USER, method = RequestMethod.GET)
+	@RequestMapping(path = "{verticaleId}"+ PathFinder.PATH + PathFinder.SHOW_USERS, method = RequestMethod.GET)
 	public String getUsersForVerticaleGET(Model model, @PathVariable Long verticaleId) {
 
 		Verticale verticale = super.getItem(verticaleId);
@@ -156,8 +139,8 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 		model.addAttribute("page", verticale.getName());
 		model.addAttribute("type","user");
 		model.addAttribute("sortedFields", User.FIELDS);
-		model.addAttribute("add", DOT + PATH + ADD_USER);
-		model.addAttribute("back", DOT + PATH + SHOW_PATH);
+		model.addAttribute("add", PathFinder.DOT + PathFinder.PATH + PathFinder.ADD_USER);
+		model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_PATH);
 
 		if (listOfUser.size() < LENGHT_VIEW) {
 			model.addAttribute("items",DumpFields.listFielder(listOfUser));
@@ -165,7 +148,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 			model.addAttribute("items",DumpFields.listFielder(listOfUser.subList(0, LENGHT_VIEW)));
 		}
 
-		return BASE_VERTICALE + PATH + SHOW_USER;
+		return PathFinder.BASE_VERTICALE + PathFinder.PATH + PathFinder.SHOW_USERS;
 	}
 
 	/**
@@ -176,7 +159,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_VP"})
-	@RequestMapping(path = "{verticaleId}"+ PATH + SHOW_USER, method = RequestMethod.POST)
+	@RequestMapping(path = "{verticaleId}"+ PathFinder.PATH + PathFinder.SHOW_USERS, method = RequestMethod.POST)
 	public String getUsersForVerticalePOST(Model model, @PathVariable Long verticaleId, Long idUser) {
 		return defaultVerticalForUser(idUser, verticaleId);
 	}
@@ -188,7 +171,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
-	@RequestMapping(path = "{verticaleId}"+ PATH + SHOW_USER, params = "name", method = RequestMethod.POST)
+	@RequestMapping(path = "{verticaleId}"+ PathFinder.PATH + PathFinder.SHOW_USERS, params = "name", method = RequestMethod.POST)
 	public String addVerticalForUserPOST(Model model,@RequestParam String name , @PathVariable Long verticaleId){
 
 		Verticale verticalBuffer = verticaleCrud.findOne(verticaleId);
@@ -199,11 +182,11 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 		model.addAttribute("idVerticale", verticaleId);
 		model.addAttribute("page", verticalBuffer.getName());
 		model.addAttribute("sortedFields",User.FIELDS);
-		model.addAttribute("go_show", SHOW_ACTION);
-		model.addAttribute("go_create", CREATE_ACTION);
-		model.addAttribute("go_delete", DELETE_ACTION);
-		model.addAttribute("back", DOT + PATH + SHOW_PATH);
-		model.addAttribute("add", DOT + PATH + ADD_USER);
+		model.addAttribute("go_show", PathFinder.SHOW_ACTION);
+		model.addAttribute("go_create", PathFinder.CREATE_ACTION);
+		model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
+		model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_PATH);
+		model.addAttribute("add", PathFinder.DOT + PathFinder.PATH + PathFinder.ADD_USER);
 
 		if (name != "") {
 			model.addAttribute("items",DumpFields.listFielder(this.searchAssociatedUsers(verticaleId, name)));
@@ -218,7 +201,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 
 		}
 
-		return BASE_VERTICALE + PATH + SHOW_USER;
+		return PathFinder.BASE_VERTICALE + PathFinder.PATH + PathFinder.SHOW_USERS;
 
 	}
 
@@ -252,7 +235,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 
-	@RequestMapping(path = "{idVerticale}" + PATH + ADD_USER , method = RequestMethod.GET)
+	@RequestMapping(path = "{idVerticale}" + PathFinder.PATH + PathFinder.ADD_USER , method = RequestMethod.GET)
 	public String addVerticalForUserGET(Model model, @PathVariable Long idVerticale) {
 
 	ArrayList<User> userList = new ArrayList<User>();
@@ -263,13 +246,13 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	model.addAttribute("items", DumpFields.listFielder(userList));
 	model.addAttribute("sortedFields",User.FIELDS);
 	model.addAttribute("page", ((Verticale) verticaleBuffer).getName());
-	model.addAttribute("go_show", SHOW_ACTION);
-	model.addAttribute("go_create", CREATE_ACTION);
-	model.addAttribute("go_delete", DELETE_ACTION);
-	model.addAttribute("back", DOT + PATH + SHOW_USER);
-	model.addAttribute("add", ADD_USER);
+	model.addAttribute("go_show", PathFinder.SHOW_ACTION);
+	model.addAttribute("go_create", PathFinder.CREATE_ACTION);
+	model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
+	model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_USERS);
+	model.addAttribute("add", PathFinder.ADD_USER);
 
-	return BASE_VERTICALE + PATH + ADD_USER;
+	return PathFinder.BASE_VERTICALE + PathFinder.PATH + PathFinder.ADD_USER;
 	}
 
 	/**
@@ -280,19 +263,19 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
-	@RequestMapping(path = "{idVerticale}" + PATH + ADD_USER, params = "name", method = RequestMethod.POST)
+	@RequestMapping(path = "{idVerticale}" + PathFinder.PATH + PathFinder.ADD_USER, params = "name", method = RequestMethod.POST)
 	public String addVerticalForUserPOST(Model model,@RequestParam String name){
 
 		model.addAttribute("model", "user");
-		model.addAttribute("page",this.baseName + " " + LIST_ACTION.toUpperCase());
+		model.addAttribute("page",this.baseName + " " + PathFinder.LIST_ACTION.toUpperCase());
 		model.addAttribute("sortedFields",User.FIELDS);
 		model.addAttribute("items",DumpFields.listFielder(this.searchUser(name)));
-		model.addAttribute("go_show", SHOW_ACTION);
-		model.addAttribute("go_create", CREATE_ACTION);
-		model.addAttribute("go_delete", DELETE_ACTION);
-		model.addAttribute("back", DOT + PATH + SHOW_USER);
+		model.addAttribute("go_show", PathFinder.SHOW_ACTION);
+		model.addAttribute("go_create", PathFinder.CREATE_ACTION);
+		model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
+		model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_USERS);
 
-		return BASE_VERTICALE + PATH + ADD_USER;
+		return PathFinder.BASE_VERTICALE + PathFinder.PATH + PathFinder.ADD_USER;
 
 	}
 
@@ -318,7 +301,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
-	@RequestMapping(path = "{idVertical}" + PATH + ADD_USER, params = "idUser",  method = RequestMethod.POST)
+	@RequestMapping(path = "{idVertical}" + PathFinder.PATH + PathFinder.ADD_USER, params = "idUser",  method = RequestMethod.POST)
 	public String addVerticalForUserPOST(Model model,@RequestParam Long idUser, @PathVariable Long idVertical) {
 		return setUserforVertical(idUser, idVertical);
 	}
@@ -331,7 +314,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	 */
 	private String setUserforVertical(Long idUser, Long idVertical) {
 
-		String redirect = REDIRECT + PATH + BASE_VERTICALE + PATH + idVertical + PATH + SHOW_USER;
+		String redirect = PathFinder.REDIRECT + PathFinder.PATH + PathFinder.BASE_VERTICALE + PathFinder.PATH + idVertical + PathFinder.PATH + PathFinder.SHOW_USERS;
 
 		User userBuffer = new User();
 		Verticale verticaleBuffer = new Verticale();
@@ -354,7 +337,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	 */
 	public String defaultVerticalForUser(Long idUser, Long idVerticale){
 
-		String redirect = REDIRECT + PATH + BASE_VERTICALE + PATH + idVerticale + PATH + SHOW_USER;
+		String redirect = PathFinder.REDIRECT + PathFinder.PATH + PathFinder.BASE_VERTICALE + PathFinder.PATH + idVerticale + PathFinder.PATH + PathFinder.SHOW_USERS;
 
 		User userBuffer = userCrud.findOne(idUser);
 		Verticale verticaleBuffer = verticaleCrud.findOne(DEFAULT_ID_VERTICAL);
@@ -377,7 +360,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_VP"})
-	@RequestMapping(path = "{verticaleId}" + PATH + SHOW_TEAM, method= RequestMethod.GET)
+	@RequestMapping(path = "{verticaleId}" + PathFinder.PATH + PathFinder.SHOW_TEAM, method= RequestMethod.GET)
 	public String getTeamsForVerticale(Model model, @PathVariable Long verticaleId) {
 
 		Verticale verticale = super.getItem(verticaleId);
@@ -389,9 +372,9 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 		model.addAttribute("type","team");
 		model.addAttribute("sortedFields", Team.FIELDS);
 		model.addAttribute("items", DumpFields.listFielder(listOfTeam));
-		model.addAttribute("add", DOT + PATH + ADD_TEAM);
-		model.addAttribute("back", DOT + PATH + SHOW_PATH);
-		return BASE_VERTICALE + PATH + SHOW_TEAM;
+		model.addAttribute("add", PathFinder.DOT + PathFinder.PATH + PathFinder.ADD_TEAM);
+		model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_PATH);
+		return PathFinder.BASE_VERTICALE + PathFinder.PATH + PathFinder.SHOW_TEAM;
 	}
 
 	/**
@@ -401,7 +384,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
-	@RequestMapping(path = "{verticaleId}"+ PATH + SHOW_TEAM, params = "name", method = RequestMethod.POST)
+	@RequestMapping(path = "{verticaleId}"+ PathFinder.PATH + PathFinder.SHOW_TEAM, params = "name", method = RequestMethod.POST)
 	public String addVerticalForTeamPOST(Model model,@RequestParam String name , @PathVariable Long verticaleId){
 
 		Verticale verticalBuffer = verticaleCrud.findOne(verticaleId);
@@ -412,11 +395,11 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 		model.addAttribute("idVerticale", verticaleId);
 		model.addAttribute("page", verticalBuffer.getName());
 		model.addAttribute("sortedFields",Team.FIELDS);
-		model.addAttribute("go_show", SHOW_ACTION);
-		model.addAttribute("go_create", CREATE_ACTION);
-		model.addAttribute("go_delete", DELETE_ACTION);
-		model.addAttribute("back", DOT + PATH + SHOW_PATH);
-		model.addAttribute("add", DOT + PATH + ADD_USER);
+		model.addAttribute("go_show", PathFinder.SHOW_ACTION);
+		model.addAttribute("go_create", PathFinder.CREATE_ACTION);
+		model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
+		model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_PATH);
+		model.addAttribute("add", PathFinder.DOT + PathFinder.PATH + PathFinder.ADD_USER);
 
 		if (name != "") {
 			model.addAttribute("items",DumpFields.listFielder(this.searchAssociatedTeams(verticaleId, name)));
@@ -431,7 +414,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 
 		}
 
-		return BASE_VERTICALE + PATH + SHOW_TEAM;
+		return PathFinder.BASE_VERTICALE + PathFinder.PATH + PathFinder.SHOW_TEAM;
 
 	}
 
@@ -465,7 +448,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	 */
 	@Override
 	@Secured({"ROLE_ADMIN"})
-	@RequestMapping(path = ROUTE_DELETE, method = RequestMethod.POST)
+	@RequestMapping(path = PathFinder.ROUTE_DELETE, method = RequestMethod.POST)
 	public String deleteItemPost(Model model,@PathVariable Long id) {
 		Verticale verticale = super.getItem(id);
 
@@ -499,7 +482,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
-	@RequestMapping(path = "{idVerticale}" + PATH + ADD_TEAM, method = RequestMethod.GET)
+	@RequestMapping(path = "{idVerticale}" + PathFinder.PATH + PathFinder.ADD_TEAM, method = RequestMethod.GET)
 
 	public String addVerticalForTeamGET(Model model, @PathVariable Long idVerticale) {
 
@@ -510,13 +493,13 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	model.addAttribute("items", DumpFields.listFielder(teamList));
 	model.addAttribute("sortedFields",Team.FIELDS);
 	model.addAttribute("page", ((Verticale) verticaleBuffer).getName());
-	model.addAttribute("go_show", SHOW_ACTION);
-	model.addAttribute("go_create", CREATE_ACTION);
-	model.addAttribute("go_delete", DELETE_ACTION);
-	model.addAttribute("back", DOT + PATH + SHOW_TEAM);
-	model.addAttribute("add", ADD_TEAM);
+	model.addAttribute("go_show", PathFinder.SHOW_ACTION);
+	model.addAttribute("go_create", PathFinder.CREATE_ACTION);
+	model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
+	model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_TEAM);
+	model.addAttribute("add", PathFinder.ADD_TEAM);
 
-	return BASE_VERTICALE + PATH + ADD_TEAM;
+	return PathFinder.BASE_VERTICALE + PathFinder.PATH + PathFinder.ADD_TEAM;
 	}
 
 	/**
@@ -527,19 +510,19 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
-	@RequestMapping(path = "{idVerticale}" + PATH + ADD_TEAM, params = "name", method = RequestMethod.POST)
+	@RequestMapping(path = "{idVerticale}" + PathFinder.PATH + PathFinder.ADD_TEAM, params = "name", method = RequestMethod.POST)
 	public String addVerticalForTeamPOST(Model model,@RequestParam String name){
 
 		model.addAttribute("model", "user");
-		model.addAttribute("page",this.baseName + " " + LIST_ACTION.toUpperCase());
+		model.addAttribute("page",this.baseName + " " + PathFinder.LIST_ACTION.toUpperCase());
 		model.addAttribute("sortedFields",Team.FIELDS);
 		model.addAttribute("items",DumpFields.listFielder(this.searchTeam(name)));
-		model.addAttribute("go_show", SHOW_ACTION);
-		model.addAttribute("go_create", CREATE_ACTION);
-		model.addAttribute("go_delete", DELETE_ACTION);
-		model.addAttribute("back", DOT + PATH + SHOW_TEAM);
+		model.addAttribute("go_show", PathFinder.SHOW_ACTION);
+		model.addAttribute("go_create", PathFinder.CREATE_ACTION);
+		model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
+		model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_TEAM);
 
-		return BASE_VERTICALE + PATH + ADD_TEAM;
+		return PathFinder.BASE_VERTICALE + PathFinder.PATH + PathFinder.ADD_TEAM;
 
 	}
 
@@ -565,7 +548,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_VP"})
-	@RequestMapping(path = "{verticaleId}"+ PATH + SHOW_TEAM, params = "idTeam", method = RequestMethod.POST)
+	@RequestMapping(path = "{verticaleId}"+ PathFinder.PATH + PathFinder.SHOW_TEAM, params = "idTeam", method = RequestMethod.POST)
 	public String getTeamsForVerticalePOST(Model model, @PathVariable Long verticaleId, @RequestParam Long idTeam) {
 		return defaultVerticalForTeam(idTeam, verticaleId);
 	}
@@ -578,7 +561,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	 */
 	public String defaultVerticalForTeam(Long idTeam, Long idVerticale){
 
-		String redirect = REDIRECT + PATH + BASE_VERTICALE + PATH + idVerticale + PATH + SHOW_TEAM;
+		String redirect = PathFinder.REDIRECT + PathFinder.PATH + PathFinder.BASE_VERTICALE + PathFinder.PATH + idVerticale + PathFinder.PATH + PathFinder.SHOW_TEAM;
 
 		Team teamBuffer = teamCrud.findOne(idTeam);
 		Verticale verticaleBuffer = verticaleCrud.findOne(DEFAULT_ID_VERTICAL);
@@ -599,7 +582,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
-	@RequestMapping(path = "{idVertical}" + PATH + ADD_TEAM ,method = RequestMethod.POST)
+	@RequestMapping(path = "{idVertical}" + PathFinder.PATH + PathFinder.ADD_TEAM ,method = RequestMethod.POST)
 	public String addVerticalForTeamPOST(Model model, Long idTeam, @PathVariable Long idVertical) {
 		return setTeamforVertical(idTeam, idVertical);
 	}
@@ -612,7 +595,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	 */
 	private String setTeamforVertical(Long idTeam, Long idVertical) {
 
-		String redirect = REDIRECT + PATH + BASE_VERTICALE + PATH + idVertical + PATH + SHOW_TEAM;
+		String redirect = PathFinder.REDIRECT + PathFinder.PATH + PathFinder.BASE_VERTICALE + PathFinder.PATH + idVertical + PathFinder.PATH + PathFinder.SHOW_TEAM;
 
 		Team teamBuffer = new Team();
 		Verticale verticaleBuffer = new Verticale();
@@ -644,7 +627,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 		}
 				return vertNikonikos;
 	}
-	
+
 	/**
 	 * FIND ALL NIKONIKO RELATED TO A TEAM
 	 * @param idTeam
@@ -655,7 +638,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 		ArrayList<User> usersOfTeam = findUsersOfATeam(idTeam);
 
 		ArrayList<NikoNiko> nikonikos = new ArrayList<NikoNiko>();
-		
+
 		if (!usersOfTeam.isEmpty()) {
 			for (User user : usersOfTeam) {
 				if (!user.getNikoNikos().isEmpty()) {
@@ -666,7 +649,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 
 		return nikonikos;
 	}
-	
+
 	/**
 	 * FIND ALL USER RELATED TO A TEAM
 	 * @param idValue
@@ -687,7 +670,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 		return userList;
 	}
 
-	
+
 	/////////////////// CONSTRUCTORS /////////////////////////////////
 
 

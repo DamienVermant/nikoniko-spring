@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.cgi.nikoniko.controllers.PathClass.PathFinder;
 import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
 import com.cgi.nikoniko.dao.IRoleCrudRepository;
 import com.cgi.nikoniko.dao.IUserCrudRepository;
@@ -27,6 +28,12 @@ import com.cgi.nikoniko.utils.UtilsFunctions;
 
 @Controller
 public class MenuController  {
+
+	public final static LocalDate TODAY_DATE = new LocalDate();
+	public final static String BASE_URL = PathFinder.PATH + PathFinder.MENU_PATH;
+
+	// TODO : CHANGE TYPE OF TIME
+	public final static double TIME = 0.9999999999;
 
 	@Autowired
 	IUserCrudRepository userCrud;
@@ -40,32 +47,6 @@ public class MenuController  {
 	@Autowired
 	INikoNikoCrudRepository nikoCrud;
 
-	public final static String DOT = ".";
-	public final static String PATH = "/";
-	public final static String BASE_MENU = "menu";
-	public final static String BASE_URL = PATH + BASE_MENU;
-
-	public final static String REDIRECT = "redirect:";
-
-	public final static String SHOW_GRAPH = "showgraph";
-
-	public final static String GO_USERS = PATH + "user" + PATH;
-	public final static String GO_TEAMS = PATH + "team" + PATH;
-	public final static String GO_VERTICALE = PATH + "verticale" + PATH;
-	public final static String GO_ROLES = PATH + "role" + PATH;
-	public final static String GO_NIKOS =  PATH + "nikoniko" + PATH;
-	public final static String GO_FUNCTIONS =  PATH + "function" + PATH;
-	public final static String GO_GRAPHE = PATH + "graph" + PATH + "showgraphall";
-	public final static String GO_CALENDAR = PATH + "graph" + PATH + "nikoniko" + PATH + "month";
-
-	public final static String GO_USERTEAM = PATH + "user_has_team" + PATH;
-	public final static String GO_USERROLE = PATH + "user_has_role" + PATH;
-	public final static String GO_ROLEFUNC = PATH + "role_has_function" + PATH;
-
-	public final static LocalDate TODAY_DATE = new LocalDate();
-
-	public final static double TIME = 0.9999999999;
-
 	/**
 	 * SHOW MENU
 	 * @param model
@@ -73,7 +54,7 @@ public class MenuController  {
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
-	@RequestMapping(path = "/menu", method = RequestMethod.GET)
+	@RequestMapping(path = PathFinder.PATH + PathFinder.MENU_PATH, method = RequestMethod.GET)
 	public String index(Model model, String login) {
 
 		model.addAttribute("page","MENU");
@@ -84,31 +65,31 @@ public class MenuController  {
 
 		model.addAttribute("roles",this.getConnectUserRole());
 		model.addAttribute("auth",this.getUserInformations().getFirstname());
-		model.addAttribute("go_own_nikoniko", PATH + "user" + PATH + this.getUserInformations().getId() + PATH + "link");
-		model.addAttribute("add_nikoniko", PATH + "user" + PATH + this.getUserInformations().getId() + PATH + "add");
-		model.addAttribute("pie_chart", PATH + "graph" + PATH + SHOW_GRAPH);
+		model.addAttribute("go_own_nikoniko", PathFinder.PATH + "user" + PathFinder.PATH + this.getUserInformations().getId() + PathFinder.PATH + "link");
+		model.addAttribute("add_nikoniko", PathFinder.PATH + "user" + PathFinder.PATH + this.getUserInformations().getId() + PathFinder.PATH + "add");
+		model.addAttribute("pie_chart", PathFinder.PATH + "graph" + PathFinder.PATH + PathFinder.SHOW_GRAPH);
 
-		model.addAttribute("go_users", GO_USERS);
-		model.addAttribute("go_nikonikos", GO_NIKOS);
-		model.addAttribute("go_teams", GO_TEAMS);
-		model.addAttribute("go_roles", GO_ROLES);
-		model.addAttribute("go_functions", GO_FUNCTIONS);
-		model.addAttribute("go_verticales", GO_VERTICALE);
-		model.addAttribute("go_graphes", GO_GRAPHE);
-		model.addAttribute("calendar", GO_CALENDAR);
+		model.addAttribute("go_users", PathFinder.GO_USERS);
+		model.addAttribute("go_nikonikos", PathFinder.GO_NIKOS);
+		model.addAttribute("go_teams", PathFinder.GO_TEAMS);
+		model.addAttribute("go_roles", PathFinder.GO_ROLES);
+		model.addAttribute("go_functions", PathFinder.GO_FUNCTIONS);
+		model.addAttribute("go_verticales", PathFinder.GO_VERTICALE);
+		model.addAttribute("go_graphes", PathFinder.GO_GRAPHE);
+		model.addAttribute("calendar", PathFinder.GO_CALENDAR);
 
-		model.addAttribute("go_user_has_team", GO_USERTEAM);
-		model.addAttribute("go_user_has_role", GO_USERROLE);
-		model.addAttribute("go_role_has_function", GO_ROLEFUNC);
+		model.addAttribute("go_user_has_team", PathFinder.GO_USERTEAM);
+		model.addAttribute("go_user_has_role", PathFinder.GO_USERROLE);
+		model.addAttribute("go_role_has_function", PathFinder.GO_ROLEFUNC);
 
-		model.addAttribute("add_last", PATH + "user" + PATH + this.getUserInformations().getId() + PATH + "addLast");
+		model.addAttribute("add_last", PathFinder.PATH + "user" + PathFinder.PATH + this.getUserInformations().getId() + PathFinder.PATH + "addLast");
 
 		// TEST FOR SECURED REDIRECTION
 
 		model.addAttribute("id",this.getUserInformations().getId());
 
 
-		return BASE_MENU + PATH + "mainMenu";
+		return PathFinder.MENU_PATH + PathFinder.PATH + "mainMenu";
 	}
 
 	/**

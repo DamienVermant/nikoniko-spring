@@ -11,7 +11,7 @@ import com.cgi.nikoniko.models.association.base.AssociationItem;
 import com.cgi.nikoniko.utils.DumpFields;
 
 public class ViewBaseAssociatedController <T extends AssociationItem> extends BaseAssociatedController<T>{
-
+	//TODO : delete
 	private String baseName;
 
 	private String listView;

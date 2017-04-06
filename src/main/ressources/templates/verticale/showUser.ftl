@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html>
 <head>
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -36,7 +38,7 @@
 									<td>${item[key]?string("yyyy:MM:dd HH:mm:ss")}</td>
 								<#else>
 									<td>${item[key]}</td>
-									
+
 								</#if>
 							</#if>
 						</#list>
@@ -55,8 +57,9 @@
 			</#list>
 		</table>
 	<#if idVerticale != 1 >
-		<a href = "${add}"> Add user </a> <br>					
+		<a href = "${add}"> Add user </a> <br>
 	<#else>
 	</#if>
-	<a href="${back}"> Back <a>		
+	<a href="${back}"> Back <a>
 </body>
+</html>

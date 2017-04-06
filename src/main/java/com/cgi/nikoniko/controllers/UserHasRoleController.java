@@ -16,3 +16,4 @@ public class UserHasRoleController extends ViewBaseAssociatedController<UserHasR
 		super(UserHasRole.class,BASE_URL);
 	}
 }
+//TODO : delete

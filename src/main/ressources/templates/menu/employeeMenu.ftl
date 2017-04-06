@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -57,7 +58,7 @@
 
 <hr>
 
-<div class="welcome"> Bienvenue : ${auth} (connecté en tant que  : ${roles}) </div>
+<div class="welcome"> Bienvenue : ${auth} </div>
 
 <hr>
 
@@ -78,10 +79,10 @@
 			</#if>
 
 			<h2> Niko Niko </h2>
-			<a href="${calendar}"> Voir calendrier <a> <br>
-			<a href="${pie_chart}"> Voir vos résultats <a> <br>
+			- <a href="${calendar}"> Voir calendrier <a> <br>
+			- <a href="${pie_chart}"> Voir vos résultats <a> <br>
 			<#if mood == 0 || status == false>
-				- <a href="${add_nikoniko}"> Pas de vote enregistré... On vote ? </a> 
+				- <a href="${add_nikoniko}"> Pas de vote enregistré... On vote ? </a>
 				<#if lastNiko == true>
 					Attention : Si vous votez pour ajourd'hui, vous ne pourrez plus voter pour la veille <br>
 				<#else>
@@ -91,8 +92,8 @@
 			</#if>
 
 			<#if lastNiko == true>
-			 	- <a href="${add_last}"> Voter pour la veille ? </a> 
-			 	
+			 	- <a href="${add_last}"> Voter pour la veille ? </a>
+
 			<#else>
 			</#if>
 		</div>

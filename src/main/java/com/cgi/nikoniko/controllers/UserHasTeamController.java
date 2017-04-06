@@ -16,3 +16,4 @@ public class UserHasTeamController extends ViewBaseAssociatedController<UserHasT
 		super(UserHasTeam.class,BASE_URL);
 	}
 }
+//TODO : delete
