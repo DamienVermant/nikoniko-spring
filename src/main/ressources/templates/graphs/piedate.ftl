@@ -105,9 +105,9 @@
                     <button onclick="location.href='/graph/showgraphall/${year?c}/${month}/${day}'" class="allresults"> ALL Results </button>
                 </#if>
                 <#if role != "admin">
-                <button onclick="location.href='showgraph'" class="myresults"> My Results today </button>
-                <button onclick="location.href='showgraphverticale'" class="resultsverticale"> Results Verticale </button>
-                <button onclick="location.href='showgraphteam/0'" class="resultsteam"> Results team </button>
+                <button onclick="location.href='/graph/showgraph/${year?c}/${month}/${day}'" class="myresults"> My Results today </button>
+                <button onclick="location.href='/graph/showgraphverticale/${year?c}/${month}/${day}'" class="resultsverticale"> Results Verticale </button>
+                <button onclick="location.href='/graph/showgraphteam/0/${year?c}/${month}/${day}'" class="resultsteam"> Results team </button>
                 </#if></div>
             </div>
         </div>
