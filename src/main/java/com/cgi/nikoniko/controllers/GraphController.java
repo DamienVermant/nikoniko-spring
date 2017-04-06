@@ -45,7 +45,6 @@ public class GraphController extends ViewBaseController<User>{
 	public final static String BASE_GRAPH = "graph";
 	public final static String BASE_URL = PathFinder.PATH + BASE_GRAPH;
 
-
 	@Autowired
 	IUserCrudRepository userCrud;
 
