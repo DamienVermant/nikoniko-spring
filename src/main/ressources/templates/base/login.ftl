@@ -1,13 +1,15 @@
+<!DOCTYPE html>
+<html>
 <head>
 	<!-- Encodage -->
 	<meta charset="utf-8">
 
 	<!-- Bootstrap -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-	
+
 	<!-- Fonts -->
-	<link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet"> 
-	<link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet"> 
+	<link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
 
 	<!-- Title -->
 	<title>Se connecter</title>
@@ -44,7 +46,7 @@
 			<form action = "" method = "POST">
 				<#include "../includable/security/securityToken.ftl">
 				<input type="texte" name="login" placeholder="Votre login"> <br>
-				<div class="text"> Mot de passe :</div> 
+				<div class="text"> Mot de passe :</div>
 					<input type="texte" name="password" placeholder="Votre mot de passe"> <br>
 					<input type="submit" value="Se connecter"><br>
 					<button class="buttons" onclick="affichage()" class="password"> Mot de passe oublié ?</button>
@@ -56,7 +58,7 @@
 			Merci de vous connecter et de sélectionner votre satisfaction du jour.
 		</div>
 		<div class="comment">
-			Ca ne prendra pas plus d'une minute ! Promis ! 
+			Ca ne prendra pas plus d'une minute ! Promis !
 		</div>
 		</div>
 		<div class="col-lg-4">
@@ -84,3 +86,4 @@ function affichage() {
 }
 </script>
 </body>
+</html>
