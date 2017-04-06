@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.cgi.nikoniko.controllers.PathClass.PathFinder;
 import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
 import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
 import com.cgi.nikoniko.dao.ITeamCrudRepository;
@@ -33,25 +34,8 @@ import com.cgi.nikoniko.utils.DumpFields;
 @RequestMapping(TeamController.BASE_URL)
 public class TeamController extends ViewBaseController<Team> {
 
-	public final static String DOT = ".";
-	public final static String PATH = "/";
 	public final static String BASE_TEAM = "team";
-	public final static String BASE_URL = PATH + BASE_TEAM;
-
-	public static final String SHOW_PATH = "show";
-	public static final String MENU_PATH = "menu";
-
-	public final static String SHOW_GRAPH = "showGraph";
-	public final static String SHOW_USER = "showUser";
-	public final static String SHOW_NIKO = "showNiko";
-	public final static String SHOW_VERTICAL = "showVerticale";
-
-	public final static String ADD_VERTICAL = "addVerticale";
-	public final static String ADD_USER = "addUsers";
-
-	public final static String VERTICALE = "verticale";
-
-	public final static String REDIRECT = "redirect:";
+	public final static String BASE_URL = PathFinder.PATH + BASE_TEAM;
 
 	@Autowired
 	IUserHasTeamCrudRepository userTeamCrud;
@@ -87,7 +71,7 @@ public class TeamController extends ViewBaseController<Team> {
 	 * SHOW ALL USERS OF A TEAM WITH A GIVEN ID
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP"})
-	@RequestMapping(path = ROUTE_SHOW, method = RequestMethod.GET)
+	@RequestMapping(path = PathFinder.ROUTE_SHOW, method = RequestMethod.GET)
 	public String showItemGet(Model model,@PathVariable Long id) {
 
 		Long idverticale = null;
@@ -105,13 +89,13 @@ public class TeamController extends ViewBaseController<Team> {
 		model.addAttribute("page","TEAM : " + teamBuffer.getName());
 		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
 		model.addAttribute("item",DumpFields.fielder(super.getItem(id)));
-		model.addAttribute("show_users", DOT + PATH + SHOW_USER);
-		model.addAttribute("show_verticale", DOT + PATH + SHOW_VERTICAL);
-		model.addAttribute("go_index", LIST_ACTION);
-		model.addAttribute("go_delete", DELETE_ACTION);
-		model.addAttribute("go_update", UPDATE_ACTION);
+		model.addAttribute("show_users", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_USERS);
+		model.addAttribute("show_verticale", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_VERTICAL);
+		model.addAttribute("go_index", PathFinder.LIST_ACTION);
+		model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
+		model.addAttribute("go_update", PathFinder.UPDATE_ACTION);
 
-		return BASE_TEAM + PATH + SHOW_PATH;
+		return BASE_TEAM + PathFinder.PATH + PathFinder.SHOW_PATH;
 	}
 
 	/**
@@ -121,7 +105,7 @@ public class TeamController extends ViewBaseController<Team> {
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP"})
-	@RequestMapping(path = "{idTeam}" + PATH + SHOW_USER, method = RequestMethod.GET)
+	@RequestMapping(path = "{idTeam}" + PathFinder.PATH + PathFinder.SHOW_USERS, method = RequestMethod.GET)
 	public <T> String showLinksGet(Model model, @PathVariable Long idTeam) {
 
 		Team teamBuffer = new Team();
@@ -131,13 +115,13 @@ public class TeamController extends ViewBaseController<Team> {
 		model.addAttribute("items",this.UserInTeam(idTeam));
 		model.addAttribute("sortedFields",User.FIELDS);
 		model.addAttribute("page", ((Team) teamBuffer).getName());
-		model.addAttribute("go_show", SHOW_ACTION);
-		model.addAttribute("go_create", CREATE_ACTION);
-		model.addAttribute("go_delete", DELETE_ACTION);
+		model.addAttribute("go_show", PathFinder.SHOW_ACTION);
+		model.addAttribute("go_create", PathFinder.CREATE_ACTION);
+		model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
 		model.addAttribute("back", "./show");
 		model.addAttribute("add", "addUsers");
 
-		return BASE_TEAM + PATH + SHOW_USER;
+		return BASE_TEAM + PathFinder.PATH + PathFinder.SHOW_USERS;
 	}
 
 	/**
@@ -145,7 +129,7 @@ public class TeamController extends ViewBaseController<Team> {
 	 * SHOW POST THAT UPDATE USER RELATION WITH TEAM WHEN A USER QUIT A TEAM
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP"})
-	@RequestMapping(path = "{idTeam}" + PATH + SHOW_USER, method = RequestMethod.POST)
+	@RequestMapping(path = "{idTeam}" + PathFinder.PATH + PathFinder.SHOW_USERS, method = RequestMethod.POST)
 	public String showItemPost(Model model,@PathVariable Long idTeam, Long idUser) {
 		return quitTeam(idUser, idTeam);
 	}
@@ -158,7 +142,7 @@ public class TeamController extends ViewBaseController<Team> {
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP"})
-	@RequestMapping(path = "{idTeam}" + PATH + ADD_USER, method = RequestMethod.GET)
+	@RequestMapping(path = "{idTeam}" + PathFinder.PATH + PathFinder.ADD_USER, method = RequestMethod.GET)
 	public <T> String addUsersGet(Model model, @PathVariable Long idTeam) {
 
 		Object teamBuffer = new Object();
@@ -169,13 +153,13 @@ public class TeamController extends ViewBaseController<Team> {
 		model.addAttribute("items", DumpFields.listFielder(userList));
 		model.addAttribute("sortedFields",User.FIELDS);
 		model.addAttribute("page", ((Team) teamBuffer).getName());
-		model.addAttribute("go_show", SHOW_ACTION);
-		model.addAttribute("go_create", CREATE_ACTION);
-		model.addAttribute("go_delete", DELETE_ACTION);
+		model.addAttribute("go_show", PathFinder.SHOW_ACTION);
+		model.addAttribute("go_create", PathFinder.CREATE_ACTION);
+		model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
 		model.addAttribute("back", "./showUser");
-		model.addAttribute("add", ADD_USER);
+		model.addAttribute("add", PathFinder.ADD_USER);
 
-		return BASE_TEAM + PATH + ADD_USER;
+		return BASE_TEAM + PathFinder.PATH + PathFinder.ADD_USER;
 	}
 
 	/**
@@ -187,7 +171,7 @@ public class TeamController extends ViewBaseController<Team> {
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP"})
-	@RequestMapping(path = "{idTeam}" + PATH + ADD_USER, params = "idUser", method = RequestMethod.POST)
+	@RequestMapping(path = "{idTeam}" + PathFinder.PATH + PathFinder.ADD_USER, params = "idUser", method = RequestMethod.POST)
 	public <T> String addUsersPost(Model model, @PathVariable Long idTeam, @RequestParam Long idUser) {
 		return setUsersForTeamPost(idTeam, idUser);
 	}
@@ -199,7 +183,7 @@ public class TeamController extends ViewBaseController<Team> {
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
-	@RequestMapping(path = "{idTeam}" + PATH + ADD_USER, params = "name", method = RequestMethod.POST)
+	@RequestMapping(path = "{idTeam}" + PathFinder.PATH + PathFinder.ADD_USER, params = "name", method = RequestMethod.POST)
 	public String addVerticalForTeamPOST(Model model,@RequestParam String name , @PathVariable Long idTeam){
 
 		Team teamBuffer = teamCrud.findOne(idTeam);
@@ -208,12 +192,12 @@ public class TeamController extends ViewBaseController<Team> {
 		model.addAttribute("page", teamBuffer.getName());
 		model.addAttribute("sortedFields",User.FIELDS);
 		model.addAttribute("items",DumpFields.listFielder(this.searchUser(name)));
-		model.addAttribute("go_show", SHOW_ACTION);
-		model.addAttribute("go_create", CREATE_ACTION);
-		model.addAttribute("go_delete", DELETE_ACTION);
-		model.addAttribute("back", DOT + PATH + SHOW_USER);
+		model.addAttribute("go_show", PathFinder.SHOW_ACTION);
+		model.addAttribute("go_create", PathFinder.CREATE_ACTION);
+		model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
+		model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_USERS);
 
-		return BASE_TEAM + PATH + ADD_USER;
+		return BASE_TEAM + PathFinder.PATH + PathFinder.ADD_USER;
 
 	}
 
@@ -262,7 +246,7 @@ public class TeamController extends ViewBaseController<Team> {
 	 */
 	public String setUsersForTeamPost(Long idTeam,Long idUser){
 
-		String redirect = REDIRECT + PATH + BASE_TEAM + PATH + idTeam + PATH + SHOW_USER;
+		String redirect = PathFinder.REDIRECT + PathFinder.PATH + BASE_TEAM + PathFinder.PATH + idTeam + PathFinder.PATH + PathFinder.SHOW_USERS;
 
 		Team team = new Team();
 		team = teamCrud.findOne(idTeam);
@@ -286,7 +270,7 @@ public class TeamController extends ViewBaseController<Team> {
 	 */
 	public String quitTeam(Long idUser, Long idTeam){
 
-		String redirect = REDIRECT + PATH + BASE_TEAM + PATH + idTeam + PATH + SHOW_USER;
+		String redirect = PathFinder.REDIRECT + PathFinder.PATH + BASE_TEAM + PathFinder.PATH + idTeam + PathFinder.PATH + PathFinder.SHOW_USERS;
 
 		Date date = new Date();
 
@@ -345,7 +329,7 @@ public class TeamController extends ViewBaseController<Team> {
 	 * @return
 	 */
 	// @Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP"})
-	@RequestMapping(path = "{idTeam}" + PATH + SHOW_VERTICAL, method = RequestMethod.GET)
+	@RequestMapping(path = "{idTeam}" + PathFinder.PATH + PathFinder.SHOW_VERTICAL, method = RequestMethod.GET)
 	public String showVerticalForUserGET(Model model, @PathVariable Long idTeam) {
 
 		Team teamBuffer = new Team();
@@ -354,11 +338,11 @@ public class TeamController extends ViewBaseController<Team> {
 		model.addAttribute("page", teamBuffer.getName());
 		model.addAttribute("sortedFields", Verticale.FIELDS);
 		model.addAttribute("items", this.getVerticalForUser(idTeam));
-		model.addAttribute("show_verticale", DOT + PATH + SHOW_VERTICAL);
-		model.addAttribute("back", DOT + PATH + SHOW_PATH);
+		model.addAttribute("show_verticale", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_VERTICAL);
+		model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_PATH);
 		model.addAttribute("add", "addVerticale");
 
-		return BASE_TEAM + PATH + SHOW_VERTICAL;
+		return BASE_TEAM + PathFinder.PATH + PathFinder.SHOW_VERTICAL;
 
 	}
 
@@ -382,7 +366,7 @@ public class TeamController extends ViewBaseController<Team> {
 	 * @return
 	 */
 	@Secured({ "ROLE_ADMIN", "ROLE_GESTIONNAIRE" })
-	@RequestMapping(path = "{idTeam}" + PATH + ADD_VERTICAL, method = RequestMethod.GET)
+	@RequestMapping(path = "{idTeam}" + PathFinder.PATH + PathFinder.ADD_VERTICAL, method = RequestMethod.GET)
 	public <T> String addVerticalForUserGET(Model model,
 			@PathVariable Long idTeam) {
 
@@ -392,13 +376,13 @@ public class TeamController extends ViewBaseController<Team> {
 				.listFielder((ArrayList<Verticale>) verticaleCrud.findAll()));
 		model.addAttribute("sortedFields", Verticale.FIELDS);
 		model.addAttribute("page", ((Team) teamBuffer).getName());
-		model.addAttribute("go_show", SHOW_ACTION);
-		model.addAttribute("go_create", CREATE_ACTION);
-		model.addAttribute("go_delete", DELETE_ACTION);
-		model.addAttribute("back", DOT + PATH + SHOW_VERTICAL);
-		model.addAttribute("add", ADD_VERTICAL);
+		model.addAttribute("go_show", PathFinder.SHOW_ACTION);
+		model.addAttribute("go_create", PathFinder.CREATE_ACTION);
+		model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
+		model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_VERTICAL);
+		model.addAttribute("add", PathFinder.ADD_VERTICAL);
 
-		return BASE_TEAM + PATH + ADD_VERTICAL;
+		return BASE_TEAM + PathFinder.PATH + PathFinder.ADD_VERTICAL;
 	}
 
 	/**
@@ -410,7 +394,7 @@ public class TeamController extends ViewBaseController<Team> {
 	 * @return
 	 */
 	@Secured({ "ROLE_ADMIN", "ROLE_GESTIONNAIRE" })
-	@RequestMapping(path = "{idTeam}" + PATH + ADD_VERTICAL, method = RequestMethod.POST)
+	@RequestMapping(path = "{idTeam}" + PathFinder.PATH + PathFinder.ADD_VERTICAL, method = RequestMethod.POST)
 	public <T> String addVerticalForUserPOST(Model model,
 			@PathVariable Long idTeam, Long idVertical) {
 		return setVerticalForTeam(idTeam, idVertical);
@@ -424,8 +408,8 @@ public class TeamController extends ViewBaseController<Team> {
 	 */
 	private String setVerticalForTeam(Long idTeam, Long idVertical) {
 
-		String redirect = REDIRECT + PATH + BASE_TEAM + PATH + idTeam + PATH
-				+ SHOW_VERTICAL;
+		String redirect = PathFinder.REDIRECT + PathFinder.PATH + BASE_TEAM + PathFinder.PATH
+						+ idTeam + PathFinder.PATH + PathFinder.SHOW_VERTICAL;
 
 		Team teamBuffer = new Team();
 		Verticale verticaleBuffer = new Verticale();
@@ -483,16 +467,16 @@ public class TeamController extends ViewBaseController<Team> {
 	}
 
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
-    @RequestMapping(path = {PATH, ROUTE_LIST}, method = RequestMethod.POST)
+    @RequestMapping(path = {PathFinder.PATH, PathFinder.ROUTE_LIST}, method = RequestMethod.POST)
     public String showTeams(Model model,String name){
 
         model.addAttribute("model", "team");
-        model.addAttribute("page",this.baseName + " " + LIST_ACTION.toUpperCase());
+        model.addAttribute("page",this.baseName + " " + PathFinder.LIST_ACTION.toUpperCase());
         model.addAttribute("sortedFields",Team.FIELDS);
         model.addAttribute("items",DumpFields.listFielder(teamCrud.getTeams(name)));
-        model.addAttribute("go_show", SHOW_ACTION);
-        model.addAttribute("go_create", CREATE_ACTION);
-        model.addAttribute("go_delete", DELETE_ACTION);
+        model.addAttribute("go_show", PathFinder.SHOW_ACTION);
+        model.addAttribute("go_create", PathFinder.CREATE_ACTION);
+        model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
 
         return listView;
     }
