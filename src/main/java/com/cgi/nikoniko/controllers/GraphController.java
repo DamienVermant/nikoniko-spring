@@ -597,7 +597,7 @@ public class GraphController extends ViewBaseController<User>{
 			}
 		}
 
-		model.addAttribute("title", "Touds les votes du : " + day + " " + getMonthLetter(month) + " " + year + " pour l'equipe : " + teamCrud.findOne(teamId).getName());
+		model.addAttribute("title", "Tous les votes du : " + day + " " + getMonthLetter(month) + " " + year + " pour l'equipe : " + teamCrud.findOne(teamId).getName());
 		model.addAttribute("role", role);
 		model.addAttribute("nameteam", teamName);
 		model.addAttribute("mood", nbMood);
