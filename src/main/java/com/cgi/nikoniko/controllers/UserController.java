@@ -205,14 +205,31 @@ public class UserController extends ViewBaseController<User> {
 	public String newNikoNikoForUserGET(Model model,@PathVariable Long userId,
 						HttpServletResponse response) throws IOException {
 
+		try {
+			userCrud.findOne(userId).getId();
+		} catch (Exception e) {
+			response.sendError(HttpStatus.FORBIDDEN.value(),("Don't try to hack url!").toUpperCase());
+			return null;
+		}
+
+		if (userCrud.findByLogin(super.checkSession().getName()).getId()!= userId) {
+			response.sendError(HttpStatus.FORBIDDEN.value(),("Don't try to hack url!").toUpperCase());
+		}
+
 		Long userBuffer = UtilsFunctions.getUserInformations(userCrud).getId();
 
 		User user = super.getItem(userId);
 		NikoNiko niko = new NikoNiko();
 
-		if (userCrud.findByLogin(super.checkSession().getName()).getId()!= userId) {
-			response.sendError(HttpStatus.BAD_REQUEST.value(),("Don't try to hack url!").toUpperCase());
+
+
+		niko = nikonikoCrud.findOne(userCrud.getLastNikoNikoUser(userId));
+		if (niko.getComment().isEmpty()) {
+			model.addAttribute("textAreaOption","");
+		} else {
+			model.addAttribute("textAreaOption",niko.getComment());
 		}
+
 
 		model.addAttribute("lastMood", UtilsFunctions.getLastLastNikoNikoMood(userBuffer, userCrud, nikonikoCrud));
 		model.addAttribute("status", UtilsFunctions.checkDateNikoNiko(userBuffer, userCrud, nikonikoCrud));

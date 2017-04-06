@@ -62,7 +62,7 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 		RoleCGI roleBuffer = new RoleCGI();
 		roleBuffer= roleCrud.findOne(id);
 
-		model.addAttribute("page","ROLE : " + roleBuffer.getName());
+		model.addAttribute("page","ROLE3 : " + roleBuffer.getName());
 		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
 		model.addAttribute("item",DumpFields.fielder(super.getItem(id)));
 		model.addAttribute("show_users", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_USERS);
@@ -81,7 +81,7 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_VP"})
 	@RequestMapping(path = "{idRole}" + PathFinder.PATH + PathFinder.SHOW_USERS, method = RequestMethod.GET)
-	public <T> String showLinksGetUser(Model model, @PathVariable Long idRole) {
+	public String showLinksGetUser(Model model, @PathVariable Long idRole) {
 
 		RoleCGI roleBuffer = new RoleCGI();
 		roleBuffer= roleCrud.findOne(idRole);
@@ -92,7 +92,7 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 		model.addAttribute("show_users", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_USERS);
 		model.addAttribute("go_create", PathFinder.CREATE_ACTION);
 		model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
-		model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_PATH);
+		model.addAttribute("back", PathFinder.DOT + PathFinder.DOT + PathFinder.PATH);
 		model.addAttribute("add", PathFinder.ADD_USER);
 
 		return BASE_ROLE + PathFinder.PATH + PathFinder.SHOW_USERS;

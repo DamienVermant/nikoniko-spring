@@ -37,7 +37,7 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 	public ViewBaseController (Class<T> clazz, String baseURL) {
 		super(clazz);
 
-		this.baseName = DumpFields.createContentsEmpty(super.getClazz()).table.toUpperCase();
+		this.baseName = DumpFields.createContentsEmpty(super.getClazz()).table.toLowerCase();
 		this.baseView = "base";
 		this.listView = this.baseView + PathFinder.PATH_LIST_FILE;
 		this.updateView = this.baseView + PathFinder.PATH_UPDATE_FILE;
@@ -61,7 +61,7 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 	public String index(Model model) {
 
 		model.addAttribute("model", this.baseName.toLowerCase());
-		model.addAttribute("page",this.baseName + " " + PathFinder.LIST_ACTION.toUpperCase());
+		model.addAttribute("page",this.baseName);
 		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
 
 		if (this.baseName.toLowerCase().equals("role")) {

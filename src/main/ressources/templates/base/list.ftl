@@ -7,7 +7,7 @@
 </head>
 
 <body>
-	<h1>${page}</h1>
+	<h1>Liste des ${page}s</h1>
 	<form action = "" method = "POST">
 		<#include "../includable/security/securityToken.ftl">
 		<#if model = "user">
@@ -20,15 +20,15 @@
 			<input type="text" class="search" onkeyup="myFunction()" name="name" placeholder="Search for registration_cgi" title="Type in a name">
 		<#else>
 		</#if>
-
 		<#if model == "role">
 		<#else>
 			<input type="submit" value="Search">
 		</#if>
+
 	</form>
 	<#if model == "nikoniko" || model == "role">
 	<#else>
-		<a href="${go_create}">Create new</a>
+		 <br><a class ="btn btn-default" href="${go_create}">Créer un nouveau</a>
 	</#if>
 	<table class="table table-bordered table-hover">
 			<tr>
@@ -46,6 +46,11 @@
 					</#list>
 					<#break>
 				</#list>
+				<#if model == "role">
+					<th>Actions</th>
+				<#else>
+					<th colspan = 2>Actions</th>
+				</#if>
 			</tr>
 			<#list items as item>
 				<tr>
@@ -68,34 +73,48 @@
 							</#if>
 						</#list>
 					</#list>
-					<td>
-						<#if item["id"]??>
-							<a href="${item["id"]}/${go_show}">Select</a>
+					<#if model == "role">
+						<td>
+							<#if item["id"]??>
+								<a class = "btn btn-default" href="${item["id"]}/showUser">Ajouter un utilisateur</a>
 
-						<#else>
-							<a href="${item["idLeft"]}/${item["idRight"]}/${go_show}">Select</a>
-						</#if>
-					</td>
-					<td>
-						<#if item["id"]??>
-							<form action = "${item["id"]}/${go_delete}" method = "POST">
-							<#include "../includable/security/securityToken.ftl">
-								<input type="hidden" name = "id" value = "${item["id"]}">
-								<input type="submit" value="Delete">
-							</form>
+							<#else>
+								<a class = "btn btn-default" href="${item["idLeft"]}/${item["idRight"]}/${go_show}">Select</a>
+							</#if>
+						</td>
 
-						<#else>
-							<form action = "${item["idLeft"]}/${item["idRight"]}/${go_delete}" method = "POST">
-							<#include "../includable/security/securityToken.ftl">
-								<input type="hidden" name = "idl" value = "${item["idLeft"]}">
-								<input type="hidden" name = "idr" value = "${item["idRight"]}">
-								<input type="submit" value="Delete">
-							</form>
-						</#if>
-					</td>
+
+					<#else>
+						<td>
+							<#if item["id"]??>
+								<a class = "btn btn-default" href="${item["id"]}/${go_show}">Détails</a>
+
+							<#else>
+								<a class = "btn btn-default" href="${item["idLeft"]}/${item["idRight"]}/${go_show}">Détails</a>
+							</#if>
+						</td>
+						<td>
+
+							<#if item["id"]??>
+								<form action = "${item["id"]}/${go_delete}" method = "POST">
+								<#include "../includable/security/securityToken.ftl">
+									<input type="hidden" name = "id" value = "${item["id"]}">
+									<input type="submit" value="Delete">
+								</form>
+
+							<#else>
+								<form action = "${item["idLeft"]}/${item["idRight"]}/${go_delete}" method = "POST">
+								<#include "../includable/security/securityToken.ftl">
+									<input type="hidden" name = "idl" value = "${item["idLeft"]}">
+									<input type="hidden" name = "idr" value = "${item["idRight"]}">
+									<input type="submit" value="Delete">
+								</form>
+							</#if>
+						</td>
+					</#if>
 				</tr>
 			</#list>
 		</table>
-		<a href="/menu/">Back</a>
+		<a class = "btn btn-default" href="/menu/">Retour</a>
 </body>
 </html>
