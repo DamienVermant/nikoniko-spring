@@ -59,7 +59,7 @@ public class UserController extends ViewBaseController<User> {
 
 /////////////////// NECESSARY CRUD /////////////////////////////////
 
-	
+
 	@Autowired
 	INikoNikoCrudRepository nikonikoCrud;
 
@@ -204,7 +204,7 @@ public class UserController extends ViewBaseController<User> {
 	@RequestMapping(path = "{userId}/add", method = RequestMethod.GET)
 	public String newNikoNikoForUserGET(Model model,@PathVariable Long userId,
 						HttpServletResponse response) throws IOException {
-		
+
 		Long userBuffer = UtilsFunctions.getUserInformations(userCrud).getId();
 
 		User user = super.getItem(userId);
@@ -322,7 +322,7 @@ public class UserController extends ViewBaseController<User> {
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
 	@RequestMapping(path = "{userId}/addLast", method = RequestMethod.POST)
 	public String lastNikoNikoForUserPOST(Model model,@PathVariable Long userId,
-						HttpServletResponse response, int mood, String comment) throws IOException {
+						HttpServletResponse response, Integer mood, String comment) throws IOException {
 
 		return UtilsFunctions.updateLastNikoNiko(userId, mood, comment, nikonikoCrud, userCrud);
 
