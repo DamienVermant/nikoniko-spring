@@ -63,7 +63,11 @@ public class NikoNikoController extends ViewBaseController<NikoNiko> {
 
 		return BASE_NIKONIKO + PATH + SHOW_PATH;
 	}
-
+	
+	public String index(Model model, String name){
+	return super.index(model);
+	}
+	
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 	@RequestMapping(path = {PATH, ROUTE_LIST}, method = RequestMethod.POST)
 	public String showVerticales(Model model,String name){

@@ -35,6 +35,7 @@ public class UserDetailsServiceImp implements UserDetailsService {
 
 	@Override
 	@Transactional(readOnly = true)
+	// RECUPERATION D'UN UTILISATEUR PAR SON LOGIN (DROIT + LOGIN ET PASSWORD POUR POUVOIR SE CONNECTER)
 	public UserDetails loadUserByUsername(String login)
 			throws UsernameNotFoundException {
 		
@@ -51,6 +52,11 @@ public class UserDetailsServiceImp implements UserDetailsService {
 					.User(user.getLogin(),user.getPassword(),grantedAuthorities);
 	}
 
+	/**
+	 * RECUPERATION DE TOUS LES ROLES ASSOCIES A UN USER
+	 * @param idUser
+	 * @return
+	 */
 	public ArrayList<RoleCGI> setRolesForUserGet(Long idUser) {
 
 		List<Long> ids = new ArrayList<Long>();
