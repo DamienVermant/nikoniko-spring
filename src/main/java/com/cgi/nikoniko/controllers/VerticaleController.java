@@ -92,7 +92,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 	@RequestMapping(path = {PathFinder.PATH, PathFinder.ROUTE_LIST}, method = RequestMethod.POST)
-	public String showVerticales(Model model,String name){
+	public String showVerticalesPOST(Model model,String name){
 
 		model.addAttribute("model", "verticale");
 		model.addAttribute("page",this.baseName + " " + PathFinder.LIST_ACTION.toUpperCase());
@@ -257,7 +257,6 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	return PathFinder.BASE_VERTICALE + PathFinder.PATH + PathFinder.ADD_USER;
 	}
 
-
 	/**
 	 *
 	 * SHOW USERS TO ADD ON VERTICALE (SEARCH)
@@ -338,7 +337,6 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	 * @param idVerticale
 	 * @return
 	 */
-
 	public String defaultVerticalForUser(Long idUser, Long idVerticale){
 
 		String redirect = PathFinder.REDIRECT + PathFinder.PATH + PathFinder.BASE_VERTICALE + PathFinder.PATH + idVerticale + PathFinder.PATH + PathFinder.SHOW_USERS;
@@ -578,17 +576,6 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 
 	}
 
-
-/////////////////// CONSTRUCTORS /////////////////////////////////
-
-
-	public VerticaleController() {
-		super(Verticale.class,BASE_URL);
-	}
-
-
-/////////////////// TO MOVE /////////////////////////////////
-
 	/**
 	 * ADD ONE TEAM TO VERTICALE
 	 * @param model
@@ -603,7 +590,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	}
 
 	/**
-	 * FUNCTION USED FOR ADD ONE TEAM TO VERTICALE
+	 * FUNCTION USED TO ADD ONE TEAM TO VERTICALE
 	 * @param idTeam
 	 * @param idVertical
 	 * @return
@@ -625,7 +612,6 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 		return redirect;
 	}
 
-
 	/**
 	 * SELECTION NIKONIKO PAR RAPPORT A UN ENSEMBLE (TEAM, VERTICALE, ETC...)
 	 */
@@ -645,7 +631,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	}
 
 	/**
-	 * NAME ?????
+	 * FIND ALL NIKONIKO RELATED TO A TEAM
 	 * @param idTeam
 	 * @return
 	 */
@@ -654,7 +640,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 		ArrayList<User> usersOfTeam = findUsersOfATeam(idTeam);
 
 		ArrayList<NikoNiko> nikonikos = new ArrayList<NikoNiko>();
-		//Partie a externaliser en fonction findAllNikoNikoForAUser(idUser) => probablement deja existante
+
 		if (!usersOfTeam.isEmpty()) {
 			for (User user : usersOfTeam) {
 				if (!user.getNikoNikos().isEmpty()) {
@@ -662,13 +648,12 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 				}
 			}
 		}
-		//fin de partie a externaliser
 
 		return nikonikos;
 	}
 
 	/**
-	 * NAME ???
+	 * FIND ALL USER RELATED TO A TEAM
 	 * @param idValue
 	 * @return
 	 */
@@ -685,6 +670,14 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 			userList = (ArrayList<User>) userCrud.findAll(ids);
 		}
 		return userList;
+	}
+
+
+	/////////////////// CONSTRUCTORS /////////////////////////////////
+
+
+	public VerticaleController() {
+		super(Verticale.class,BASE_URL);
 	}
 
 }

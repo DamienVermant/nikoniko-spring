@@ -91,6 +91,42 @@ public class UserController extends ViewBaseController<User> {
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+	/**
+	 * LIST USER METHOD POST
+	 * @param model
+	 * @param name
+	 * @return
+	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
+	@RequestMapping(path = {PathFinder.PATH, PathFinder.ROUTE_LIST}, method = RequestMethod.POST)
+	public String showUsers(Model model,String name){
+
+		model.addAttribute("model", "user");
+		model.addAttribute("page",this.baseName + " " + PathFinder.LIST_ACTION.toUpperCase());
+		model.addAttribute("sortedFields",User.FIELDS);
+		model.addAttribute("items",this.searchUser(name));
+		model.addAttribute("go_show", PathFinder.SHOW_ACTION);
+		model.addAttribute("go_create", PathFinder.CREATE_ACTION);
+		model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
+		return listView;
+
+	}
+
+	/**
+	 * FIND A SPECIFIC USER
+	 * @param name
+	 * @return
+	 */
+	public ArrayList<User> searchUser(String name){
+
+		ArrayList<User> userList = new ArrayList<User>();
+		userList = userCrud.getUsers(name);
+
+		return userList;
+
+	}
+
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
@@ -742,7 +778,7 @@ public class UserController extends ViewBaseController<User> {
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_VP"})
 	@RequestMapping(path = "{idUser}" + PathFinder.PATH + PathFinder.ADD_ROLE, method = RequestMethod.GET)
-	public <T> String addRoleforUserGET(Model model, @PathVariable Long idUser) {
+	public String addRoleforUserGET(Model model, @PathVariable Long idUser) {
 
 		Object userBuffer = new Object();
 		userBuffer = userCrud.findOne(idUser);
@@ -816,7 +852,7 @@ public class UserController extends ViewBaseController<User> {
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 	@RequestMapping(path = "{idUser}" + PathFinder.PATH + PathFinder.ADD_VERTICAL, method = RequestMethod.GET)
-	public <T> String addVerticalForUserGET(Model model, @PathVariable Long idUser) {
+	public String addVerticalForUserGET(Model model, @PathVariable Long idUser) {
 
 	Object userBuffer = new Object();
 	userBuffer = userCrud.findOne(idUser);
@@ -868,56 +904,8 @@ public class UserController extends ViewBaseController<User> {
 		return redirect;
 	}
 
-	/////////////////////////////////////////////////////////////////////
 
-	/**
-	 *
-	 * SEARCH USER, STATUS : WORK
-	 *
-	 */
-
-	/////////////////////////////////////////////////////////////////////
-
-	/**
-	 * LIST USER METHOD POST
-	 * @param model
-	 * @param name
-	 * @return
-	 */
-	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
-	@RequestMapping(path = {PathFinder.PATH, PathFinder.ROUTE_LIST}, method = RequestMethod.POST)
-	public String showUsers(Model model,String name){
-
-		model.addAttribute("model", "user");
-		model.addAttribute("page",this.baseName + " " + PathFinder.LIST_ACTION.toUpperCase());
-		model.addAttribute("sortedFields",User.FIELDS);
-		model.addAttribute("items",this.searchUser(name));
-		model.addAttribute("go_show", PathFinder.SHOW_ACTION);
-		model.addAttribute("go_create", PathFinder.CREATE_ACTION);
-		model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
-		return listView;
-
-	}
-
-	/**
-	 * FIND A SPECIFIC USER
-	 * @param name
-	 * @return
-	 */
-	public ArrayList<User> searchUser(String name){
-
-		ArrayList<User> userList = new ArrayList<User>();
-		userList = userCrud.getUsers(name);
-
-		return userList;
-
-	}
-
-	/////////////////////////////////////////////////////////////////////
-
-
-/////////////////// CONTROLLERS /////////////////////////////////
-
+/////////////////// CONTRUCTORS /////////////////////////////////
 
 	public UserController() {
 		super(User.class,BASE_URL);

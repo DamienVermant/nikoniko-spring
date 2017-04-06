@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html>
 <head>
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -18,7 +20,7 @@
 			<input type="text" class="search" onkeyup="myFunction()" name="name" placeholder="Search for registration_cgi" title="Type in a name">
 		<#else>
 		</#if>
-		
+
 		<#if model == "role">
 		<#else>
 			<input type="submit" value="Search">
@@ -96,3 +98,4 @@
 		</table>
 		<a href="/menu/">Back</a>
 </body>
+</html>
