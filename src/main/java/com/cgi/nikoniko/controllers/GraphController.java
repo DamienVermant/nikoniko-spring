@@ -1239,25 +1239,6 @@ public class GraphController extends ViewBaseController<User>{
 		return userList;
 	}
 
-//	/**se trouve a l adresse verticale/idTeam/mesnikonikos
-//	 *
-//	 * @param model
-//	 * @param idTeam
-//	 * @return
-//	 */
-//	@RequestMapping(path = "{idVert}/mesnikonikos", method = RequestMethod.GET)
-//	public String controlleurBidon(Model model, @PathVariable Long idVert) {
-//
-//		ArrayList<NikoNiko> nikos = findNikoNikosOfAVerticale(idVert);
-//
-//		List<Long> ids = new ArrayList<Long>();
-//
-//		model.addAttribute("sortedFields",NikoNiko.FIELDS);
-//		model.addAttribute("items",DumpFields.listFielder(nikos));
-//
-//		return "nikoniko/testFindNikopage";
-//	}
-
 	/**
 	 *
 	 * @param model	:

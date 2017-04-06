@@ -37,6 +37,7 @@ public class UserDetailsServiceImp implements UserDetailsService {
 	@Transactional(readOnly = true)
 	public UserDetails loadUserByUsername(String login)
 			throws UsernameNotFoundException {
+		
 		User user = userCrud.findByLogin(login);
 
 		Set<GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
@@ -50,14 +51,14 @@ public class UserDetailsServiceImp implements UserDetailsService {
 					.User(user.getLogin(),user.getPassword(),grantedAuthorities);
 	}
 
-	public ArrayList<RoleCGI> setRolesForUserGet(Long idUser) {//find a more appropriate name later
+	public ArrayList<RoleCGI> setRolesForUserGet(Long idUser) {
 
 		List<Long> ids = new ArrayList<Long>();
 		ArrayList<RoleCGI> roleList = new ArrayList<RoleCGI>();
 
 		List<BigInteger> idsBig = userRoleCrud.findAssociatedRole(idUser);
 
-		if (!idsBig.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
+		if (!idsBig.isEmpty()) {
 			for (BigInteger id : idsBig) {
 				ids.add(id.longValue());
 
