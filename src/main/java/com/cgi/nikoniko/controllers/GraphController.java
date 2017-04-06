@@ -195,7 +195,7 @@ public class GraphController extends ViewBaseController<User>{
 			}
 		}
 
-		model.addAttribute("title", "Mes votes !" );
+		model.addAttribute("title", "Mes votes d'aujourd'hui" );
 		model.addAttribute("role", role);
 		model.addAttribute("mood", this.getUserLastMood(userCrud.findByLogin(super.checkSession().getName()).getId()));
 		model.addAttribute("good", good);
@@ -245,7 +245,7 @@ public class GraphController extends ViewBaseController<User>{
 			}
 		}
 
-		model.addAttribute("title", "Mes votes !" );
+		model.addAttribute("title", "Mes votes de la journée du : " + day + " " + getMonthLetter(month) + " " + year );
 		model.addAttribute("role", role);
 		model.addAttribute("mood", this.getUserLastMood(userCrud.findByLogin(super.checkSession().getName()).getId()));
 		model.addAttribute("good", good);
@@ -298,7 +298,7 @@ public class GraphController extends ViewBaseController<User>{
 			}
 		}
 
-		model.addAttribute("title", "Tous les votes");
+		model.addAttribute("title", "Tous les votes d'aujourd'hui");
 		model.addAttribute("role", role);
 		model.addAttribute("mood", nbMood);
 		model.addAttribute("good", good);
@@ -351,7 +351,7 @@ public class GraphController extends ViewBaseController<User>{
 			}
 		}
 
-		model.addAttribute("title", "Tous les votes");
+		model.addAttribute("title", "Tous les votes de la journée du : " + day + " " + getMonthLetter(month) + " " + year);
 		model.addAttribute("role", role);
 		model.addAttribute("mood", nbMood);
 		model.addAttribute("good", good);
@@ -404,7 +404,7 @@ public class GraphController extends ViewBaseController<User>{
 			}
 		}
 
-		model.addAttribute("title", verticaleCrud.findOne(verticaleId).getName());
+		model.addAttribute("title", "Tous les votes d'aujourd'hui pour la verticale : " + verticaleCrud.findOne(verticaleId).getName());
 		model.addAttribute("role", role);
 		model.addAttribute("mood", nbMood);
 		model.addAttribute("good", good);
@@ -457,7 +457,7 @@ public class GraphController extends ViewBaseController<User>{
 			}
 		}
 
-		model.addAttribute("title", verticaleCrud.findOne(verticaleId).getName());
+		model.addAttribute("title", "Tous les votes du : " + day + " " + getMonthLetter(month) + " " + year + ", pour la verticale : " + verticaleCrud.findOne(verticaleId).getName());
 		model.addAttribute("role", role);
 		model.addAttribute("mood", nbMood);
 		model.addAttribute("good", good);
@@ -525,7 +525,7 @@ public class GraphController extends ViewBaseController<User>{
 			}
 		}
 
-		model.addAttribute("title", teamCrud.findOne(teamId).getName());
+		model.addAttribute("title", "Tous les votes d'aujourd'hui pour l'equipe : " + teamCrud.findOne(teamId).getName());
 		model.addAttribute("role", role);
 		model.addAttribute("nameteam", teamName);
 		model.addAttribute("name", teamName);
@@ -597,7 +597,7 @@ public class GraphController extends ViewBaseController<User>{
 			}
 		}
 
-		model.addAttribute("title", teamCrud.findOne(teamId).getName());
+		model.addAttribute("title", "Touds les votes du : " + day + " " + getMonthLetter(month) + " " + year + " pour l'equipe : " + teamCrud.findOne(teamId).getName());
 		model.addAttribute("role", role);
 		model.addAttribute("nameteam", teamName);
 		model.addAttribute("mood", nbMood);
@@ -660,6 +660,13 @@ public class GraphController extends ViewBaseController<User>{
 	return niko;
 	}
 
+	public String getMonthLetter (int month){
+
+		String monthNames[] = {"Janvier","Fevrier","Mars","Avril","Mai","Juin","Juillet","Aout","Septembre","Octobre","Novembre","Decembre"};
+		String monthName = monthNames[month-1];
+
+		return monthName;
+	}
 	/**
 	 * Recupère les nikonikos par rapport à une verticale
 	 * @param idVert

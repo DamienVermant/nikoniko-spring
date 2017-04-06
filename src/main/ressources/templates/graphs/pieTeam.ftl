@@ -94,10 +94,10 @@
                     <#list nameteam>
                         <table>
                             <div class="dropdown">
-                                <span>Team</span>
+                                <span>Affiche les équipes</span>
                                 <div>
                                     <#items as name>
-                                        <p><button onclick="location.href='./${name?counter-1}'" class="dropdown-content"> ${name} </button></p>
+                                        <button onclick="location.href='./${name?counter-1}'" class="dropdown-content"> ${name} </button>
                                     </#items>
                             </div></div>
                         </table>
@@ -118,13 +118,21 @@
 <div class="container-fluid">
     <div class="col-lg-2">
         <div class="row-fluid">
-            <div class="col-lg-12">
+            <div class="col-lg-8">
                 <div class="alignleft">
                 <button onclick="location.href='../showgraph'" class="myresults"> My Results </button>
                 <#if role != "employee">
                     <button onclick="location.href='../showgraphall'" class="allresults"> ALL Results </button>
                 </#if>
                 <button onclick="location.href='../showgraphverticale'" class="resultsverticale"> Results Verticale </button>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="alignleft">
+                <#if role != "admin">
+                <button onclick="location.href='/graph/nikoniko/month'" class="resultsteam"> Calendrier </button>
+                <button onclick="location.href='/graph/nikonikovert/1/month'" class="resultsteam"> Calendrier verticale </button>
+                </#if>
                 </div>
             </div>
         </div>
