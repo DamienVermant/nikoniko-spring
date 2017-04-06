@@ -176,6 +176,7 @@ hr {
 }
 .daynikos img{
 	width : 40%;
+	cursor : pointer;
 }
 .nikoPastille {
 	width : 45%;
