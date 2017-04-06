@@ -42,7 +42,6 @@ public abstract class BaseController <T extends DatabaseItem> {
 
 	private Class<T> clazz;
 
-
 	/**
 	 *
 	 * @return the clazz

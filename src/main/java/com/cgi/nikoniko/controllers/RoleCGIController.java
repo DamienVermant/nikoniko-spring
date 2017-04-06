@@ -87,7 +87,7 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_VP"})
 	@RequestMapping(path = "{idRole}" + PATH + SHOW_USERS, method = RequestMethod.GET)
-	public <T> String showLinksGetUser(Model model, @PathVariable Long idRole) {
+	public String showLinksGetUser(Model model, @PathVariable Long idRole) {
 
 		RoleCGI roleBuffer = new RoleCGI();
 		roleBuffer= roleCrud.findOne(idRole);
@@ -129,7 +129,7 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 	 */
 	@Secured({"ROLE_ADMIN"})
 	@RequestMapping(path = "{idRole}" + PATH + ADD_USER, method = RequestMethod.GET)
-	public <T> String addUsersGet(Model model, @PathVariable Long idRole) {
+	public String addUsersGet(Model model, @PathVariable Long idRole) {
 
 		Object roleBuffer = new Object();
 		roleBuffer = roleCrud.findOne(idRole);
