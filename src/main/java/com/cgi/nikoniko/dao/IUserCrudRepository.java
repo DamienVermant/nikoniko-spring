@@ -80,4 +80,6 @@ public interface IUserCrudRepository extends IBaseCrudRepository<User>{
 	@Query(value = "SELECT * FROM user WHERE verticale_id = :idVerticale", nativeQuery=true)
 	public ArrayList<User> getAssociatedUsers(@Param("idVerticale") long idVerticale);
 	
+	@Query(value = "SELECT * FROM user WHERE login = :name", nativeQuery=true)
+	public User getUser(@Param("name") String name);
 }

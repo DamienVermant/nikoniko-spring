@@ -24,6 +24,7 @@ import com.cgi.nikoniko.dao.IUserHasRoleCrudRepository;
 import com.cgi.nikoniko.models.tables.NikoNiko;
 import com.cgi.nikoniko.models.tables.RoleCGI;
 import com.cgi.nikoniko.models.tables.User;
+import com.cgi.nikoniko.utils.UtilsFunctions;
 
 @Controller
 public class MenuController  {
@@ -58,9 +59,9 @@ public class MenuController  {
 
 		model.addAttribute("page","MENU");
 
-		model.addAttribute("lastNiko",this.getLastLastNikoNikoMood(this.getUserInformations().getId()));
-		model.addAttribute("status", this.checkDateNikoNiko(this.getUserInformations().getId()));
-		model.addAttribute("mood", this.getUserLastMood(this.getUserInformations().getId()));
+		model.addAttribute("lastNiko",UtilsFunctions.getLastLastNikoNikoMood(this.getUserInformations().getId(), userCrud, nikoCrud));
+		model.addAttribute("status", UtilsFunctions.checkDateNikoNiko(this.getUserInformations().getId(), userCrud, nikoCrud));
+		model.addAttribute("mood", UtilsFunctions.getUserLastMood(this.getUserInformations().getId(), userCrud, nikoCrud));
 
 		model.addAttribute("roles",this.getConnectUserRole());
 		model.addAttribute("auth",this.getUserInformations().getFirstname());
@@ -183,93 +184,93 @@ public class MenuController  {
 		return roleNames;
 	}
 
-	/**
-	 * FUNCTION THAT CHECK NIKONIKO DATE FOR UPDATE OR NEW
-	 * @param idUser
-	 * @return
-	 */
-	public Boolean checkDateNikoNiko(Long idUser){
-
-		Boolean updateNiko = true;
-
-		Long idMaxNiko = userCrud.getLastNikoNikoUser(idUser);
-
-		if (idMaxNiko == null) {
-
-			updateNiko = false;
-		}
-
-		else {
-
-			NikoNiko lastNiko = nikoCrud.findOne(idMaxNiko);
-
-			Date entryDate = lastNiko.getEntryDate();
-			LocalDate dateEntry = new LocalDate(entryDate);
-
-			if (entryDate == null || (TODAY_DATE.isAfter(dateEntry))) {
-				updateNiko = false;
-			}
-		}
-
-		return updateNiko;
-	}
-
-	/**
-	 * GET LAST NIKONIKO ENTER BY USER
-	 * @param idUser
-	 * @return
-	 */
-	public int getUserLastMood(Long idUser){
-
-		int mood = 0;
-
-		Long idMax = userCrud.getLastNikoNikoUser(idUser);
-
-		if (idMax == null) {
-			return mood;
-		}
-
-		else {
-			mood = nikoCrud.findOne(idMax).getMood();
-			return mood;
-		}
-	}
-
-	/**
-	 * GET LAST-1 NIKONIKO USER AND CHECK IF THE MOOD IS NULL OR NOT
-	 * RETURN FALSE CAN'T UPDATE, TRUE UPDATE SECOND LAST
-	 * @param idUser
-	 * @return
-	 */
-	public Boolean getLastLastNikoNikoMood(Long idUser){
-
-		Long idMax = userCrud.getLastLastNikoNikoUser(idUser);
-
-
-		if (idMax == null) {
-			return false;
-		}
-
-		else {
-
-			NikoNiko lastLastNiko = nikoCrud.findOne(userCrud.getLastLastNikoNikoUser(idUser));
-			NikoNiko lastNiko = nikoCrud.findOne(userCrud.getLastNikoNikoUser(idUser));
-
-			LocalDate dateEntryLast = new LocalDate(lastNiko.getEntryDate());
-			LocalDate dateEntryLastLast = new LocalDate(lastLastNiko.getEntryDate());
-
-			int day = Days.daysBetween(new LocalDate(dateEntryLastLast), new LocalDate(dateEntryLast)).getDays() ;
-
-
-			if (lastLastNiko.getMood() != 0 || day < 1) {
-				return false;
-			}
-
-			else {
-				return true;
-			}
-		}
-	}
+//	/**
+//	 * FUNCTION THAT CHECK NIKONIKO DATE FOR UPDATE OR NEW
+//	 * @param idUser
+//	 * @return
+//	 */
+//	public Boolean checkDateNikoNiko(Long idUser){
+//
+//		Boolean updateNiko = true;
+//
+//		Long idMaxNiko = userCrud.getLastNikoNikoUser(idUser);
+//
+//		if (idMaxNiko == null) {
+//
+//			updateNiko = false;
+//		}
+//
+//		else {
+//
+//			NikoNiko lastNiko = nikoCrud.findOne(idMaxNiko);
+//
+//			Date entryDate = lastNiko.getEntryDate();
+//			LocalDate dateEntry = new LocalDate(entryDate);
+//
+//			if (entryDate == null || (TODAY_DATE.isAfter(dateEntry))) {
+//				updateNiko = false;
+//			}
+//		}
+//
+//		return updateNiko;
+//	}
+//
+//	/**
+//	 * GET LAST NIKONIKO ENTER BY USER
+//	 * @param idUser
+//	 * @return
+//	 */
+//	public int getUserLastMood(Long idUser){
+//
+//		int mood = 0;
+//
+//		Long idMax = userCrud.getLastNikoNikoUser(idUser);
+//
+//		if (idMax == null) {
+//			return mood;
+//		}
+//
+//		else {
+//			mood = nikoCrud.findOne(idMax).getMood();
+//			return mood;
+//		}
+//	}
+//
+//	/**
+//	 * GET LAST-1 NIKONIKO USER AND CHECK IF THE MOOD IS NULL OR NOT
+//	 * RETURN FALSE CAN'T UPDATE, TRUE UPDATE SECOND LAST
+//	 * @param idUser
+//	 * @return
+//	 */
+//	public Boolean getLastLastNikoNikoMood(Long idUser){
+//
+//		Long idMax = userCrud.getLastLastNikoNikoUser(idUser);
+//
+//
+//		if (idMax == null) {
+//			return false;
+//		}
+//
+//		else {
+//
+//			NikoNiko lastLastNiko = nikoCrud.findOne(userCrud.getLastLastNikoNikoUser(idUser));
+//			NikoNiko lastNiko = nikoCrud.findOne(userCrud.getLastNikoNikoUser(idUser));
+//
+//			LocalDate dateEntryLast = new LocalDate(lastNiko.getEntryDate());
+//			LocalDate dateEntryLastLast = new LocalDate(lastLastNiko.getEntryDate());
+//
+//			int day = Days.daysBetween(new LocalDate(dateEntryLastLast), new LocalDate(dateEntryLast)).getDays() ;
+//
+//
+//			if (lastLastNiko.getMood() != 0 || day < 1) {
+//				return false;
+//			}
+//
+//			else {
+//				return true;
+//			}
+//		}
+//	}
 
 
 }

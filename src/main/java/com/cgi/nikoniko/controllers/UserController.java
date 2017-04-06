@@ -39,6 +39,7 @@ import com.cgi.nikoniko.models.tables.Team;
 import com.cgi.nikoniko.models.tables.User;
 import com.cgi.nikoniko.models.tables.Verticale;
 import com.cgi.nikoniko.utils.DumpFields;
+import com.cgi.nikoniko.utils.UtilsFunctions;
 
 @Controller
 @RequestMapping(UserController.BASE_URL)
@@ -104,28 +105,13 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("model", "user");
 		model.addAttribute("page",this.baseName + " " + PathFinder.LIST_ACTION.toUpperCase());
 		model.addAttribute("sortedFields",User.FIELDS);
-		model.addAttribute("items",this.searchUser(name));
+		model.addAttribute("items",UtilsFunctions.searchUser(name, userCrud));
 		model.addAttribute("go_show", PathFinder.SHOW_ACTION);
 		model.addAttribute("go_create", PathFinder.CREATE_ACTION);
 		model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
 		return listView;
 
 	}
-
-	/**
-	 * FIND A SPECIFIC USER
-	 * @param name
-	 * @return
-	 */
-	public ArrayList<User> searchUser(String name){
-
-		ArrayList<User> userList = new ArrayList<User>();
-		userList = userCrud.getUsers(name);
-
-		return userList;
-
-	}
-
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -219,6 +205,8 @@ public class UserController extends ViewBaseController<User> {
 	public String newNikoNikoForUserGET(Model model,@PathVariable Long userId,
 						HttpServletResponse response) throws IOException {
 
+		Long userBuffer = UtilsFunctions.getUserInformations(userCrud).getId();
+
 		User user = super.getItem(userId);
 		NikoNiko niko = new NikoNiko();
 
@@ -226,10 +214,9 @@ public class UserController extends ViewBaseController<User> {
 			response.sendError(HttpStatus.BAD_REQUEST.value(),("Don't try to hack url!").toUpperCase());
 		}
 
-		model.addAttribute("lastMood", this.getLastLastNikoNikoMood(userCrud.findByLogin(super.checkSession().getName()).getId()));
-
-		model.addAttribute("status", this.checkDateNikoNiko(userCrud.findByLogin(super.checkSession().getName()).getId()));
-		model.addAttribute("mood" , this.getUserLastMood(userCrud.findByLogin(super.checkSession().getName()).getId()));
+		model.addAttribute("lastMood", UtilsFunctions.getLastLastNikoNikoMood(userBuffer, userCrud, nikonikoCrud));
+		model.addAttribute("status", UtilsFunctions.checkDateNikoNiko(userBuffer, userCrud, nikonikoCrud));
+		model.addAttribute("mood" , UtilsFunctions.getUserLastMood(userBuffer, userCrud, nikonikoCrud));
 		model.addAttribute("page",user.getFirstname() + " " + PathFinder.CREATE_ACTION.toUpperCase());
 		model.addAttribute("sortedFields",NikoNiko.FIELDS);
 		model.addAttribute("item",DumpFields.createContentsEmpty(niko.getClass()));
@@ -254,91 +241,6 @@ public class UserController extends ViewBaseController<User> {
 	}
 
 	/**
-	 *	CHECK THE LAST MOOD OF USER IF IT EXISTS OR NOT
-	 * @param idUser
-	 * @return
-	 */
-	public int getUserLastMood(Long idUser){
-
-		int mood = 0;
-
-		Long idMax = userCrud.getLastNikoNikoUser(idUser);
-
-		if (idMax == null) {
-			return mood;
-		}
-
-		else {
-			mood = nikonikoCrud.findOne(idMax).getMood();
-			return mood;
-		}
-	}
-
-	/**
-	 * CHECK LAST-1 NIKONIKO IF IT EXISTS
-	 * @param idUser
-	 * @return
-	 */
-	public Boolean getLastLastNikoNikoMood(Long idUser){
-
-		Long idMax = userCrud.getLastLastNikoNikoUser(idUser);
-
-		if (idMax == null) {
-			return false;
-		}
-
-		else {
-
-			NikoNiko lastLastNiko = nikonikoCrud.findOne(userCrud.getLastLastNikoNikoUser(idUser));
-
-			Integer mood = lastLastNiko.getMood();
-
-			if (mood == 0 || mood == null) {
-				return true;
-			}
-
-			else {
-				return false;
-			}
-		}
-	}
-
-	/**
-	 * CHECK IF A USER AS ENTER A NIKONIKO DURING THE DAY
-	 * @param idUser
-	 * @return
-	 */
-	public Boolean checkDateNikoNiko(Long idUser){
-
-		Boolean updateNiko = null;
-
-		Long idMaxNiko = userCrud.getLastNikoNikoUser(idUser);
-
-		if (idMaxNiko == null) {
-			updateNiko = false;
-		}
-
-		else {
-
-			NikoNiko lastNiko = nikonikoCrud.findOne(idMaxNiko);
-			Date entryDate = lastNiko.getEntryDate();
-			LocalDate dateEntry = new LocalDate(entryDate);
-
-			if (TODAY_DATE.isAfter(dateEntry)) {
-
-					updateNiko = false;
-				}
-
-				else {
-
-					updateNiko = true;
-				}
-			}
-
-		return updateNiko;
-	}
-
-	/**
 	*
 	* FUNCTION THAT SAVE THE NIKONIKO IN DB IN FUNCTION OF THE DATE
 	*
@@ -353,7 +255,7 @@ public class UserController extends ViewBaseController<User> {
 
 		user = userCrud.findOne(idUser);
 
-		if (this.checkDateNikoNiko(idUser) == true) {
+		if (UtilsFunctions.checkDateNikoNiko(idUser, userCrud, nikonikoCrud) == true) {
 
 			if (mood ==  null) {
 
@@ -420,39 +322,10 @@ public class UserController extends ViewBaseController<User> {
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
 	@RequestMapping(path = "{userId}/addLast", method = RequestMethod.POST)
 	public String lastNikoNikoForUserPOST(Model model,@PathVariable Long userId,
-						HttpServletResponse response, int mood, String comment) throws IOException {
+						HttpServletResponse response, Integer mood, String comment) throws IOException {
 
-		return this.updateLastNikoNiko(userId, mood, comment);
-	}
+		return UtilsFunctions.updateLastNikoNiko(userId, mood, comment, nikonikoCrud, userCrud);
 
-	/**
-	 * FUNCTION FOR UPDATE THE PREVIOUS NIKONIKO VOTE BY USER
-	 * @param idUser
-	 * @param mood
-	 * @param comment
-	 * @return
-	 */
-	public String updateLastNikoNiko(Long idUser, Integer mood, String comment){
-
-		if (userCrud.getLastLastNikoNikoUser(idUser) == null) {
-			return PathFinder.REDIRECT + PathFinder.PATH + PathFinder.MENU_PATH;
-		}
-
-		if (mood == null) {
-			return PathFinder.REDIRECT + PathFinder.PATH + PathFinder.MENU_PATH;
-		}
-
-		else {
-
-			NikoNiko lastNiko = nikonikoCrud.findOne(userCrud.getLastLastNikoNikoUser(idUser));
-
-			lastNiko.setMood(mood);
-			lastNiko.setComment(comment);
-			nikonikoCrud.save(lastNiko);
-
-			return PathFinder.REDIRECT + PathFinder.PATH + PathFinder.MENU_PATH;
-
-		}
 	}
 
 
@@ -563,7 +436,7 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("model", "user");
 		model.addAttribute("page", userBuffer.getRegistrationcgi());
 		model.addAttribute("sortedFields",Team.FIELDS);
-		model.addAttribute("items",DumpFields.listFielder(this.searchTeam(name)));
+		model.addAttribute("items",DumpFields.listFielder(UtilsFunctions.searchTeam(name, teamCrud)));
 		model.addAttribute("go_show", PathFinder.SHOW_ACTION);
 		model.addAttribute("go_create", PathFinder.CREATE_ACTION);
 		model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
@@ -662,21 +535,6 @@ public class UserController extends ViewBaseController<User> {
 		}
 		return DumpFields.listFielder((List<Team>) teamCrud.findAll(ids));
 	}
-
-	/**
-	 * FIND A SPECIFIC TEAM
-	 * @param name
-	 * @return
-	 */
-	public ArrayList<Team> searchTeam(String name){
-
-		ArrayList<Team> teamList = new ArrayList<Team>();
-		teamList = teamCrud.getTeams(name);
-
-		return teamList;
-
-	}
-
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -46,7 +46,7 @@
 
 <hr>
 
-<div class="welcome"> Bienvenue : ${auth} (connecté en tant que  : ${roles}) </div>
+<div class="welcome"> Bienvenue : ${auth} </div>
 
 <hr>
 
@@ -57,8 +57,8 @@
 			<div class="row-fluid">
 				<div class="text"> Administration </div>
 				<ul>
-					<li> <a href="${go_users}"> Users </a> </li>
-					<li> <a href="${go_teams}"> Teams </a> </li>
+					<li> <a href="${go_users}"> Utilisateurs </a> </li>
+					<li> <a href="${go_teams}"> Equipes </a> </li>
 					<li> <a href="${go_verticales}"> Verticales </a> </li>
 					<li> <a href="${go_roles}"> Roles </a> </li>
 				</ul>
