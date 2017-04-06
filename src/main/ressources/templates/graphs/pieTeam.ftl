@@ -8,15 +8,12 @@
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
-
-
-    <!-- Redirection ???? -->
-    <link rel="stylesheet" href="menu/">
-
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
 
+    <!-- css -->
+	<link href="/css/pie.css" rel="stylesheet">
 
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
@@ -57,12 +54,8 @@
 
         chart.draw(data, options);
       }
-    </script>
-  </head>
-
-<style>
-    <#include "static/pie.css">
-</style>
+	</script>
+ </head>
 
 <!-- HEAD -->
 <div class="container-fluid">

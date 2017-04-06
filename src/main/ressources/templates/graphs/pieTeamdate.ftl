@@ -17,6 +17,8 @@
     <link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
 
+    <!-- css -->
+	<link href="/css/pie.css"  rel="stylesheet">
 
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
@@ -58,11 +60,7 @@
         chart.draw(data, options);
       }
     </script>
-  </head>
-
-<style>
-    <#include "static/pie.css">
-</style>
+ </head>
 
 <!-- HEAD -->
 <div class="container-fluid">
