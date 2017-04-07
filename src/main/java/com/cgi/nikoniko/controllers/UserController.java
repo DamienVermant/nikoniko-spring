@@ -47,7 +47,7 @@ public class UserController extends ViewBaseController<User> {
 
 
 /////////////////// GLOBAL CONSTANT /////////////////////////////////
-	
+
 
 	public final static String BASE_USER = "user";
 	public final static String BASE_URL = PathFinder.PATH + BASE_USER;
@@ -102,7 +102,7 @@ public class UserController extends ViewBaseController<User> {
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 	@RequestMapping(path = {PathFinder.PATH, PathFinder.ROUTE_LIST}, method = RequestMethod.POST)
 	public String showUsers(Model model,String name){
-		
+
 		if (name == "") {
 			return PathFinder.REDIRECT + PathFinder.ROUTE_LIST;
 			}
@@ -114,7 +114,7 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("go_show", PathFinder.SHOW_ACTION);
 		model.addAttribute("go_create", PathFinder.CREATE_ACTION);
 		model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
-		
+
 		return listView;
 
 	}
@@ -226,16 +226,38 @@ public class UserController extends ViewBaseController<User> {
 
 		User user = super.getItem(userId);
 		NikoNiko niko = new NikoNiko();
+		Boolean nikonikoNotExist = false;
+		Boolean nikonikoCommentIsEmpty = false;
 
+		try {
+			niko = nikonikoCrud.findOne(userCrud.getLastNikoNikoUser(userId));
+			nikonikoNotExist = true;
+		} catch (Exception e) {
+			nikonikoNotExist = false;
 
-//		niko = nikonikoCrud.findOne(userCrud.getLastNikoNikoUser(userId));
-//		
-//		if (niko.getComment().isEmpty()) {
-//			model.addAttribute("textAreaOption","");
-//		} else {
-//			model.addAttribute("textAreaOption",niko.getComment());
-//		}
+		}
 
+		 if (nikonikoNotExist) {
+			if (niko.getComment().isEmpty()) {
+				nikonikoCommentIsEmpty = true;
+			} else {
+				nikonikoCommentIsEmpty = false;
+			}
+		} else {
+			nikonikoCommentIsEmpty = true;
+		}
+
+		if (nikonikoCommentIsEmpty || !UtilsFunctions.checkDateNikoNiko(userId, userCrud, nikonikoCrud)) {
+			model.addAttribute("textAreaOption","");
+			if (!UtilsFunctions.checkDateNikoNiko(userId, userCrud, nikonikoCrud)) {
+				model.addAttribute("isNewDay",1);
+			} else {
+				model.addAttribute("isNewDay",0);
+			}
+		} else {
+			model.addAttribute("textAreaOption",niko.getComment());
+			model.addAttribute("isNewDay",0);
+		}
 
 		model.addAttribute("lastMood", UtilsFunctions.getLastLastNikoNikoMood(userBuffer, userCrud, nikonikoCrud));
 		model.addAttribute("status", UtilsFunctions.checkDateNikoNiko(userBuffer, userCrud, nikonikoCrud));
