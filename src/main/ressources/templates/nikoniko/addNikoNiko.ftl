@@ -14,14 +14,13 @@
 	<link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
 
+    <!-- css -->
+	<link href="/css/vote.css"  rel="stylesheet">
+
 	<!-- Title -->
 	<title>Satisfaction</title>
 </head>
 <body>
-<style>
-	<#include "static/vote.css">
-</style>
-
 <!-- HEAD -->
 <div class="container-fluid">
 	<div class="row-fluid">
@@ -57,7 +56,11 @@
 			<div class="col-md-4 col-sl-4 col-xs-12"">
         		<center>
 					<div id="crouge"></div>
-					<input type="radio" name="mood" value="1" >
+					<#if mood != 0 && mood == 1>
+						<input type="radio" name="mood" value="1" checked="checked">
+					<#else>
+						<input type="radio" name="mood" value="1" >
+					</#if>
 					<div class="bad_day"> Vous avez passé une très très mauvaise journée...</div>
 			</center>
 				</center>
@@ -65,14 +68,22 @@
 			<div class="col-md-4 col-sl-4 col-xs-12">
 				<center>
 					<div id="corange"></div>
-					<input type="radio" name="mood" value="2" >
+					<#if mood != 0 && mood == 2>
+						<input type="radio" name="mood" value="2" checked="checked">
+					<#else>
+						<input type="radio" name="mood" value="2">
+					</#if>
 					<div class="correct_day"> Vous avez passé une journée assez moyenne. </div>
 				</center>
 			</div>
 			<div class="col-md-4 col-sl-4 col-xs-12">
 				<center>
 					<div id="cvert"></div>
+					<#if mood != 0 && mood == 3>
+					<input type="radio" name="mood" value="3" checked="checked">
+					<#else>
 					<input type="radio" name="mood" value="3">
+					</#if>
 					<div class="good_day"> Vous avez passé une bonne journée. </div>
 				</center>
 			</div>
@@ -87,13 +98,13 @@
 	<div class="row-fluid">
 		<div class="col-lg-12">
 			<center>
-				<#if mood = 0 || status == false>
-						<div> Voter plus tard : <input type="radio" name="mood" value="0" > </div>
-					<#else>
-					</#if>
+				<#if mood == 0 || status == false>
+					<div> Voter plus tard : <input type="radio" name="mood" value="0" > </div>
+				<#else>
+				</#if>
 				<#include "../includable/security/securityToken.ftl">
-				<TEXTAREA style="margin-top: 30px" name="comment" rows=5 cols=60 placeholder="Ecrire votre commentaire..."></TEXTAREA> <br>
-					<button class="buttons" onclick="location.href='/menu'"> Valider </button>
+				<TEXTAREA style="margin-top: 30px" name="comment" rows=5 cols=60 placeholder ="Ecrire votre commentaire..." >${textAreaOption}</TEXTAREA> <br>
+				<button class="buttons" onclick="location.href='/menu'"> Valider </button>
 				</form>
 			</center>
 		</div>
