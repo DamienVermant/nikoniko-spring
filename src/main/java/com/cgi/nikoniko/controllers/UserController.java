@@ -228,13 +228,13 @@ public class UserController extends ViewBaseController<User> {
 		NikoNiko niko = new NikoNiko();
 
 
-
-		niko = nikonikoCrud.findOne(userCrud.getLastNikoNikoUser(userId));
-		if (niko.getComment().isEmpty()) {
-			model.addAttribute("textAreaOption","");
-		} else {
-			model.addAttribute("textAreaOption",niko.getComment());
-		}
+//		niko = nikonikoCrud.findOne(userCrud.getLastNikoNikoUser(userId));
+//		
+//		if (niko.getComment().isEmpty()) {
+//			model.addAttribute("textAreaOption","");
+//		} else {
+//			model.addAttribute("textAreaOption",niko.getComment());
+//		}
 
 
 		model.addAttribute("lastMood", UtilsFunctions.getLastLastNikoNikoMood(userBuffer, userCrud, nikonikoCrud));
@@ -244,6 +244,7 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("sortedFields",NikoNiko.FIELDS);
 		model.addAttribute("item",DumpFields.createContentsEmpty(niko.getClass()));
 		model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_PATH);
+		model.addAttribute("textAreaOption","");
 		model.addAttribute("create_item", PathFinder.CREATE_ACTION);
 
 		return "nikoniko/addNikoNiko";
