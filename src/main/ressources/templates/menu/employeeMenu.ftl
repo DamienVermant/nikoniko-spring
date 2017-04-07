@@ -66,22 +66,26 @@
 
 			<#if roles == "vp">
 				<h2> Gestion </h2>
-				- <a href=""> Menu graphes </a> <br>
+				<a class = "btn btn-default" href=""> Menu graphes </a> <br>
 			<#else>
 			</#if>
 
 			<#if roles == "gestionTeam">
 				<h2> Gestion </h2>
-				- <a href=""> Gérer équipe </a> <br>
+				<a class = "btn btn-default" href="/team/"> Gérer équipe </a> <br>
 			<#else>
 			</#if>
 
 			<h2> Niko Niko </h2>
-			- <a href="${calendar}"> Voir calendrier <a> <br>
-			- <a href="${pie_chart}"> Voir vos résultats <a> <br>
+			<a class = "btn btn-default" href="${calendar}"> Voir calendrier <a> <br>
+			<a class = "btn btn-default"href="${pie_chart}"> Voir vos résultats <a> <br>
 			<#if mood == 0 || status == false>
-				- <a href="${add_nikoniko}"> Pas de vote enregistré... On vote ? </a>
-
+					<a class = "btn btn-default" href="${add_nikoniko}"> Pas de vote enregistré... On vote ? </a>
+				<#if lastNiko == true>
+					Attention : Si vous votez pour ajourd'hui, vous ne pourrez plus voter pour la veille <br>
+				<#else>
+					<br>
+				</#if>
 			<#else>
 			</#if>
 			<#if lastNiko == true>

@@ -30,7 +30,7 @@
         </div>
     </div>
 </div>
-	<h1> USERS HAS ROLE : ${page}  </h1>
+	<h1> Utilisateurs ayant le rôle : ${page}  </h1>
 		<table class="table table-bordered table-hover">
 			<tr>
 				<#list items as item>
@@ -70,6 +70,6 @@
 				</tr>
 			</#list>
 		</table>
-	<a href = "${add}"> Add User </a> <br>
+	<a class ="btn btn-default" href = "${add}"> Rajouter un utilisateur </a> <br>
 </body>
 </html>
