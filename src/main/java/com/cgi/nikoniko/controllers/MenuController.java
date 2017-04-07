@@ -2,10 +2,8 @@ package com.cgi.nikoniko.controllers;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -21,7 +19,6 @@ import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
 import com.cgi.nikoniko.dao.IRoleCrudRepository;
 import com.cgi.nikoniko.dao.IUserCrudRepository;
 import com.cgi.nikoniko.dao.IUserHasRoleCrudRepository;
-import com.cgi.nikoniko.models.tables.NikoNiko;
 import com.cgi.nikoniko.models.tables.RoleCGI;
 import com.cgi.nikoniko.models.tables.User;
 import com.cgi.nikoniko.utils.UtilsFunctions;
@@ -30,9 +27,9 @@ import com.cgi.nikoniko.utils.UtilsFunctions;
 public class MenuController  {
 
 	public final static LocalDate TODAY_DATE = new LocalDate();
+	
 	public final static String BASE_URL = PathFinder.PATH + PathFinder.MENU_PATH;
 
-	// TODO : CHANGE TYPE OF TIME
 	public final static double TIME = 0.9999999999;
 
 	@Autowired
@@ -56,17 +53,19 @@ public class MenuController  {
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
 	@RequestMapping(path = PathFinder.PATH + PathFinder.MENU_PATH, method = RequestMethod.GET)
 	public String index(Model model, String login) {
+		
+		Long idUser = UtilsFunctions.getUserInformations(userCrud).getId();
 
 		model.addAttribute("page","MENU");
 
-		model.addAttribute("lastNiko",UtilsFunctions.getLastLastNikoNikoMood(this.getUserInformations().getId(), userCrud, nikoCrud));
-		model.addAttribute("status", UtilsFunctions.checkDateNikoNiko(this.getUserInformations().getId(), userCrud, nikoCrud));
-		model.addAttribute("mood", UtilsFunctions.getUserLastMood(this.getUserInformations().getId(), userCrud, nikoCrud));
+		model.addAttribute("lastNiko",UtilsFunctions.getLastLastNikoNikoMood(idUser, userCrud, nikoCrud));
+		model.addAttribute("status", UtilsFunctions.checkDateNikoNiko(idUser, userCrud, nikoCrud));
+		model.addAttribute("mood", UtilsFunctions.getUserLastMood(idUser, userCrud, nikoCrud));
 
 		model.addAttribute("roles",this.getConnectUserRole());
-		model.addAttribute("auth",this.getUserInformations().getFirstname());
-		model.addAttribute("go_own_nikoniko", PathFinder.PATH + "user" + PathFinder.PATH + this.getUserInformations().getId() + PathFinder.PATH + "link");
-		model.addAttribute("add_nikoniko", PathFinder.PATH + "user" + PathFinder.PATH + this.getUserInformations().getId() + PathFinder.PATH + "add");
+		model.addAttribute("auth",UtilsFunctions.getUserInformations(userCrud).getFirstname());
+		model.addAttribute("go_own_nikoniko", PathFinder.PATH + "user" + PathFinder.PATH + idUser + PathFinder.PATH + "link");
+		model.addAttribute("add_nikoniko", PathFinder.PATH + "user" + PathFinder.PATH + idUser + PathFinder.PATH + "add");
 		model.addAttribute("pie_chart", PathFinder.PATH + "graph" + PathFinder.PATH + PathFinder.SHOW_GRAPH);
 
 		model.addAttribute("go_users", PathFinder.GO_USERS);
@@ -82,11 +81,11 @@ public class MenuController  {
 		model.addAttribute("go_user_has_role", PathFinder.GO_USERROLE);
 		model.addAttribute("go_role_has_function", PathFinder.GO_ROLEFUNC);
 
-		model.addAttribute("add_last", PathFinder.PATH + "user" + PathFinder.PATH + this.getUserInformations().getId() + PathFinder.PATH + "addLast");
+		model.addAttribute("add_last", PathFinder.PATH + "user" + PathFinder.PATH + idUser + PathFinder.PATH + "addLast");
 
 		// TEST FOR SECURED REDIRECTION
 
-		model.addAttribute("id",this.getUserInformations().getId());
+		model.addAttribute("id",idUser);
 
 
 		return PathFinder.MENU_PATH + PathFinder.PATH + "mainMenu";
@@ -130,22 +129,6 @@ public class MenuController  {
 		return role;
 	}
 
-	/**
-	 * RETURN USER FROM AUTHENTIFICATION
-	 * @return
-	 */
-	public User getUserInformations(){
-
-		String login = "";
-		User user = new User();
-
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-		login = auth.getName();
-		user = userCrud.findByLogin(login);
-
-		return user;
-	}
 
 	/**
 	 * HAVE ALL ROLES ASSOCIATED TO A USER
@@ -183,94 +166,5 @@ public class MenuController  {
 		}
 		return roleNames;
 	}
-
-//	/**
-//	 * FUNCTION THAT CHECK NIKONIKO DATE FOR UPDATE OR NEW
-//	 * @param idUser
-//	 * @return
-//	 */
-//	public Boolean checkDateNikoNiko(Long idUser){
-//
-//		Boolean updateNiko = true;
-//
-//		Long idMaxNiko = userCrud.getLastNikoNikoUser(idUser);
-//
-//		if (idMaxNiko == null) {
-//
-//			updateNiko = false;
-//		}
-//
-//		else {
-//
-//			NikoNiko lastNiko = nikoCrud.findOne(idMaxNiko);
-//
-//			Date entryDate = lastNiko.getEntryDate();
-//			LocalDate dateEntry = new LocalDate(entryDate);
-//
-//			if (entryDate == null || (TODAY_DATE.isAfter(dateEntry))) {
-//				updateNiko = false;
-//			}
-//		}
-//
-//		return updateNiko;
-//	}
-//
-//	/**
-//	 * GET LAST NIKONIKO ENTER BY USER
-//	 * @param idUser
-//	 * @return
-//	 */
-//	public int getUserLastMood(Long idUser){
-//
-//		int mood = 0;
-//
-//		Long idMax = userCrud.getLastNikoNikoUser(idUser);
-//
-//		if (idMax == null) {
-//			return mood;
-//		}
-//
-//		else {
-//			mood = nikoCrud.findOne(idMax).getMood();
-//			return mood;
-//		}
-//	}
-//
-//	/**
-//	 * GET LAST-1 NIKONIKO USER AND CHECK IF THE MOOD IS NULL OR NOT
-//	 * RETURN FALSE CAN'T UPDATE, TRUE UPDATE SECOND LAST
-//	 * @param idUser
-//	 * @return
-//	 */
-//	public Boolean getLastLastNikoNikoMood(Long idUser){
-//
-//		Long idMax = userCrud.getLastLastNikoNikoUser(idUser);
-//
-//
-//		if (idMax == null) {
-//			return false;
-//		}
-//
-//		else {
-//
-//			NikoNiko lastLastNiko = nikoCrud.findOne(userCrud.getLastLastNikoNikoUser(idUser));
-//			NikoNiko lastNiko = nikoCrud.findOne(userCrud.getLastNikoNikoUser(idUser));
-//
-//			LocalDate dateEntryLast = new LocalDate(lastNiko.getEntryDate());
-//			LocalDate dateEntryLastLast = new LocalDate(lastLastNiko.getEntryDate());
-//
-//			int day = Days.daysBetween(new LocalDate(dateEntryLastLast), new LocalDate(dateEntryLast)).getDays() ;
-//
-//
-//			if (lastLastNiko.getMood() != 0 || day < 1) {
-//				return false;
-//			}
-//
-//			else {
-//				return true;
-//			}
-//		}
-//	}
-
 
 }

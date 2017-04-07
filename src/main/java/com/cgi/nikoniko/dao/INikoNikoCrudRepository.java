@@ -1,8 +1,10 @@
 package com.cgi.nikoniko.dao;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.joda.time.LocalDate;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -25,5 +27,8 @@ public interface INikoNikoCrudRepository extends IBaseCrudRepository<NikoNiko>{
 	
 	@Query(value = "SELECT * FROM nikoniko INNER JOIN user on nikoniko.user_id = user.id WHERE user.registration_number LIKE %:name%", nativeQuery=true)
 	public ArrayList<NikoNiko> getNikoNiko(@Param("name") String name);
+
+	@Query(value = "SELECT * FROM nikoniko WHERE entry_date LIKE %:lastDay% AND user_id = :idUser", nativeQuery=true)
+	public NikoNiko getNikoDate(@Param("lastDay") LocalDate lastDay, @Param("idUser") long idUser);
 
 }

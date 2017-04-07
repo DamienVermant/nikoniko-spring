@@ -88,9 +88,8 @@
 				</#if>
 			<#else>
 			</#if>
-
 			<#if lastNiko == true>
-			 	- <a href="${add_last}"> Voter pour la veille ? </a>
+			 	- <a href="${add_last}"> Voter pour la vielle ? </a>
 
 			<#else>
 			</#if>
