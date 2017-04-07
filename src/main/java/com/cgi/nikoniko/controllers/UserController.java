@@ -104,16 +104,17 @@ public class UserController extends ViewBaseController<User> {
 	public String showUsers(Model model,String name){
 		
 		if (name == "") {
-			name = " ";
+			return PathFinder.REDIRECT + PathFinder.ROUTE_LIST;
 			}
 
 		model.addAttribute("model", "user");
-		model.addAttribute("page",this.baseName + " " + PathFinder.LIST_ACTION.toUpperCase());
+		model.addAttribute("page",this.baseName);
 		model.addAttribute("sortedFields",User.FIELDS);
 		model.addAttribute("items",UtilsFunctions.searchUser(name, userCrud));
 		model.addAttribute("go_show", PathFinder.SHOW_ACTION);
 		model.addAttribute("go_create", PathFinder.CREATE_ACTION);
 		model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
+		
 		return listView;
 
 	}

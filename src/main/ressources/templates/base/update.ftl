@@ -42,7 +42,8 @@
 			<#if field != "id">
 				<#list items?keys as key>
 					<#if key == field>
-					<#if key== "id">
+					<#if key== "id" || key == "login" || key == "password">
+						<input type="hidden" name = "${key}" value ="${items[key]}">
 						<#else>
 						<tr>
 							<th>${key}</th>
