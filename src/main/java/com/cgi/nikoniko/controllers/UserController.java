@@ -222,12 +222,19 @@ public class UserController extends ViewBaseController<User> {
 		NikoNiko niko = new NikoNiko();
 
 
-
+		//TODO : verif la date
+		//UtilsFunctions.checkDateNikoNiko(userId, userCrud, nikonikoCrud);
 		niko = nikonikoCrud.findOne(userCrud.getLastNikoNikoUser(userId));
-		if (niko.getComment().isEmpty()) {
+		if (niko.getComment().isEmpty() || !UtilsFunctions.checkDateNikoNiko(userId, userCrud, nikonikoCrud)) {
 			model.addAttribute("textAreaOption","");
+			if (!UtilsFunctions.checkDateNikoNiko(userId, userCrud, nikonikoCrud)) {
+				model.addAttribute("isNewDay",1);
+			} else {
+				model.addAttribute("isNewDay",0);
+			}
 		} else {
 			model.addAttribute("textAreaOption",niko.getComment());
+			model.addAttribute("isNewDay",0);
 		}
 
 
