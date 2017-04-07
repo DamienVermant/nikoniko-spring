@@ -7,14 +7,10 @@
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
-    <!-- Redirection ???? -->
-    <link rel="stylesheet" href="menu/">
+    <!-- css -->
+	<link href="/css/nikoniko.css"  rel="stylesheet">
 
 </head>
-
-<style>
-    <#include "static/employee.css">
-</style>
 
 <body>
 	<div class="container-fluid">

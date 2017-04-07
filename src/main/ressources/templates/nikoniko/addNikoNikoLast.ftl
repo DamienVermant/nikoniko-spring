@@ -14,13 +14,13 @@
 	<link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
 
+    <!-- css -->
+	<link href="/css/vote.css"  rel="stylesheet">
+
 	<!-- Title -->
 	<title>Satisfaction</title>
 </head>
 <body>
-<style>
-	<#include "static/vote.css">
-</style>
 
 <!-- HEAD -->
 <div class="container-fluid">

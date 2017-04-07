@@ -1,7 +1,5 @@
 package com.cgi.nikoniko.controllers.base.view;
 
-import java.util.ArrayList;
-
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -61,8 +59,6 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 	@Secured({"ROLE_ADMIN"})
 	@RequestMapping(path = {PathFinder.PATH, PathFinder.ROUTE_LIST}, method = RequestMethod.GET)
 	public String index(Model model) {
-
-		ArrayList<T> emptyList = new ArrayList<T>();
 
 		model.addAttribute("model", this.baseName.toLowerCase());
 		model.addAttribute("page",this.baseName + " " + PathFinder.LIST_ACTION.toUpperCase());

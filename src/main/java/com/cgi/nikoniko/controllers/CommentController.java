@@ -34,16 +34,6 @@ public class CommentController extends ViewBaseController<User>{
 	public final static String BASE_COMMENT = "comment";
 	public final static String BASE_URL = PathFinder.PATH + BASE_COMMENT;
 
-//	public final static String MENU_PATH = "menu";//existe en doublon sous un autre nom
-//
-//	public final static String SHOW_COMMENT = "showComment";
-//	public final static String SHOW_GRAPH_MONTH = "showGraphMonth";
-//	public final static String SHOW_GRAPH_WEEK = "showGraphWeek";
-//	public final static String SHOW_GRAPH_DATE = "showDate";
-//	public final static String SHOW_GRAPH_ALL = "showGraphAll";
-//	public final static String SHOW_GRAPH_VERTICALE = "showGraphVerticale";
-//	public final static String SHOW_GRAPH_TEAM = "showGraphTeam";
-
 	public CommentController() {
 		super(User.class,BASE_URL);
 	}

@@ -16,6 +16,8 @@
     <link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
 
+    <!-- css -->
+	<link href="/css/pie.css"  rel="stylesheet">
 
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
@@ -60,10 +62,6 @@
     </script>
   </head>
 
-<style>
-    <#include "static/pie.css">
-</style>
-
 <!-- HEAD -->
 <div class="container-fluid">
     <div class="row-fluid">
@@ -77,8 +75,8 @@
             <div class="row-fluid">
                 <div class="col-lg-12">
                     <div class="align">
-                    <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
-                    <button onclick="location.href='${back}'" class="vote"> Retour </button>
+	                    <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
+	                    <button onclick="location.href='${back}'" class="vote"> Retour </button>
                     </div>
                 </div>
             </div>
@@ -101,18 +99,18 @@
         <div class="row-fluid">
             <div class="col-lg-8">
                 <div class="alignleft">
-                <#if role != "admin">
-                <button onclick="location.href='showgraph'" class="myresults"> Resultat du jour </button>
-                <button onclick="location.href='showgraphverticale'" class="resultsverticale"> Resultat verticale </button>
-                <button onclick="location.href='showgraphteam/0'" class="resultsteam"> Resultat d'équipe </button>
-                </#if>
+	                <#if role != "admin">
+		                <button onclick="location.href='showgraph'" class="myresults"> Resultat du jour </button>
+		                <button onclick="location.href='showgraphverticale'" class="resultsverticale"> Resultat verticale </button>
+		                <button onclick="location.href='showgraphteam/0'" class="resultsteam"> Resultat d'équipe </button>
+	                </#if>
                 </div>
             </div>
             <div class="col-lg-4">
                 <div class="alignleft">
                 <#if role != "admin">
-                <button onclick="location.href='/graph/nikoniko/month'" class="resultsteam"> Calendrier </button>
-                <button onclick="location.href='/graph/nikonikovert/1/month'" class="resultsteam"> Calendrier verticale </button>
+	                <button onclick="location.href='/graph/nikoniko/month'" class="resultsteam"> Calendrier </button>
+	                <button onclick="location.href='/graph/nikonikovert/1/month'" class="resultsteam"> Calendrier verticale </button>
                 </#if>
                 </div>
             </div>

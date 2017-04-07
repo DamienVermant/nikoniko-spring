@@ -17,6 +17,8 @@
     <link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
 
+    <!-- css -->
+	<link href="/css/pie.css"  rel="stylesheet">
 
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
@@ -58,11 +60,7 @@
         chart.draw(data, options);
       }
     </script>
-  </head>
-
-<style>
-    <#include "static/pie.css">
-</style>
+ </head>
 
 <!-- HEAD -->
 <div class="container-fluid">
@@ -77,8 +75,8 @@
             <div class="row-fluid">
                 <div class="col-lg-12">
                     <div class="align">
-                    <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
-                    <button onclick="location.href='${back}'" class="vote"> Retour </button>
+	                    <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
+	                    <button onclick="location.href='${back}'" class="vote"> Retour </button>
                     </div>
                 </div>
             </div>
@@ -120,18 +118,18 @@
         <div class="row-fluid">
             <div class="col-lg-8">
                 <div class="alignleft">
-                <button onclick="location.href='/graph/showgraph/${year?c}/${month}/${day}'" class="myresults"> My Results </button>
+                <button onclick="location.href='/graph/showgraph/${year?c}/${month}/${day}'" class="myresults"> Mes résultats </button>
                 <#if role != "employee">
-                    <button onclick="location.href='/graph/showgraphall/${year?c}/${month}/${day}'" class="allresults"> ALL Results </button>
+                    <button onclick="location.href='/graph/showgraphall/${year?c}/${month}/${day}'" class="allresults"> Tous les résultats </button>
                 </#if>
-                <button onclick="location.href='/graph/showgraphverticale/${year?c}/${month}/${day}'" class="resultsverticale"> Results Verticale </button>
+                <button onclick="location.href='/graph/showgraphverticale/${year?c}/${month}/${day}'" class="resultsverticale"> Resultats verticale </button>
                 </div>
             </div>
             <div class="col-lg-4">
                 <div class="alignleft">
                 <#if role != "admin">
-                <button onclick="location.href='/graph/nikoniko/month'" class="resultsteam"> Calendrier </button>
-                <button onclick="location.href='/graph/nikonikovert/1/month'" class="resultsteam"> Calendrier verticale </button>
+	                <button onclick="location.href='/graph/nikoniko/month'" class="resultsteam"> Calendrier </button>
+	                <button onclick="location.href='/graph/nikonikovert/1/month'" class="resultsteam"> Calendrier verticale </button>
                 </#if>
                 </div>
             </div>

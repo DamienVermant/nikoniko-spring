@@ -45,7 +45,6 @@ public class GraphController extends ViewBaseController<User>{
 	public final static String BASE_GRAPH = "graph";
 	public final static String BASE_URL = PathFinder.PATH + BASE_GRAPH;
 
-
 	@Autowired
 	IUserCrudRepository userCrud;
 
@@ -730,10 +729,6 @@ public class GraphController extends ViewBaseController<User>{
 	}
 
 	/**
-	 * ERWAN CHANGES
-	 */
-
-	/**
 	 *
 	 * @param model	:
 	 * @param month	: Month number
@@ -742,6 +737,7 @@ public class GraphController extends ViewBaseController<User>{
 	 * @return 		: Calendar view of all nikonikos of a team shown per day for a given month
 	 * @throws IOException
 	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
 	@RequestMapping(path = "nikoniko"+ PathFinder.PATH + "month", method = RequestMethod.GET)
 	public String nikoNikoCalendar(Model model,
 			@RequestParam(defaultValue = "null") String month,
@@ -950,9 +946,6 @@ public class GraphController extends ViewBaseController<User>{
 
 		return "nikoniko/userCalendarView";
 	}
-	/**
-	 * END OF ERWAN CHANGES
-	 */
 
 	/**
 	 *
@@ -964,6 +957,7 @@ public class GraphController extends ViewBaseController<User>{
 	 * @return 		: Calendar view of all nikonikos of a team shown per day for a given month
 	 * @throws IOException
 	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
 	@RequestMapping(path = "nikonikoteam" + PathFinder.PATH + "{idTeam}"+ PathFinder.PATH + "month", method = RequestMethod.GET)
 	public String nikoNikoCalendarTeam(Model model, @PathVariable Long idTeam,
 			@RequestParam(defaultValue = "null") String month,
@@ -1246,6 +1240,7 @@ public class GraphController extends ViewBaseController<User>{
 	 * @param action: Used to select the month to show from the current one (previous or next)
 	 * @return 		: Calendar view of all nikonikos of a team shown per day for a given month
 	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
 	@RequestMapping(path = "nikonikovert" + PathFinder.PATH + "{idVert}"+ PathFinder.PATH + "month", method = RequestMethod.GET)
 	public String nikoNikoCalendar(Model model, @PathVariable Long idVert,
 			@RequestParam(defaultValue = "null") String month,

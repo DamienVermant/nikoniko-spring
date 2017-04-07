@@ -12,20 +12,18 @@
 	<link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
 
+    <!-- css -->
+	<#if roles == "chefProjet">
+		<link href="/css/chefprojet.css"  rel="stylesheet">
+	<#else>
+		<link href="/css/employee.css"  rel="stylesheet">
+	</#if>
+
 	<!-- Title -->
 	<title>Se connecter</title>
 
 </head>
 <body>
-<#if roles == "chefProjet">
-<style>
-	<#include "static/chefprojet.css">
-</style>
-<#else>
-<style>
-	<#include "static/employee.css">
-</style>
-</#if>
 
 <!-- HEAD -->
 <div class="container-fluid">
