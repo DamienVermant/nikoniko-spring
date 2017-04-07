@@ -56,7 +56,7 @@
 			<div class="col-md-4 col-sl-4 col-xs-12"">
         		<center>
 					<div id="crouge"></div>
-					<#if mood != 0 && mood == 1>
+					<#if mood != 0 && mood == 1 && isNewDay == 0>
 						<input type="radio" name="mood" value="1" checked="checked">
 					<#else>
 						<input type="radio" name="mood" value="1" >
@@ -68,7 +68,7 @@
 			<div class="col-md-4 col-sl-4 col-xs-12">
 				<center>
 					<div id="corange"></div>
-					<#if mood != 0 && mood == 2>
+					<#if mood != 0 && mood == 2 && isNewDay == 0>
 						<input type="radio" name="mood" value="2" checked="checked">
 					<#else>
 						<input type="radio" name="mood" value="2">
@@ -79,7 +79,7 @@
 			<div class="col-md-4 col-sl-4 col-xs-12">
 				<center>
 					<div id="cvert"></div>
-					<#if mood != 0 && mood == 3>
+					<#if mood != 0 && mood == 3 && isNewDay == 0>
 					<input type="radio" name="mood" value="3" checked="checked">
 					<#else>
 					<input type="radio" name="mood" value="3">
