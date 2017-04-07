@@ -15,7 +15,7 @@
 			<#if field != "id">
 				<#list items?keys as key>
 					<#if key == field>
-					<#if key == "login" || key == "password" || key== "id">
+					<#if key== "id">
 						<#else>
 						<tr>
 							<th>${key}</th>

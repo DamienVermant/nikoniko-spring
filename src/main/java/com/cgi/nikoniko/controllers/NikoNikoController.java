@@ -33,51 +33,51 @@ public class NikoNikoController extends ViewBaseController<NikoNiko> {
 		super(NikoNiko.class,BASE_URL);
 	}
 
-	/**UNUSED ??
-	 *
-	 *
-	 * SHOW A SELECT NIKONIKO
-	 */
-	@Override
-	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
-	@RequestMapping(path = "{idNiko}" + PathFinder.PATH + PathFinder.SHOW_PATH, method = RequestMethod.GET)
-	public String showItemGet(Model model,@PathVariable Long idNiko) {
-
-		NikoNiko nikoBuffer = new NikoNiko();
-		nikoBuffer = nikoCrud.findOne(idNiko);
-		Long iduser = nikoBuffer.getUser().getId();
-
-		model.addAttribute("page",  "NikoNiko : " + nikoBuffer.getEntryDate());
-		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
-		model.addAttribute("item",DumpFields.fielder(super.getItem(idNiko)));
-		model.addAttribute("show_user", PathFinder.USER + PathFinder.PATH + iduser + PathFinder.PATH + PathFinder.SHOW_PATH);
-		model.addAttribute("show_changes_dates", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_CHANGE_DATES);
-		model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
-		model.addAttribute("go_update", PathFinder.UPDATE_ACTION);
-
-		return PathFinder.BASE_NIKONIKO + PathFinder.PATH + PathFinder.SHOW_PATH;
-	}
-
-	/**UNUSED???
-	 *
-	 * @param model
-	 * @param name
-	 * @return
-	 */
-	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
-	@RequestMapping(path = {PathFinder.PATH, PathFinder.ROUTE_LIST}, method = RequestMethod.POST)
-	public String showVerticales(Model model,String name){
-
-		model.addAttribute("model", "nikoniko");
-		model.addAttribute("page",this.baseName + " " + PathFinder.LIST_ACTION.toUpperCase());
-		model.addAttribute("sortedFields",NikoNiko.FIELDS);
-		model.addAttribute("items",this.searchNikoNikos(name));
-		model.addAttribute("go_show", PathFinder.SHOW_ACTION);
-		model.addAttribute("go_create", PathFinder.CREATE_ACTION);
-		model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
-
-		return listView;
-	}
+//	/**UNUSED ??
+//	 *
+//	 *
+//	 * SHOW A SELECT NIKONIKO
+//	 */
+//	@Override
+//	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
+//	@RequestMapping(path = "{idNiko}" + PathFinder.PATH + PathFinder.SHOW_PATH, method = RequestMethod.GET)
+//	public String showItemGet(Model model,@PathVariable Long idNiko) {
+//
+//		NikoNiko nikoBuffer = new NikoNiko();
+//		nikoBuffer = nikoCrud.findOne(idNiko);
+//		Long iduser = nikoBuffer.getUser().getId();
+//
+//		model.addAttribute("page",  "NikoNiko : " + nikoBuffer.getEntryDate());
+//		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
+//		model.addAttribute("item",DumpFields.fielder(super.getItem(idNiko)));
+//		model.addAttribute("show_user", PathFinder.USER + PathFinder.PATH + iduser + PathFinder.PATH + PathFinder.SHOW_PATH);
+//		model.addAttribute("show_changes_dates", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_CHANGE_DATES);
+//		model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
+//		model.addAttribute("go_update", PathFinder.UPDATE_ACTION);
+//
+//		return PathFinder.BASE_NIKONIKO + PathFinder.PATH + PathFinder.SHOW_PATH;
+//	}
+//
+//	/**UNUSED???
+//	 *
+//	 * @param model
+//	 * @param name
+//	 * @return
+//	 */
+//	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
+//	@RequestMapping(path = {PathFinder.PATH, PathFinder.ROUTE_LIST}, method = RequestMethod.POST)
+//	public String showVerticales(Model model,String name){
+//
+//		model.addAttribute("model", "nikoniko");
+//		model.addAttribute("page",this.baseName + " " + PathFinder.LIST_ACTION.toUpperCase());
+//		model.addAttribute("sortedFields",NikoNiko.FIELDS);
+//		model.addAttribute("items",this.searchNikoNikos(name));
+//		model.addAttribute("go_show", PathFinder.SHOW_ACTION);
+//		model.addAttribute("go_create", PathFinder.CREATE_ACTION);
+//		model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
+//
+//		return listView;
+//	}
 
 	/**
 	 * FIND A SPECIFIC USER

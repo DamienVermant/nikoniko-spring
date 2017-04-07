@@ -82,17 +82,12 @@
 			- <a href="${calendar}"> Voir calendrier <a> <br>
 			- <a href="${pie_chart}"> Voir vos résultats <a> <br>
 			<#if mood == 0 || status == false>
-				- <a href="${add_nikoniko}"> Pas de vote enregistré... On vote ? </a>
-				<#if lastNiko == true>
-					Attention : Si vous votez pour ajourd'hui, vous ne pourrez plus voter pour la veille <br>
-				<#else>
-					<br>
-				</#if>
+				- <a href="${add_nikoniko}"> Pas de vote enregistré... On vote ? </a> <br>
 			<#else>
 			</#if>
 
 			<#if lastNiko == true>
-			 	- <a href="${add_last}"> Voter pour la veille ? </a>
+			 	- <a href="${add_last}"> Voter pour la vielle ? </a>
 
 			<#else>
 			</#if>

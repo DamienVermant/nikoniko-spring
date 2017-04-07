@@ -3,56 +3,22 @@ package com.cgi.nikoniko.utils;
 import java.util.ArrayList;
 import java.util.Date;
 
-import org.joda.time.Days;
 import org.joda.time.LocalDate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 
+import com.cgi.nikoniko.controllers.PathClass.PathFinder;
 import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
-import com.cgi.nikoniko.dao.IRoleCrudRepository;
 import com.cgi.nikoniko.dao.ITeamCrudRepository;
 import com.cgi.nikoniko.dao.IUserCrudRepository;
-import com.cgi.nikoniko.dao.IUserHasRoleCrudRepository;
-import com.cgi.nikoniko.dao.IUserHasTeamCrudRepository;
-import com.cgi.nikoniko.dao.IVerticaleCrudRepository;
-import com.cgi.nikoniko.dao.base.IBaseAssociatedCrudRepository;
-import com.cgi.nikoniko.dao.base.IBaseCrudRepository;
 import com.cgi.nikoniko.models.tables.NikoNiko;
 import com.cgi.nikoniko.models.tables.Team;
 import com.cgi.nikoniko.models.tables.User;
-import com.cgi.nikoniko.models.tables.modelbase.DatabaseItem;
 
 public abstract class UtilsFunctions {
 	
-	// need to call class constant
 	
-	public final static String DOT = ".";
-	public final static String PATH = "/";
-	public final static String BASE_USER = "user";
-	public final static String VERTICALE = "verticale";
-	public final static String BASE_URL = PATH + BASE_USER;
-
-	public final static String SHOW_PATH = "show";
-	public final static String MENU_PATH = "menu";
-
-	public final static String SHOW_NIKONIKO = "showNikoNikos";
-	public final static String SHOW_GRAPH = "showGraph";
-	public final static String SHOW_TEAM = "showTeam";
-	public final static String SHOW_ROLE = "showRole";
-	public final static String SHOW_LINK = "link";
-	public final static String SHOW_VERTICAL = "showVerticale";
-
-	public final static String ADD_TEAM = "addTeams";
-	public final static String ADD_ROLE = "addRoles";
-	public final static String ADD_VERTICAL = "addVerticale";
-
-	public final static String REDIRECT = "redirect:";
-
 	public final static LocalDate TODAY_DATE = new LocalDate();
-
-	public final static double TIME = 0.999999;
 	
 	
 /////////////////// UTILS FOR THE VOTE /////////////////////////////////
@@ -67,23 +33,26 @@ public abstract class UtilsFunctions {
 	 */
 	public static String updateLastNikoNiko(Long idUser, Integer mood, String comment, INikoNikoCrudRepository nikoCrud, IUserCrudRepository userCrud){
 		
-		if (userCrud.getLastLastNikoNikoUser(idUser) == null) {
-			return REDIRECT + PATH + MENU_PATH;
+		if (UtilsFunctions.getLastLastNikoNikoMood(idUser, userCrud, nikoCrud) == false) {
+			
+			return PathFinder.REDIRECT + PathFinder.PATH + PathFinder.MENU_PATH;
 		}
 
 		if (mood == null) {
-			return REDIRECT + PATH + MENU_PATH;
+			
+			return PathFinder.REDIRECT + PathFinder.PATH + PathFinder.MENU_PATH;
 		}
 
 		else {
-
-			NikoNiko lastNiko = nikoCrud.findOne(userCrud.getLastLastNikoNikoUser(idUser));
-
-			lastNiko.setMood(mood);
-			lastNiko.setComment(comment);
-			nikoCrud.save(lastNiko);
-
-			return REDIRECT + PATH + MENU_PATH;
+			
+			NikoNiko niko = UtilsFunctions.getLastLastNikoNiko(idUser, userCrud, nikoCrud);
+			
+			niko.setMood(mood);
+			niko.setComment(comment);
+			
+			nikoCrud.save(niko);
+			
+			return PathFinder.REDIRECT + PathFinder.PATH + PathFinder.MENU_PATH;
 
 		}
 	}
@@ -149,31 +118,48 @@ public abstract class UtilsFunctions {
 	 */
 	public static Boolean getLastLastNikoNikoMood(Long idUser, IUserCrudRepository userCrud, INikoNikoCrudRepository nikoCrud){
 		
-		Long idMax = userCrud.getLastLastNikoNikoUser(idUser);
+		LocalDate lastDay = TODAY_DATE.minusDays(1);
 
-		if (idMax == null) {
+		NikoNiko niko = nikoCrud.getNikoDate(lastDay, idUser);
+		
+		if (niko == null) {
+			
 			return false;
 		}
-
-		else {
-
-			NikoNiko lastLastNiko = nikoCrud.findOne(userCrud.getLastLastNikoNikoUser(idUser));
-			NikoNiko lastNiko = nikoCrud.findOne(userCrud.getLastNikoNikoUser(idUser));
-
-			LocalDate dateEntryLast = new LocalDate(lastNiko.getEntryDate());
-			LocalDate dateEntryLastLast = new LocalDate(lastLastNiko.getEntryDate());
-
-			int day = Days.daysBetween(new LocalDate(dateEntryLastLast), new LocalDate(dateEntryLast)).getDays() ;
-
-
-			if (lastLastNiko.getMood() != 0 || day < 1) {
+		
+		else{
+			
+			if (niko.getMood() != 0) {
+				
 				return false;
 			}
-
+			
 			else {
+				
 				return true;
 			}
 		}
+	}
+	
+	/**
+	 * GET SECOND TO LAST NIKONIKO
+	 * @param idUser
+	 * @param userCrud
+	 * @param nikoCrud
+	 * @return
+	 */
+	public static NikoNiko getLastLastNikoNiko(Long idUser, IUserCrudRepository userCrud, INikoNikoCrudRepository nikoCrud){
+		
+		if (UtilsFunctions.getLastLastNikoNikoMood(idUser, userCrud, nikoCrud) == true) {
+			
+			LocalDate lastDay = TODAY_DATE.minusDays(1);
+			
+			NikoNiko niko = nikoCrud.getNikoDate(lastDay, idUser);
+			
+			return niko;	
+		}
+		
+		return null;	
 	}
 	
 	/**
@@ -189,7 +175,6 @@ public abstract class UtilsFunctions {
 
 		login = auth.getName();
 		user = userCrud.findByLogin(login);
-		//user= userCrud.getUser(login);
 
 		return user;
 	}

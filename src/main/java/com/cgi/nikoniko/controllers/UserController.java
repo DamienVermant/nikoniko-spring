@@ -47,6 +47,7 @@ public class UserController extends ViewBaseController<User> {
 
 
 /////////////////// GLOBAL CONSTANT /////////////////////////////////
+	
 
 	public final static String BASE_USER = "user";
 	public final static String BASE_URL = PathFinder.PATH + BASE_USER;
@@ -101,6 +102,10 @@ public class UserController extends ViewBaseController<User> {
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 	@RequestMapping(path = {PathFinder.PATH, PathFinder.ROUTE_LIST}, method = RequestMethod.POST)
 	public String showUsers(Model model,String name){
+		
+		if (name == "") {
+			name = " ";
+			}
 
 		model.addAttribute("model", "user");
 		model.addAttribute("page",this.baseName + " " + PathFinder.LIST_ACTION.toUpperCase());
@@ -145,7 +150,7 @@ public class UserController extends ViewBaseController<User> {
 		if (userBuffer.getVerticale() == null) {
 			idverticale = 1L;
 
-			userBuffer.setVerticale(verticaleCrud.findOne(1L));
+			userBuffer.setVerticale(verticaleCrud.findOne(idverticale));
 			userCrud.save(userBuffer);
 		}
 		else {
@@ -322,7 +327,7 @@ public class UserController extends ViewBaseController<User> {
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
 	@RequestMapping(path = "{userId}/addLast", method = RequestMethod.POST)
 	public String lastNikoNikoForUserPOST(Model model,@PathVariable Long userId,
-						HttpServletResponse response, int mood, String comment) throws IOException {
+						HttpServletResponse response, Integer mood, String comment) throws IOException {
 
 		return UtilsFunctions.updateLastNikoNiko(userId, mood, comment, nikonikoCrud, userCrud);
 
@@ -686,7 +691,7 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_PATH);
 		model.addAttribute("add", PathFinder.ADD_VERTICAL);
 
-		return BASE_USER + PathFinder.PATH + PathFinder.SHOW_VERTICAL;
+		return BASE_USER + PathFinder.PATH + "showVerticale";
 
 	}
 

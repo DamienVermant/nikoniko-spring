@@ -24,7 +24,6 @@ public interface ITeamCrudRepository extends IBaseCrudRepository<Team>{
 	public List<BigInteger> getNikoNikoFromTeam(@Param("idTeam") long idTeam);
 	
 	/**
-	 * WTF ?
 	 * @param idTeam
 	 * @return
 	 */
