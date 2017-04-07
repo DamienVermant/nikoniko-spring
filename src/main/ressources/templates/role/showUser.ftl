@@ -23,7 +23,7 @@
                 <div class="col-lg-12">
                     <div class="align">
                         <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
-                            <button onclick="location.href='${back}'" class="vote"> Retour </button>
+                            <button onclick="location.href='${back}'" class="logout"> Retour </button>
                     </div>
                 </div>
             </div>

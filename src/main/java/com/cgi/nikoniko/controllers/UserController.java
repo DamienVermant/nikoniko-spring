@@ -47,7 +47,7 @@ public class UserController extends ViewBaseController<User> {
 
 
 /////////////////// GLOBAL CONSTANT /////////////////////////////////
-	
+
 
 	public final static String BASE_USER = "user";
 	public final static String BASE_URL = PathFinder.PATH + BASE_USER;
@@ -102,7 +102,7 @@ public class UserController extends ViewBaseController<User> {
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 	@RequestMapping(path = {PathFinder.PATH, PathFinder.ROUTE_LIST}, method = RequestMethod.POST)
 	public String showUsers(Model model,String name){
-		
+
 		if (name == "") {
 			return PathFinder.REDIRECT + PathFinder.ROUTE_LIST;
 			}
@@ -114,7 +114,7 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("go_show", PathFinder.SHOW_ACTION);
 		model.addAttribute("go_create", PathFinder.CREATE_ACTION);
 		model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
-		
+
 		return listView;
 
 	}
@@ -229,12 +229,12 @@ public class UserController extends ViewBaseController<User> {
 
 
 
-		niko = nikonikoCrud.findOne(userCrud.getLastNikoNikoUser(userId));
-		if (niko.getComment().isEmpty()) {
-			model.addAttribute("textAreaOption","");
-		} else {
-			model.addAttribute("textAreaOption",niko.getComment());
-		}
+//		niko = nikonikoCrud.findOne(userCrud.getLastNikoNikoUser(userId));
+//		if (niko.getComment().isEmpty()) {
+//			model.addAttribute("textAreaOption","");
+//		} else {
+//			model.addAttribute("textAreaOption",niko.getComment());
+//		}
 
 
 		model.addAttribute("lastMood", UtilsFunctions.getLastLastNikoNikoMood(userBuffer, userCrud, nikonikoCrud));
@@ -242,6 +242,7 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("mood" , UtilsFunctions.getUserLastMood(userBuffer, userCrud, nikonikoCrud));
 		model.addAttribute("page",user.getFirstname() + " " + PathFinder.CREATE_ACTION.toUpperCase());
 		model.addAttribute("sortedFields",NikoNiko.FIELDS);
+		model.addAttribute("textAreaOption","");
 		model.addAttribute("item",DumpFields.createContentsEmpty(niko.getClass()));
 		model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_PATH);
 		model.addAttribute("create_item", PathFinder.CREATE_ACTION);
