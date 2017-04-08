@@ -6,6 +6,9 @@
 
 <!-- css -->
     <link href="/css/design.css"  rel="stylesheet">
+    
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet"> 
 
 </head>
 <body>
@@ -22,14 +25,14 @@
                 <div class="col-lg-12">
                     <div class="align">
                         <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
-                        <button onclick="location.href='${go_index}'" class="logout"> Retour </button>
+                        <button onclick="location.href='${go_index}'" class="return"> Retour </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-	<h1>${page}</h1>
+	<h1>Création</h1>
 
 	<form action = "${create_item}" method = "POST">
 		<#include "../includable/security/securityToken.ftl">
@@ -49,12 +52,7 @@
 				</#if>
 			</#list>
 		</table>
-		<input type="submit" value="create"><br>
+		<input type="submit" value="Créer"><br>
 	</form>
-	<#if item["id"]??>
-		<a href="${go_index}">Back</a><br>
-	<#else>
-		<a href="${go_index}">Back</a><br>
-	</#if>
 </body>
 </html>

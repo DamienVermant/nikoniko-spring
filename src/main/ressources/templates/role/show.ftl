@@ -5,7 +5,10 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
 <!-- css -->
-    <link href="/css/design.css"  rel="stylesheet">
+<link href="/css/design.css"  rel="stylesheet">
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet"> 
 
 </head>
 
@@ -24,7 +27,7 @@
                     <div class="align">
                         <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
                         <#if item["id"]??>
-                            <button onclick="location.href='../'" class="vote"> Retour </button>
+                            <button onclick="location.href='../'" class="return"> Retour </button>
                         <#else>
                             <button onclick="location.href='../..'" class="vote"> Retour </button>
                         </#if>

@@ -5,7 +5,10 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
 <!-- css -->
-    <link href="/css/design.css"  rel="stylesheet">
+<link href="/css/design.css"  rel="stylesheet">
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet"> 
 
 </head>
 
@@ -22,12 +25,12 @@
             <div class="row-fluid">
                 <div class="col-lg-12">
                     <div class="align">
-                        <button onclick="location.href='/menu'" class="logout"> Home </button>
                         <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
+                         <button onclick="location.href='/menu'" class="home"> Menu </button>
                         <#if item["id"]??>
-                            <button onclick="location.href='../'" class="logout"> Retour </button>
+                            <button onclick="location.href='../'" class="return"> Retour </button>
                         <#else>
-                            <button onclick="location.href='../..'" class="logout"> Retour </button>
+                            <button onclick="location.href='../..'" class="return"> Retour </button>
                         </#if>
                     </div>
                 </div>
@@ -61,10 +64,10 @@
 			</#if>
 		</#list>
 	</table>
-    <a href="${show_verticale}"> Show verticale </a> <br>
-	<a href="${show_roles}"> Show roles </a> <br>
-	<a href="${show_teams}"> Show teams </a> <br>
-	<a href="${go_update}">Update</a> <br>
-	<a href="${go_delete}">Delete</a> <br>
+    <a href="${show_verticale}"> Voir verticale </a> <br>
+	<a href="${show_roles}"> Voir rôles </a> <br>
+	<a href="${show_teams}"> Voir équipes </a> <br>
+	<a href="${go_update}">Modifier</a> <br>
+	<a href="${go_delete}">Supprimer</a> <br>
 </body>
 </html>

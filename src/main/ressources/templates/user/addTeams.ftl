@@ -5,7 +5,10 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
 <!-- css -->
-    <link href="/css/design.css"  rel="stylesheet">
+<link href="/css/design.css"  rel="stylesheet">
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet"> 
 
 </head>
 
@@ -21,20 +24,20 @@
         <div class="col-lg-2">
             <div class="row-fluid">
                 <div class="col-lg-12">
-                    <div class="align">
-                        <button onclick="location.href='/menu'" class="logout"> Home </button>
+                    <div class="align">                        
                         <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
-                        <button onclick="location.href='${back}'" class="logout"> Retour </button>
+                        <button onclick="location.href='/menu'" class="home"> Menu </button>
+                        <button onclick="location.href='${back}'" class="return"> Retour </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-	<h1>TEAMS TO ADD FOR USER : ${page}  </h1>
+	<h1>Equipe(s) à ajouter pour l'utilisateur : ${page}  </h1>
 		<form action = "" method = "POST">
 		<#include "../includable/security/securityToken.ftl">
-			<input type="text" class="search" onkeyup="myFunction()" name="name" placeholder="Search for registration" title="Type in a name">
+			<input type="text" class="search" onkeyup="myFunction()" name="name" placeholder="Search for name" title="Type in a name">
 		<input type="submit" value="Search">
 		</form>
 		<table class="table table-bordered table-hover">
@@ -68,7 +71,7 @@
 					<td>
 						<form action = "" method = "POST">
 							<input type="hidden" name = "idTeam" value = "${item["id"]}">
-							<input type="submit" value="add"><br>
+							<input type="submit" value="ajouter"><br>
 							<#include "../includable/security/securityToken.ftl">
 						</form>
 					</td>

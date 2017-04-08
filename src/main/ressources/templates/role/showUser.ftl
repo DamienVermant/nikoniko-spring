@@ -5,7 +5,10 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
 <!-- css -->
-    <link href="/css/design.css"  rel="stylesheet">
+<link href="/css/design.css"  rel="stylesheet">
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet"> 
 
 </head>
 
@@ -23,7 +26,7 @@
                 <div class="col-lg-12">
                     <div class="align">
                         <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
-                            <button onclick="location.href='${back}'" class="vote"> Retour </button>
+                            <button onclick="location.href='${back}'" class="return"> Retour </button>
                     </div>
                 </div>
             </div>
@@ -70,6 +73,6 @@
 				</tr>
 			</#list>
 		</table>
-	<a class ="btn btn-default" href = "${add}"> Rajouter un utilisateur </a> <br>
+	<a class ="btn btn-default" href = "${add}"> Ajouter un utilisateur </a> <br>
 </body>
 </html>

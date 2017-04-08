@@ -5,7 +5,10 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
 <!-- css -->
-    <link href="/css/design.css"  rel="stylesheet">
+<link href="/css/design.css"  rel="stylesheet">
+    
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet"> 
 
 </head>
 
@@ -23,14 +26,14 @@
                 <div class="col-lg-12">
                     <div class="align">
                         <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
-                        <button onclick="location.href='${go_index}'" class="logout"> Retour </button>
+                        <button onclick="location.href='./show'" class="return"> Retour </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-	<h1>${page}</h1>
+	<h1>Suppression</h1>
 	<table class="table table-bordered table-hover">
 		<#list sortedFields as field>
 			<#if field != "id">
@@ -57,17 +60,12 @@
 	<#include "../includable/security/securityToken.ftl">
 		<#if item["id"]??>
 			<input type="hidden" name = "id" value = "${item["id"]}">
-			<input type="submit" value="Delete"><br>
+			<input type="submit" value="Supprimer"><br>
 		<#else>
 			<input type="hidden" name = "idl" value = "${item["idLeft"]}">
 			<input type="hidden" name = "idr" value = "${item["idRight"]}">
-			<input type="submit" value="Delete"><br>
+			<input type="submit" value="Supprimer"><br>
 		</#if>
 	</form>
-	<#if item["id"]??>
-		<a href="../">Back</a>
-	<#else>
-		<a href="../..">Back</a>
-	</#if>
 </body>
 </html>

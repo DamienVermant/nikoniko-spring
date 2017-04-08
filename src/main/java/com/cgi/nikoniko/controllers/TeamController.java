@@ -173,10 +173,16 @@ public class TeamController extends ViewBaseController<Team> {
 
 		Object teamBuffer = new Object();
 		teamBuffer = teamCrud.findOne(idTeam);
+		
+		ArrayList<User> userList = userCrud.getAssociatedUsersForTeam(idTeam);
+		
+		if (userList.size() < LENGHT_VIEW) {
+			model.addAttribute("items",(DumpFields.listFielder(userList)));
+		}else{
+			model.addAttribute("items",DumpFields.listFielder(userList.subList(0, LENGHT_VIEW)));
+		}
 
-		ArrayList<User> userList = new ArrayList<User>();
-
-		model.addAttribute("items", DumpFields.listFielder(userList));
+		//model.addAttribute("items", DumpFields.listFielder(userList));
 		model.addAttribute("sortedFields",User.FIELDS);
 		model.addAttribute("page", ((Team) teamBuffer).getName());
 		model.addAttribute("go_show", PathFinder.SHOW_ACTION);
@@ -213,6 +219,10 @@ public class TeamController extends ViewBaseController<Team> {
 	public String addVerticalForTeamPOST(Model model,@RequestParam String name , @PathVariable Long idTeam){
 
 		Team teamBuffer = teamCrud.findOne(idTeam);
+		
+		if (name == "") {
+			return PathFinder.REDIRECT + PathFinder.ADD_USER;
+			}
 
 		model.addAttribute("model", "team");
 		model.addAttribute("page", teamBuffer.getName());
@@ -384,12 +394,12 @@ public class TeamController extends ViewBaseController<Team> {
 
 		model.addAttribute("page", teamBuffer.getName());
 		model.addAttribute("sortedFields", Verticale.FIELDS);
-		model.addAttribute("items", this.getVerticalForUser(idTeam));
+		model.addAttribute("items", this.getVerticalForTeam(idTeam));
 		model.addAttribute("show_verticale", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_VERTICAL);
 		model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_PATH);
 		model.addAttribute("add", "addVerticale");
 
-		return BASE_TEAM + PathFinder.PATH + PathFinder.SHOW_VERTICAL;
+		return BASE_TEAM + PathFinder.PATH + "showVerticale";
 
 	}
 
@@ -398,7 +408,7 @@ public class TeamController extends ViewBaseController<Team> {
 	 * @param idTeam
 	 * @return
 	 */
-	public ArrayList<Verticale> getVerticalForUser(Long idTeam) {
+	public ArrayList<Verticale> getVerticalForTeam(Long idTeam) {
 		ArrayList<Verticale> verticaleList = new ArrayList<Verticale>();
 		Long idVerticale = teamCrud.getTeamVertical(idTeam);
 		verticaleList.add(verticaleCrud.findOne(idVerticale));

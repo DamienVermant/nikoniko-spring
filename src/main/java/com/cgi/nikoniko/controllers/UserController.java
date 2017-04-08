@@ -92,7 +92,6 @@ public class UserController extends ViewBaseController<User> {
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 	/**
 	 * LIST USER METHOD POST
 	 * @param model
@@ -266,7 +265,7 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("sortedFields",NikoNiko.FIELDS);
 		model.addAttribute("item",DumpFields.createContentsEmpty(niko.getClass()));
 		model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_PATH);
-		model.addAttribute("textAreaOption","");
+		//model.addAttribute("textAreaOption","");
 		model.addAttribute("create_item", PathFinder.CREATE_ACTION);
 
 		return "nikoniko/addNikoNiko";

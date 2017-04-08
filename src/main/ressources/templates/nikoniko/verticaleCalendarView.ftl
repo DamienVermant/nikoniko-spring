@@ -9,6 +9,9 @@
 
     <!-- css -->
 	<link href="/css/nikoniko.css"  rel="stylesheet">
+	
+	<!-- Fonts -->
+	<link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet"> 
 
 </head>
 <body>

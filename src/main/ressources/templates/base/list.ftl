@@ -5,7 +5,10 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
 <!-- css -->
-    <link href="/css/design.css"  rel="stylesheet">
+<link href="/css/design.css"  rel="stylesheet">
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet"> 
 
 </head>
 
@@ -23,7 +26,7 @@
                 <div class="col-lg-12">
                     <div class="align">
                         <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
-                        <button onclick="location.href='/menu/'" class="logout"> Retour </button>
+                        <button onclick="location.href='/menu/'" class="return"> Retour </button>
                     </div>
                 </div>
             </div>
@@ -46,7 +49,7 @@
 		</#if>
 		<#if model == "role">
 		<#else>
-			<input type="submit" value="Search">
+			<input type="submit" value="Rechercher">
 		</#if>
 
 	</form>
@@ -100,7 +103,7 @@
 					<#if model == "role">
 						<td>
 							<#if item["id"]??>
-								<a class = "btn btn-default" href="${item["id"]}/showUser">Ajouter un utilisateur</a>
+								<a class = "btn btn-default" href="${item["id"]}/showUser">Voir utilisateurs</a>
 
 							<#else>
 								<a class = "btn btn-default" href="${item["idLeft"]}/${item["idRight"]}/${go_show}">Select</a>
@@ -121,7 +124,7 @@
 								<form action = "${item["id"]}/${go_delete}" method = "POST">
 								<#include "../includable/security/securityToken.ftl">
 									<input type="hidden" name = "id" value = "${item["id"]}">
-									<input type="submit" value="Delete">
+									<input type="submit" value="Supprimer">
 								</form>
 
 							<#else>
@@ -129,7 +132,7 @@
 								<#include "../includable/security/securityToken.ftl">
 									<input type="hidden" name = "idl" value = "${item["idLeft"]}">
 									<input type="hidden" name = "idr" value = "${item["idRight"]}">
-									<input type="submit" value="Delete">
+									<input type="submit" value="Supprimer">
 								</form>
 							</#if>
 						</td>

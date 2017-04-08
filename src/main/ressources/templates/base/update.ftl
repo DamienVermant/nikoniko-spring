@@ -5,7 +5,10 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
 <!-- css -->
-    <link href="/css/design.css"  rel="stylesheet">
+<link href="/css/design.css"  rel="stylesheet">
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet"> 
 
 </head>
 
@@ -24,9 +27,9 @@
                     <div class="align">
                         <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
                         <#if items["id"]??>
-                            <button onclick="location.href='../'" class="logout"> Retour </button>
+                            <button onclick="location.href='./show'" class="return"> Retour </button>
                         <#else>
-                            <button onclick="location.href='../..'" class="logout"> Retour </button>
+                            <button onclick="location.href='./show'" class="return"> Retour </button>
                         </#if>
                     </div>
                 </div>
@@ -34,7 +37,7 @@
         </div>
     </div>
 </div>
-	<h1>${page}</h1>
+	<h1>Modification</h1>
 	<form action = "" method = "POST">
 	<#include "../includable/security/securityToken.ftl">
 	<table class="table table-bordered table-hover">
@@ -67,7 +70,7 @@
 			</#if>
 		</#list>
 	</table>
-		<input type="submit" value="Update">
+		<input type="submit" value="Modifier">
 	</form>
 </body>
 </html>
