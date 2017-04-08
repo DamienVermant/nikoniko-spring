@@ -18,7 +18,7 @@ import com.cgi.nikoniko.models.tables.User;
 public abstract class UtilsFunctions {
 	
 	
-	public final static LocalDate TODAY_DATE = new LocalDate();
+public final static LocalDate TODAY_DATE = new LocalDate();
 	
 	
 /////////////////// UTILS FOR THE VOTE /////////////////////////////////
@@ -58,7 +58,7 @@ public abstract class UtilsFunctions {
 	}
 	
 	/**
-	 * FUNCTION THAT CHECK NIKONIKO DATE FOR UPDATE OR NEW
+	 * FUNCTION THAT CHECK NIKONIKO DATE FOR UPDATE OR NEW. TRUE : UPDATE NIKONIKO, FALSE : NEW NIKONIKO
 	 * @param idUser
 	 * @return
 	 */
@@ -89,7 +89,7 @@ public abstract class UtilsFunctions {
 	}
 
 	/**
-	 * GET LAST NIKONIKO ENTER BY USER
+	 * GET LAST MOOD ENTER BY USER
 	 * @param idUser
 	 * @return
 	 */
@@ -110,10 +110,9 @@ public abstract class UtilsFunctions {
 	}
 
 	/**
-	 * GET LAST-1 NIKONIKO USER AND CHECK IF THE MOOD IS NULL OR NOT
-	 * RETURN FALSE CAN'T UPDATE, TRUE UPDATE SECOND LAST
+	 * GET SECOND TO LAST NIKONIKO USER AND CHECK IF THE MOOD IS NULL OR NOT.FALSE : CAN'T UPDATE, TRUE : UPDATE SECOND LAST
 	 * @param idUser
-	 * @param userCrud2 
+	 * @param userCrud
 	 * @return
 	 */
 	public static Boolean getLastLastNikoNikoMood(Long idUser, IUserCrudRepository userCrud, INikoNikoCrudRepository nikoCrud){
@@ -142,7 +141,7 @@ public abstract class UtilsFunctions {
 	}
 	
 	/**
-	 * GET SECOND TO LAST NIKONIKO
+	 * GET SECOND TO LAST NIKONIKO IF EXIST AND MOOD != 0
 	 * @param idUser
 	 * @param userCrud
 	 * @param nikoCrud

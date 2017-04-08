@@ -33,9 +33,11 @@ public class UserDetailsServiceImp implements UserDetailsService {
 	@Autowired
 	private IUserHasRoleCrudRepository userRoleCrud;
 
+	/**
+	 * RECUPERATION D'UN UTILISATEUR PAR SON LOGIN (DROIT + LOGIN ET PASSWORD POUR POUVOIR SE CONNECTER)
+	 */
 	@Override
 	@Transactional(readOnly = true)
-	// RECUPERATION D'UN UTILISATEUR PAR SON LOGIN (DROIT + LOGIN ET PASSWORD POUR POUVOIR SE CONNECTER)
 	public UserDetails loadUserByUsername(String login)
 			throws UsernameNotFoundException {
 		

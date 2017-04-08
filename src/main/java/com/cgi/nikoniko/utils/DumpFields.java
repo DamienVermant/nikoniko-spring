@@ -22,7 +22,11 @@ import com.cgi.nikoniko.models.tables.modelbase.DatabaseItem;
 
 public class DumpFields {
 	
-	// RECUPERE TOUS LES NOMS DES ATTRIBUTS D'UNE CLASSE 
+	/**
+	 *  RECUPERE TOUS LES NOMS DES ATTRIBUTS D'UNE CLASSE 
+	 * @param klazz
+	 * @return
+	 */
 	public static <T> ArrayList<String> inspectBaseAttribut(Class<T> klazz) {
 		ArrayList<String> attributs = new ArrayList<String>();
 		Field[] fields;
@@ -45,7 +49,11 @@ public class DumpFields {
 		return attributs;
 	}
 
-	// RECUPERE TOUS LES ATTRIBUTS D'UNE CLASSE 
+	/**
+	 * RECUPERE TOUS LES ATTRIBUTS D'UNE CLASSE 
+	 * @param klazz
+	 * @return
+	 */
 	public static <T> ArrayList<Field> getFields(Class<T> klazz) {
 		ArrayList<Field> attributs = new ArrayList<Field>();
 		Field[] fields;
@@ -69,7 +77,12 @@ public class DumpFields {
 		return attributs;
 	}
 
-	// RETOURNE UN OBJET DE DATABASE ITEM SI LES GETTERS DE L'OBJET ENVOYER EN PARAMETRE CONTIENT UN DATABASEITEM
+	/**
+	 * RETOURNE UN OBJET DE DATABASE ITEM SI LES GETTERS DE L'OBJET ENVOYER EN PARAMETRE CONTIENT UN DATABASEITEM
+	 * @param field
+	 * @param o
+	 * @return
+	 */
 	public static <T extends DatabaseItem> Object runGetter(Field field, T o) {
 		
 		for (Method method : DumpFields.getGetter(o.getClass())) {
@@ -94,7 +107,11 @@ public class DumpFields {
 		return null;
 	}
 
-	// RETOURNE LE NOM DE TOUS LES GETTERS D'UNE CLASSE
+	/**
+	 * RETOURNE LE NOM DE TOUS LES GETTERS D'UNE CLASSE
+	 * @param klazz
+	 * @return
+	 */
 	public static <T> ArrayList<String> inspectGetter(Class<T> klazz) {
 		ArrayList<String> result = new ArrayList<String>();
 		try {
@@ -111,7 +128,11 @@ public class DumpFields {
 		return result;
 	}
 
-	// RETOURNE LE NOM DE TOUS LES SETTERS D'UNE CLASSE
+	/**
+	 *  RETOURNE LE NOM DE TOUS LES SETTERS D'UNE CLASSE
+	 * @param klazz
+	 * @return
+	 */
 	public static <T> ArrayList<String> inspectSetter(Class<T> klazz) {
 		ArrayList<String> result = new ArrayList<String>();
 		try {
@@ -171,7 +192,11 @@ public class DumpFields {
 		return result;
 	}
 
-	// RECUPERE UNE MAP DE CLE VALEUR CORRESPONDANT A UN OBJET ENVOYE EN PARAMETRE
+	/**
+	 *  RECUPERE UNE MAP DE CLE VALEUR CORRESPONDANT A UN OBJET ENVOYE EN PARAMETRE
+	 * @param bean
+	 * @return
+	 */
 	public static Map<String, Object> fielder(Object bean) {
 		try {
 			return Arrays
@@ -202,7 +227,11 @@ public class DumpFields {
 		}
 	}
 
-	// MEME FONCTION QUE FIELDER MAIS RENVOIE CETTE FOIS-CI UNE LISTE DE MAP
+	/**
+	 * MEME FONCTION QUE FIELDER MAIS RENVOIE CETTE FOIS-CI UNE LISTE DE MAP
+	 * @param items
+	 * @return
+	 */
 	public static <T> ArrayList<Map<String, Object>> listFielder(List<T> items) {
 		ArrayList<Map<String, Object>> listMap = new ArrayList<Map<String, Object>>();
 		for (T item : items) {
@@ -328,6 +357,11 @@ public class DumpFields {
 		return null;
 	}
 
+	/**
+	 * CREATION D'UN OBJET A PARTIR D'UNE CLASSE DONNÉE EN PARAMÈTRE
+	 * @param clazz
+	 * @return
+	 */
 	public static <T> T createContentsEmpty(Class<T> clazz) {
 		try {
 			return clazz.getConstructor().newInstance();
@@ -384,7 +418,7 @@ public class DumpFields {
 	}
 
 	/**
-	 * This method return the setter associated to the given field
+	 * RETOURNE LE SETTER CORRESPONDANT AU CHAMP DONNÉ EN PARAMETRE
 	 *
 	 * @param field
 	 * @return
@@ -405,7 +439,7 @@ public class DumpFields {
 	}
 
 	/**
-	 * This method return the getter associated to the given field
+	 * RETOURNE LE GETTER CORRESPONDANT AU CHAMP DONNÉ EN PARAMETRE
 	 *
 	 * @param field
 	 * @return

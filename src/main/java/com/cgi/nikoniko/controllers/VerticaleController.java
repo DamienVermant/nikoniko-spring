@@ -61,7 +61,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 
 
 	/**
-	 *SHOW SPECIFIC VERTICAL WITH A GIVEN ID
+	 * SHOW SPECIFIC VERTICAL WITH A GIVEN ID
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_VP"})
 	@RequestMapping(path = PathFinder.ROUTE_SHOW, method = RequestMethod.GET)
@@ -83,7 +83,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 }
 
 	/**
-	 * SHOW THE LIST OF VERTICALES
+	 * SHOW THE RIGHT VERTICALE BY SEARCHING HIS NAME
 	 * @param model
 	 * @param name
 	 * @return
