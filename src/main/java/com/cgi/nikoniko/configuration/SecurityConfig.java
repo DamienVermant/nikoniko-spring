@@ -20,26 +20,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 
 		http
-				.authorizeRequests()
-				.anyRequest()
-				.authenticated()
+			.authorizeRequests()
+				.antMatchers("/css")
+				.permitAll()
 			.and()
 				.formLogin()
 					.loginPage("/login")
 					.usernameParameter("login")
 					.passwordParameter("password")
-					.permitAll()//;
-					.defaultSuccessUrl("/menu", true);
-
-			// TODO : REMOVE THIS
-
-//			.and()
-//				.httpBasic()
-//				.and()
-//				.authorizeRequests().anyRequest().anonymous()
-//				.antMatchers("/demo","/demo/**")
-//				.permitAll()
-//				;
+					.permitAll()
+					.defaultSuccessUrl("/menu", true)
+				;
 	}
 
 }

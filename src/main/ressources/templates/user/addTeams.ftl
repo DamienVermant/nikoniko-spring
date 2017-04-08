@@ -1,15 +1,43 @@
+<!DOCTYPE html>
+<html>
  <head>
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
+<!-- css -->
+<link href="/css/design.css"  rel="stylesheet">
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet"> 
+
 </head>
 
 <body>
-	<a href="/menu">Home</a>
-	<h1>TEAMS TO ADD FOR USER : ${page}  </h1>
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="col-lg-2">
+            <img class="logo" src="https://upload.wikimedia.org/wikipedia/fr/5/51/LOGO-CGI-1993-1998.svg">
+        </div>
+        <div class="col-lg-8">
+            <div class="title">Niko-Niko</div>
+        </div>
+        <div class="col-lg-2">
+            <div class="row-fluid">
+                <div class="col-lg-12">
+                    <div class="align">                        
+                        <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
+                        <button onclick="location.href='/menu'" class="home"> Menu </button>
+                        <button onclick="location.href='${back}'" class="return"> Retour </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+	<h1>Equipe(s) à ajouter pour l'utilisateur : ${page}  </h1>
 		<form action = "" method = "POST">
 		<#include "../includable/security/securityToken.ftl">
-			<input type="text" class="search" onkeyup="myFunction()" name="name" placeholder="Search for registration" title="Type in a name">
+			<input type="text" class="search" onkeyup="myFunction()" name="name" placeholder="Search for name" title="Type in a name">
 		<input type="submit" value="Search">
 		</form>
 		<table class="table table-bordered table-hover">
@@ -43,12 +71,12 @@
 					<td>
 						<form action = "" method = "POST">
 							<input type="hidden" name = "idTeam" value = "${item["id"]}">
-							<input type="submit" value="add"><br>
+							<input type="submit" value="ajouter"><br>
 							<#include "../includable/security/securityToken.ftl">
 						</form>
 					</td>
 				</tr>
 			</#list>
 		</table>
-	<a href="${back}"> Back <a>
 </body>
+</html>

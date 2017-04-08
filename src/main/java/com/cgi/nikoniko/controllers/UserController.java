@@ -2,8 +2,6 @@ package com.cgi.nikoniko.controllers;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.text.SimpleDateFormat;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.cgi.nikoniko.controllers.PathClass.PathFinder;
 import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
 import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
 import com.cgi.nikoniko.dao.IRoleCrudRepository;
@@ -40,6 +39,7 @@ import com.cgi.nikoniko.models.tables.Team;
 import com.cgi.nikoniko.models.tables.User;
 import com.cgi.nikoniko.models.tables.Verticale;
 import com.cgi.nikoniko.utils.DumpFields;
+import com.cgi.nikoniko.utils.UtilsFunctions;
 
 @Controller
 @RequestMapping(UserController.BASE_URL)
@@ -49,31 +49,13 @@ public class UserController extends ViewBaseController<User> {
 /////////////////// GLOBAL CONSTANT /////////////////////////////////
 
 
-	public final static String DOT = ".";
-	public final static String PATH = "/";
 	public final static String BASE_USER = "user";
-	public final static String VERTICALE = "verticale";
-	public final static String BASE_URL = PATH + BASE_USER;
+	public final static String BASE_URL = PathFinder.PATH + BASE_USER;
+	public final static double TIME = 0.999999;//can't use 1 due to double type
 
-	public final static String SHOW_PATH = "show";
-	public final static String MENU_PATH = "menu";
-
-	public final static String SHOW_NIKONIKO = "showNikoNikos";
-	public final static String SHOW_GRAPH = "showGraph";
-	public final static String SHOW_TEAM = "showTeam";
-	public final static String SHOW_ROLE = "showRole";
-	public final static String SHOW_LINK = "link";
-	public final static String SHOW_VERTICAL = "showVerticale";
-
-	public final static String ADD_TEAM = "addTeams";
-	public final static String ADD_ROLE = "addRoles";
-	public final static String ADD_VERTICAL = "addVerticale";
-
-	public final static String REDIRECT = "redirect:";
-
+	//TODO : ce n'est pas une variable statique!!!!
 	public final static LocalDate TODAY_DATE = new LocalDate();
 
-	public final static double TIME = 0.999999;
 
 
 /////////////////// NECESSARY CRUD /////////////////////////////////
@@ -109,8 +91,7 @@ public class UserController extends ViewBaseController<User> {
 	*/
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	
+
 	/**
 	 * LIST USER METHOD POST
 	 * @param model
@@ -118,35 +99,25 @@ public class UserController extends ViewBaseController<User> {
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
-	@RequestMapping(path = {PATH, ROUTE_LIST}, method = RequestMethod.POST)
+	@RequestMapping(path = {PathFinder.PATH, PathFinder.ROUTE_LIST}, method = RequestMethod.POST)
 	public String showUsers(Model model,String name){
 
+		if (name == "") {
+			return PathFinder.REDIRECT + PathFinder.ROUTE_LIST;
+			}
+
 		model.addAttribute("model", "user");
-		model.addAttribute("page",this.baseName + " " + LIST_ACTION.toUpperCase());
+		model.addAttribute("page",this.baseName);
 		model.addAttribute("sortedFields",User.FIELDS);
-		model.addAttribute("items",this.searchUser(name));
-		model.addAttribute("go_show", SHOW_ACTION);
-		model.addAttribute("go_create", CREATE_ACTION);
-		model.addAttribute("go_delete", DELETE_ACTION);
+		model.addAttribute("items",UtilsFunctions.searchUser(name, userCrud));
+		model.addAttribute("go_show", PathFinder.SHOW_ACTION);
+		model.addAttribute("go_create", PathFinder.CREATE_ACTION);
+		model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
+
 		return listView;
 
 	}
 
-	/**
-	 * FIND A SPECIFIC USER
-	 * @param name
-	 * @return
-	 */
-	public ArrayList<User> searchUser(String name){
-
-		ArrayList<User> userList = new ArrayList<User>();
-		userList = userCrud.getUsers(name);
-
-		return userList;
-
-	}
-
-	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
@@ -167,7 +138,7 @@ public class UserController extends ViewBaseController<User> {
 	 */
 	@Override
 	@Secured({"ROLE_ADMIN","ROLE_VP"})
-	@RequestMapping(path = "{idUser}" + PATH + SHOW_PATH, method = RequestMethod.GET)
+	@RequestMapping(path = "{idUser}" + PathFinder.PATH + PathFinder.SHOW_PATH, method = RequestMethod.GET)
 	public String showItemGet(Model model,@PathVariable Long idUser) {
 
 		Long idverticale = null;
@@ -179,7 +150,7 @@ public class UserController extends ViewBaseController<User> {
 		if (userBuffer.getVerticale() == null) {
 			idverticale = 1L;
 
-			userBuffer.setVerticale(verticaleCrud.findOne(1L));
+			userBuffer.setVerticale(verticaleCrud.findOne(idverticale));
 			userCrud.save(userBuffer);
 		}
 		else {
@@ -189,16 +160,16 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("page",  "USER : " + userBuffer.getRegistrationcgi());
 		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
 		model.addAttribute("item",DumpFields.fielder(super.getItem(idUser)));
-		model.addAttribute("show_nikonikos", DOT + PATH + SHOW_NIKONIKO);
-		model.addAttribute("show_graphique", DOT + PATH + SHOW_GRAPH);
-		model.addAttribute("show_verticale", DOT + PATH + SHOW_VERTICAL);
-		model.addAttribute("show_teams", DOT + PATH + SHOW_TEAM);
-		model.addAttribute("show_roles", DOT + PATH + SHOW_ROLE);
-		model.addAttribute("go_delete", DELETE_ACTION);
-		model.addAttribute("go_update", UPDATE_ACTION);
+		model.addAttribute("show_nikonikos", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_NIKONIKO);
+		model.addAttribute("show_graphique", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_GRAPH);
+		model.addAttribute("show_verticale", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_VERTICAL);
+		model.addAttribute("show_teams", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_TEAM);
+		model.addAttribute("show_roles", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_ROLE);
+		model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
+		model.addAttribute("go_update", PathFinder.UPDATE_ACTION);
 
 
-		return BASE_USER + PATH + SHOW_PATH;
+		return BASE_USER + PathFinder.PATH + PathFinder.SHOW_PATH;
 	}
 
 	/**
@@ -208,7 +179,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_VP","ROLE_USER"})
-	@RequestMapping(path = "{userId}" + PATH + SHOW_NIKONIKO, method = RequestMethod.GET)
+	@RequestMapping(path = "{userId}" + PathFinder.PATH + PathFinder.SHOW_NIKONIKO, method = RequestMethod.GET)
 	public String getNikoNikosForUser(Model model, @PathVariable Long userId) {
 
 		User user = super.getItem(userId);
@@ -217,7 +188,7 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("page", user.getFirstname() + " nikonikos");
 		model.addAttribute("sortedFields", NikoNiko.FIELDS);
 		model.addAttribute("items", DumpFields.listFielder(listOfNiko));
-		model.addAttribute("back", DOT + PATH + SHOW_PATH);
+		model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_PATH);
 
 		model.addAttribute("add", "addNikoNiko");
 		return "user/showNikoNikos";
@@ -239,22 +210,63 @@ public class UserController extends ViewBaseController<User> {
 	public String newNikoNikoForUserGET(Model model,@PathVariable Long userId,
 						HttpServletResponse response) throws IOException {
 
-		User user = super.getItem(userId);
-		NikoNiko niko = new NikoNiko();
-
-		if (userCrud.findByLogin(super.checkSession().getName()).getId()!= userId) {
-			response.sendError(HttpStatus.BAD_REQUEST.value(),("Don't try to hack url!").toUpperCase());
+		try {
+			userCrud.findOne(userId).getId();
+		} catch (Exception e) {
+			response.sendError(HttpStatus.FORBIDDEN.value(),("Don't try to hack url!").toUpperCase());
+			return null;
 		}
 
-		model.addAttribute("lastMood", this.getLastLastNikoNikoMood(userCrud.findByLogin(super.checkSession().getName()).getId()));
+		if (userCrud.findByLogin(super.checkSession().getName()).getId()!= userId) {
+			response.sendError(HttpStatus.FORBIDDEN.value(),("Don't try to hack url!").toUpperCase());
+		}
 
-		model.addAttribute("status", this.checkDateNikoNiko(userCrud.findByLogin(super.checkSession().getName()).getId()));
-		model.addAttribute("mood" , this.getUserLastMood(userCrud.findByLogin(super.checkSession().getName()).getId()));
-		model.addAttribute("page",user.getFirstname() + " " + CREATE_ACTION.toUpperCase());
+		Long userBuffer = UtilsFunctions.getUserInformations(userCrud).getId();
+
+		User user = super.getItem(userId);
+		NikoNiko niko = new NikoNiko();
+		Boolean nikonikoNotExist = false;
+		Boolean nikonikoCommentIsEmpty = false;
+
+		try {
+			niko = nikonikoCrud.findOne(userCrud.getLastNikoNikoUser(userId));
+			nikonikoNotExist = true;
+		} catch (Exception e) {
+			nikonikoNotExist = false;
+
+		}
+
+		 if (nikonikoNotExist) {
+			if (niko.getComment().isEmpty()) {
+				nikonikoCommentIsEmpty = true;
+			} else {
+				nikonikoCommentIsEmpty = false;
+			}
+		} else {
+			nikonikoCommentIsEmpty = true;
+		}
+
+		if (nikonikoCommentIsEmpty || !UtilsFunctions.checkDateNikoNiko(userId, userCrud, nikonikoCrud)) {
+			model.addAttribute("textAreaOption","");
+			if (!UtilsFunctions.checkDateNikoNiko(userId, userCrud, nikonikoCrud)) {
+				model.addAttribute("isNewDay",1);
+			} else {
+				model.addAttribute("isNewDay",0);
+			}
+		} else {
+			model.addAttribute("textAreaOption",niko.getComment());
+			model.addAttribute("isNewDay",0);
+		}
+
+		model.addAttribute("lastMood", UtilsFunctions.getLastLastNikoNikoMood(userBuffer, userCrud, nikonikoCrud));
+		model.addAttribute("status", UtilsFunctions.checkDateNikoNiko(userBuffer, userCrud, nikonikoCrud));
+		model.addAttribute("mood" , UtilsFunctions.getUserLastMood(userBuffer, userCrud, nikonikoCrud));
+		model.addAttribute("page",user.getFirstname() + " " + PathFinder.CREATE_ACTION.toUpperCase());
 		model.addAttribute("sortedFields",NikoNiko.FIELDS);
 		model.addAttribute("item",DumpFields.createContentsEmpty(niko.getClass()));
-		model.addAttribute("back", DOT + PATH + SHOW_PATH);
-		model.addAttribute("create_item", CREATE_ACTION);
+		model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_PATH);
+		//model.addAttribute("textAreaOption","");
+		model.addAttribute("create_item", PathFinder.CREATE_ACTION);
 
 		return "nikoniko/addNikoNiko";
 	}
@@ -274,91 +286,6 @@ public class UserController extends ViewBaseController<User> {
 	}
 
 	/**
-	 *	CHECK THE LAST MOOD OF USER IF IT EXISTS OR NOT
-	 * @param idUser
-	 * @return
-	 */
-	public int getUserLastMood(Long idUser){
-
-		int mood = 0;
-
-		Long idMax = userCrud.getLastNikoNikoUser(idUser);
-
-		if (idMax == null) {
-			return mood;
-		}
-
-		else {
-			mood = nikonikoCrud.findOne(idMax).getMood();
-			return mood;
-		}
-	}
-
-	/**
-	 * CHECK LAST-1 NIKONIKO IF IT EXISTS
-	 * @param idUser
-	 * @return
-	 */
-	public Boolean getLastLastNikoNikoMood(Long idUser){
-
-		Long idMax = userCrud.getLastLastNikoNikoUser(idUser);
-
-		if (idMax == null) {
-			return false;
-		}
-
-		else {
-
-			NikoNiko lastLastNiko = nikonikoCrud.findOne(userCrud.getLastLastNikoNikoUser(idUser));
-
-			Integer mood = lastLastNiko.getMood();
-
-			if (mood == 0 || mood == null) {
-				return true;
-			}
-
-			else {
-				return false;
-			}
-		}
-	}
-
-	/**
-	 * CHECK IF A USER AS ENTER A NIKONIKO DURING THE DAY
-	 * @param idUser
-	 * @return
-	 */
-	public Boolean checkDateNikoNiko(Long idUser){
-
-		Boolean updateNiko = null;
-
-		Long idMaxNiko = userCrud.getLastNikoNikoUser(idUser);
-
-		if (idMaxNiko == null) {
-			updateNiko = false;
-		}
-
-		else {
-
-			NikoNiko lastNiko = nikonikoCrud.findOne(idMaxNiko);
-			Date entryDate = lastNiko.getEntryDate();
-			LocalDate dateEntry = new LocalDate(entryDate);
-
-			if (TODAY_DATE.isAfter(dateEntry)) {
-
-					updateNiko = false;
-				}
-
-				else {
-
-					updateNiko = true;
-				}
-			}
-
-		return updateNiko;
-	}
-
-	/**
 	*
 	* FUNCTION THAT SAVE THE NIKONIKO IN DB IN FUNCTION OF THE DATE
 	*
@@ -373,11 +300,11 @@ public class UserController extends ViewBaseController<User> {
 
 		user = userCrud.findOne(idUser);
 
-		if (this.checkDateNikoNiko(idUser) == true) {
+		if (UtilsFunctions.checkDateNikoNiko(idUser, userCrud, nikonikoCrud) == true) {
 
 			if (mood ==  null) {
 
-				return REDIRECT + PATH + MENU_PATH;
+				return PathFinder.REDIRECT + PathFinder.PATH + PathFinder.MENU_PATH;
 			}
 
 			else {
@@ -391,7 +318,7 @@ public class UserController extends ViewBaseController<User> {
 
 				nikonikoCrud.save(nikoUpdate);
 
-				return REDIRECT + PATH + MENU_PATH;
+				return PathFinder.REDIRECT + PathFinder.PATH + PathFinder.MENU_PATH;
 			}
 		}
 
@@ -399,14 +326,14 @@ public class UserController extends ViewBaseController<User> {
 
 			if (mood ==  null) {
 
-				return REDIRECT + PATH + MENU_PATH;
+				return PathFinder.REDIRECT + PathFinder.PATH + PathFinder.MENU_PATH;
 			}
 
 			else {
 
 				NikoNiko niko = new NikoNiko(user,mood,date,comment);
 				nikonikoCrud.save(niko);
-				return REDIRECT + PATH + MENU_PATH;
+				return PathFinder.REDIRECT + PathFinder.PATH + PathFinder.MENU_PATH;
 			}
 		}
 	}
@@ -440,39 +367,10 @@ public class UserController extends ViewBaseController<User> {
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
 	@RequestMapping(path = "{userId}/addLast", method = RequestMethod.POST)
 	public String lastNikoNikoForUserPOST(Model model,@PathVariable Long userId,
-						HttpServletResponse response, int mood, String comment) throws IOException {
+						HttpServletResponse response, Integer mood, String comment) throws IOException {
 
-		return this.updateLastNikoNiko(userId, mood, comment);
-	}
+		return UtilsFunctions.updateLastNikoNiko(userId, mood, comment, nikonikoCrud, userCrud);
 
-	/**
-	 * FUNCTION FOR UPDATE THE PREVIOUS NIKONIKO VOTE BY USER
-	 * @param idUser
-	 * @param mood
-	 * @param comment
-	 * @return
-	 */
-	public String updateLastNikoNiko(Long idUser, Integer mood, String comment){
-
-		if (userCrud.getLastLastNikoNikoUser(idUser) == null) {
-			return REDIRECT + PATH + MENU_PATH;
-		}
-
-		if (mood == null) {
-			return REDIRECT + PATH + MENU_PATH;
-		}
-
-		else {
-
-			NikoNiko lastNiko = nikonikoCrud.findOne(userCrud.getLastLastNikoNikoUser(idUser));
-
-			lastNiko.setMood(mood);
-			lastNiko.setComment(comment);
-			nikonikoCrud.save(lastNiko);
-
-			return REDIRECT + PATH + MENU_PATH;
-
-		}
 	}
 
 
@@ -496,7 +394,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP"})
-	@RequestMapping(path = "{idUser}" + PATH + SHOW_TEAM, method = RequestMethod.GET)
+	@RequestMapping(path = "{idUser}" + PathFinder.PATH + PathFinder.SHOW_TEAM, method = RequestMethod.GET)
 	public String showTeamsForUserGET(Model model,@PathVariable Long idUser) {
 
 		User userBuffer = new User();
@@ -505,11 +403,11 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("page",userBuffer.getRegistrationcgi());
 		model.addAttribute("sortedFields",Team.FIELDS);
 		model.addAttribute("items",this.getTeamsForUser(idUser));
-		model.addAttribute("show_teams", DOT + PATH + SHOW_TEAM);
-		model.addAttribute("back", DOT + PATH + SHOW_PATH);
+		model.addAttribute("show_teams", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_TEAM);
+		model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_PATH);
 		model.addAttribute("add", "addTeams");
 
-		return BASE_USER + PATH + SHOW_TEAM;
+		return BASE_USER + PathFinder.PATH + PathFinder.SHOW_TEAM;
 	}
 
 	/**
@@ -524,7 +422,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP"})
-	@RequestMapping(path = "{idUser}" + PATH + SHOW_TEAM, method = RequestMethod.POST)
+	@RequestMapping(path = "{idUser}" + PathFinder.PATH + PathFinder.SHOW_TEAM, method = RequestMethod.POST)
 	public String quiTeamPOST(Model model,@PathVariable Long idUser, Long idTeam) {
 		return quitTeam(idUser, idTeam);
 	}
@@ -537,7 +435,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
-	@RequestMapping(path = "{idUser}" + PATH + ADD_TEAM, method = RequestMethod.GET)
+	@RequestMapping(path = "{idUser}" + PathFinder.PATH + PathFinder.ADD_TEAM, method = RequestMethod.GET)
 	public String addUserInTeamGET(Model model, @PathVariable Long idUser) {
 
 		Object userBuffer = new Object();
@@ -545,13 +443,13 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("items", DumpFields.listFielder((ArrayList<Team>) teamCrud.findAll()));
 		model.addAttribute("sortedFields",Team.FIELDS);
 		model.addAttribute("page", ((User) userBuffer).getRegistrationcgi());
-		model.addAttribute("go_show", SHOW_ACTION);
-		model.addAttribute("go_create", CREATE_ACTION);
-		model.addAttribute("go_delete", DELETE_ACTION);
-		model.addAttribute("back", DOT + PATH + SHOW_TEAM);
-		model.addAttribute("add", ADD_TEAM);
+		model.addAttribute("go_show", PathFinder.SHOW_ACTION);
+		model.addAttribute("go_create", PathFinder.CREATE_ACTION);
+		model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
+		model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_TEAM);
+		model.addAttribute("add", PathFinder.ADD_TEAM);
 
-		return BASE_USER + PATH + ADD_TEAM;
+		return BASE_USER + PathFinder.PATH + PathFinder.ADD_TEAM;
 	}
 
 	/**
@@ -563,7 +461,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
-	@RequestMapping(path = "{idUser}" + PATH + ADD_TEAM,  params = "idTeam", method = RequestMethod.POST)
+	@RequestMapping(path = "{idUser}" + PathFinder.PATH + PathFinder.ADD_TEAM,  params = "idTeam", method = RequestMethod.POST)
 	public String addUserInTeamPOST(Model model, @PathVariable Long idUser, @RequestParam Long idTeam) {
 		return setUsersForTeam(idTeam, idUser);
 	}
@@ -575,7 +473,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
-	@RequestMapping(path = "{idUser}" + PATH + ADD_TEAM, params = "name", method = RequestMethod.POST)
+	@RequestMapping(path = "{idUser}" + PathFinder.PATH + PathFinder.ADD_TEAM, params = "name", method = RequestMethod.POST)
 	public String addVerticalForTeamPOST(Model model,@RequestParam String name , @PathVariable Long idUser){
 
 		User userBuffer = userCrud.findOne(idUser);
@@ -583,13 +481,13 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("model", "user");
 		model.addAttribute("page", userBuffer.getRegistrationcgi());
 		model.addAttribute("sortedFields",Team.FIELDS);
-		model.addAttribute("items",DumpFields.listFielder(this.searchTeam(name)));
-		model.addAttribute("go_show", SHOW_ACTION);
-		model.addAttribute("go_create", CREATE_ACTION);
-		model.addAttribute("go_delete", DELETE_ACTION);
-		model.addAttribute("back", DOT + PATH + SHOW_TEAM);
+		model.addAttribute("items",DumpFields.listFielder(UtilsFunctions.searchTeam(name, teamCrud)));
+		model.addAttribute("go_show", PathFinder.SHOW_ACTION);
+		model.addAttribute("go_create", PathFinder.CREATE_ACTION);
+		model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
+		model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_TEAM);
 
-		return BASE_USER + PATH + ADD_TEAM;
+		return BASE_USER + PathFinder.PATH + PathFinder.ADD_TEAM;
 
 	}
 
@@ -629,7 +527,7 @@ public class UserController extends ViewBaseController<User> {
 
 		userTeamCrud.save(new UserHasTeam(userCrud.findOne(idUser), teamCrud.findOne(idTeam), new Date()));
 
-		String redirect = REDIRECT + PATH + BASE_USER + PATH + idUser + PATH + SHOW_TEAM;
+		String redirect = PathFinder.REDIRECT + PathFinder.PATH + BASE_USER + PathFinder.PATH + idUser + PathFinder.PATH + PathFinder.SHOW_TEAM;
 
 		return redirect;
 	}
@@ -650,7 +548,7 @@ public class UserController extends ViewBaseController<User> {
 
 		userTeamCrud.save(userHasTeamBuffer);
 
-		String redirect = REDIRECT + PATH + BASE_USER + PATH + idUser + PATH + SHOW_TEAM;
+		String redirect = PathFinder.REDIRECT + PathFinder.PATH + BASE_USER + PathFinder.PATH + idUser + PathFinder.PATH + PathFinder.SHOW_TEAM;
 
 		return redirect;
 	}
@@ -683,21 +581,6 @@ public class UserController extends ViewBaseController<User> {
 		return DumpFields.listFielder((List<Team>) teamCrud.findAll(ids));
 	}
 
-	/**
-	 * FIND A SPECIFIC TEAM
-	 * @param name
-	 * @return
-	 */
-	public ArrayList<Team> searchTeam(String name){
-
-		ArrayList<Team> teamList = new ArrayList<Team>();
-		teamList = teamCrud.getTeams(name);
-
-		return teamList;
-
-	}
-
-
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
@@ -716,7 +599,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_VP"})
-	@RequestMapping(path = "{idUser}" + PATH + SHOW_ROLE, method = RequestMethod.GET)
+	@RequestMapping(path = "{idUser}" + PathFinder.PATH + PathFinder.SHOW_ROLE, method = RequestMethod.GET)
 	public String showRolesForUserGET(Model model,@PathVariable Long idUser) {
 
 		User userBuffer = new User();
@@ -725,11 +608,11 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("page",userBuffer.getRegistrationcgi());
 		model.addAttribute("sortedFields",Team.FIELDS);
 		model.addAttribute("items", DumpFields.listFielder(this.getAllRolesForUser(idUser)));
-		model.addAttribute("show_roles", DOT + PATH + SHOW_ROLE);
-		model.addAttribute("back", DOT + PATH + SHOW_PATH);
+		model.addAttribute("show_roles", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_ROLE);
+		model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_PATH);
 		model.addAttribute("add", "addRoles");
 
-		return BASE_USER + PATH + SHOW_ROLE;
+		return BASE_USER + PathFinder.PATH + PathFinder.SHOW_ROLE;
 	}
 
 	/**
@@ -740,10 +623,10 @@ public class UserController extends ViewBaseController<User> {
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_VP"})
-	@RequestMapping(path = "{idUser}" + PATH + SHOW_ROLE, method = RequestMethod.POST)
+	@RequestMapping(path = "{idUser}" + PathFinder.PATH + PathFinder.SHOW_ROLE, method = RequestMethod.POST)
 	public String revokeRoleToUserPOST(Model model,@PathVariable Long idUser, Long idRole) {
 
-		String redirect = REDIRECT + PATH + BASE_USER + PATH + idUser + PATH + SHOW_ROLE;
+		String redirect = PathFinder.REDIRECT + PathFinder.PATH + BASE_USER + PathFinder.PATH + idUser + PathFinder.PATH + PathFinder.SHOW_ROLE;
 		UserHasRole userHasRole = new UserHasRole(userCrud.findOne(idUser), roleCrud.findOne(idRole));
 		userRoleCrud.delete(userHasRole);
 		return redirect;
@@ -757,10 +640,10 @@ public class UserController extends ViewBaseController<User> {
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_VP"})
-	@RequestMapping(path = "{idUser}" + PATH + ADD_ROLE, method = RequestMethod.POST)
+	@RequestMapping(path = "{idUser}" + PathFinder.PATH + PathFinder.ADD_ROLE, method = RequestMethod.POST)
 	public String addRoleToUserPOST(Model model,@PathVariable Long idUser, Long idRole) {
 
-		String redirect = REDIRECT + PATH + BASE_USER + PATH + idUser + PATH + SHOW_ROLE;
+		String redirect = PathFinder.REDIRECT + PathFinder.PATH + BASE_USER + PathFinder.PATH + idUser + PathFinder.PATH + PathFinder.SHOW_ROLE;
 		UserHasRole userHasRole = new UserHasRole(userCrud.findOne(idUser), roleCrud.findOne(idRole));
 		userRoleCrud.save(userHasRole);
 
@@ -797,7 +680,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_VP"})
-	@RequestMapping(path = "{idUser}" + PATH + ADD_ROLE, method = RequestMethod.GET)
+	@RequestMapping(path = "{idUser}" + PathFinder.PATH + PathFinder.ADD_ROLE, method = RequestMethod.GET)
 	public String addRoleforUserGET(Model model, @PathVariable Long idUser) {
 
 		Object userBuffer = new Object();
@@ -806,13 +689,13 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("items", DumpFields.listFielder((ArrayList<RoleCGI>) roleCrud.findAll()));
 		model.addAttribute("sortedFields",RoleCGI.FIELDS);
 		model.addAttribute("page", ((User) userBuffer).getRegistrationcgi());
-		model.addAttribute("go_show", SHOW_ACTION);
-		model.addAttribute("go_create", CREATE_ACTION);
-		model.addAttribute("go_delete", DELETE_ACTION);
-		model.addAttribute("back", DOT + PATH + SHOW_ROLE);
-		model.addAttribute("add", ADD_ROLE);
+		model.addAttribute("go_show", PathFinder.SHOW_ACTION);
+		model.addAttribute("go_create", PathFinder.CREATE_ACTION);
+		model.addAttribute("go_delete",PathFinder.DELETE_ACTION);
+		model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_ROLE);
+		model.addAttribute("add", PathFinder.ADD_ROLE);
 
-		return BASE_USER + PATH + ADD_ROLE;
+		return BASE_USER + PathFinder.PATH + PathFinder.ADD_ROLE;
 	}
 
 
@@ -835,7 +718,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @return
 	 */
 	//@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP"})
-	@RequestMapping(path = "{idUser}" + PATH + SHOW_VERTICAL, method = RequestMethod.GET)
+	@RequestMapping(path = "{idUser}" + PathFinder.PATH + PathFinder.SHOW_VERTICAL, method = RequestMethod.GET)
 	public String showVerticalForUserGET(Model model,@PathVariable Long idUser) {
 
 		User userBuffer = new User();
@@ -844,11 +727,11 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("page",userBuffer.getRegistrationcgi());
 		model.addAttribute("sortedFields",Verticale.FIELDS);
 		model.addAttribute("items",this.getVerticalForUser(idUser));
-		model.addAttribute("show_teams", DOT + PATH + SHOW_VERTICAL);
-		model.addAttribute("back", DOT + PATH + SHOW_PATH);
-		model.addAttribute("add", "addVerticale");
+		model.addAttribute("show_teams", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_VERTICAL);
+		model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_PATH);
+		model.addAttribute("add", PathFinder.ADD_VERTICAL);
 
-		return BASE_USER + PATH + SHOW_VERTICAL;
+		return BASE_USER + PathFinder.PATH + "showVerticale";
 
 	}
 
@@ -871,7 +754,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
-	@RequestMapping(path = "{idUser}" + PATH + ADD_VERTICAL, method = RequestMethod.GET)
+	@RequestMapping(path = "{idUser}" + PathFinder.PATH + PathFinder.ADD_VERTICAL, method = RequestMethod.GET)
 	public String addVerticalForUserGET(Model model, @PathVariable Long idUser) {
 
 	Object userBuffer = new Object();
@@ -880,13 +763,13 @@ public class UserController extends ViewBaseController<User> {
 	model.addAttribute("items", DumpFields.listFielder((ArrayList<Verticale>) verticaleCrud.findAll()));
 	model.addAttribute("sortedFields",Verticale.FIELDS);
 	model.addAttribute("page", ((User) userBuffer).getRegistrationcgi());
-	model.addAttribute("go_show", SHOW_ACTION);
-	model.addAttribute("go_create", CREATE_ACTION);
-	model.addAttribute("go_delete", DELETE_ACTION);
-	model.addAttribute("back", DOT + PATH + SHOW_VERTICAL);
-	model.addAttribute("add", ADD_VERTICAL);
+	model.addAttribute("go_show", PathFinder.SHOW_ACTION);
+	model.addAttribute("go_create", PathFinder.CREATE_ACTION);
+	model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
+	model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_VERTICAL);
+	model.addAttribute("add", PathFinder.ADD_VERTICAL);
 
-	return BASE_USER + PATH + ADD_VERTICAL;
+	return BASE_USER + PathFinder.PATH + PathFinder.ADD_VERTICAL;
 	}
 
 	/**
@@ -897,7 +780,7 @@ public class UserController extends ViewBaseController<User> {
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
-	@RequestMapping(path = "{idUser}" + PATH + ADD_VERTICAL, method = RequestMethod.POST)
+	@RequestMapping(path = "{idUser}" + PathFinder.PATH + PathFinder.ADD_VERTICAL, method = RequestMethod.POST)
 	public String addVerticalForUserPOST(Model model, @PathVariable Long idUser, Long idVertical) {
 		return setVerticalForUser(idUser, idVertical);
 	}
@@ -910,7 +793,7 @@ public class UserController extends ViewBaseController<User> {
 	 */
 	private String setVerticalForUser(Long idUser, Long idVertical) {
 
-		String redirect = REDIRECT + PATH + BASE_USER + PATH + idUser + PATH + SHOW_VERTICAL;
+		String redirect = PathFinder.REDIRECT + PathFinder.PATH + BASE_USER + PathFinder.PATH + idUser + PathFinder.PATH + PathFinder.SHOW_VERTICAL;
 
 		User userBuffer = new User();
 		Verticale verticaleBuffer = new Verticale();
@@ -924,9 +807,8 @@ public class UserController extends ViewBaseController<User> {
 		return redirect;
 	}
 
-	
-/////////////////// CONTRUCTORS /////////////////////////////////
 
+/////////////////// CONTRUCTORS /////////////////////////////////
 
 	public UserController() {
 		super(User.class,BASE_URL);

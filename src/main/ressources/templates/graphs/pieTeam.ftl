@@ -8,15 +8,12 @@
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
-
-
-    <!-- Redirection ???? -->
-    <link rel="stylesheet" href="menu/">
-
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
 
+    <!-- css -->
+	<link href="/css/pie.css" rel="stylesheet">
 
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
@@ -57,12 +54,8 @@
 
         chart.draw(data, options);
       }
-    </script>
-  </head>
-
-<style>
-    <#include "static/employee.css">
-</style>
+	</script>
+ </head>
 
 <!-- HEAD -->
 <div class="container-fluid">
@@ -77,8 +70,8 @@
             <div class="row-fluid">
                 <div class="col-lg-12">
                     <div class="align">
-                    <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
-                    <button onclick="location.href='${back}'" class="vote"> Retour </button>
+	                    <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
+	                    <button onclick="location.href='${back}'" class="vote"> Retour </button>
                     </div>
                 </div>
             </div>
@@ -94,10 +87,10 @@
                     <#list nameteam>
                         <table>
                             <div class="dropdown">
-                                <span>Team</span>
+                                <span class = "show_teams">Afficher les équipes</span>
                                 <div>
                                     <#items as name>
-                                        <p><button onclick="location.href='./${name?counter-1}'" class="dropdown-content"> ${name} </button></p>
+                                        <button onclick="location.href='./${name?counter-1}'" class="dropdown-content"> ${name} </button>
                                     </#items>
                             </div></div>
                         </table>
@@ -118,13 +111,21 @@
 <div class="container-fluid">
     <div class="col-lg-2">
         <div class="row-fluid">
-            <div class="col-lg-12">
+            <div class="col-lg-8">
                 <div class="alignleft">
-                <button onclick="location.href='../showgraph'" class="myresults"> My Results </button>
-                <#if role != "employee">
-                    <button onclick="location.href='../showgraphall'" class="allresults"> ALL Results </button>
-                </#if>
-                <button onclick="location.href='../showgraphverticale'" class="resultsverticale"> Results Verticale </button>
+	                <button onclick="location.href='../showgraph'" class="myresults"> Mes résultats </button>
+	                <#if role != "employee">
+	                    <button onclick="location.href='../showgraphall'" class="allresults"> Tous les résultats </button>
+	                </#if>
+	                <button onclick="location.href='../showgraphverticale'" class="resultsverticale"> Resultats verticale </button>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="alignleft">
+	                <#if role != "admin">
+		                <button onclick="location.href='/graph/nikoniko/month'" class="resultsteam"> Calendrier </button>
+		                <button onclick="location.href='/graph/nikonikovert/1/month'" class="resultsteam"> Calendrier verticale </button>
+	                </#if>
                 </div>
             </div>
         </div>

@@ -9,7 +9,6 @@ import org.springframework.data.repository.query.Param;
 
 import com.cgi.nikoniko.dao.base.IBaseCrudRepository;
 import com.cgi.nikoniko.models.tables.Team;
-import com.cgi.nikoniko.models.tables.User;
 
 public interface ITeamCrudRepository extends IBaseCrudRepository<Team>{
 
@@ -22,9 +21,8 @@ public interface ITeamCrudRepository extends IBaseCrudRepository<Team>{
 			+ "INNER JOIN user_has_team ON nikoniko.user_id = user_has_team.idLeft "
 			+ "INNER JOIN team ON team.id= user_has_team.idRight WHERE team.id= :idTeam",nativeQuery=true)
 	public List<BigInteger> getNikoNikoFromTeam(@Param("idTeam") long idTeam);
-	
+
 	/**
-	 * WTF ?
 	 * @param idTeam
 	 * @return
 	 */
@@ -37,7 +35,7 @@ public interface ITeamCrudRepository extends IBaseCrudRepository<Team>{
 	 * @return team
 	 */
 	Team findByName(String name);
-	
+
 	/**
 	 * FIND TEAM BY HIS SERIAL
 	 * @param Serial
@@ -52,7 +50,7 @@ public interface ITeamCrudRepository extends IBaseCrudRepository<Team>{
 	 */
 	@Query(value = "SELECT * FROM team WHERE name LIKE %:name%", nativeQuery=true)
 	public ArrayList<Team> getTeams(@Param("name") String name);
-	
+
 	/**
 	 * GET ALL TEAMS ASSOCIATED WITH THE SAME VERTICALE
 	 * @param idVerticale

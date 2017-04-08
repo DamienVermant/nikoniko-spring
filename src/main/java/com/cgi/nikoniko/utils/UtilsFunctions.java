@@ -1,0 +1,215 @@
+package com.cgi.nikoniko.utils;
+
+import java.util.ArrayList;
+import java.util.Date;
+
+import org.joda.time.LocalDate;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import com.cgi.nikoniko.controllers.PathClass.PathFinder;
+import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
+import com.cgi.nikoniko.dao.ITeamCrudRepository;
+import com.cgi.nikoniko.dao.IUserCrudRepository;
+import com.cgi.nikoniko.models.tables.NikoNiko;
+import com.cgi.nikoniko.models.tables.Team;
+import com.cgi.nikoniko.models.tables.User;
+
+public abstract class UtilsFunctions {
+	
+	
+	public final static LocalDate TODAY_DATE = new LocalDate();
+	
+	
+/////////////////// UTILS FOR THE VOTE /////////////////////////////////
+	
+	
+	/**
+	 * FUNCTION FOR UPDATE THE PREVIOUS NIKONIKO VOTE BY USER
+	 * @param idUser
+	 * @param mood
+	 * @param comment
+	 * @return
+	 */
+	public static String updateLastNikoNiko(Long idUser, Integer mood, String comment, INikoNikoCrudRepository nikoCrud, IUserCrudRepository userCrud){
+		
+		if (UtilsFunctions.getLastLastNikoNikoMood(idUser, userCrud, nikoCrud) == false) {
+			
+			return PathFinder.REDIRECT + PathFinder.PATH + PathFinder.MENU_PATH;
+		}
+
+		if (mood == null) {
+			
+			return PathFinder.REDIRECT + PathFinder.PATH + PathFinder.MENU_PATH;
+		}
+
+		else {
+			
+			NikoNiko niko = UtilsFunctions.getLastLastNikoNiko(idUser, userCrud, nikoCrud);
+			
+			niko.setMood(mood);
+			niko.setComment(comment);
+			
+			nikoCrud.save(niko);
+			
+			return PathFinder.REDIRECT + PathFinder.PATH + PathFinder.MENU_PATH;
+
+		}
+	}
+	
+	/**
+	 * FUNCTION THAT CHECK NIKONIKO DATE FOR UPDATE OR NEW
+	 * @param idUser
+	 * @return
+	 */
+	public static Boolean checkDateNikoNiko(Long idUser, IUserCrudRepository userCrud, INikoNikoCrudRepository nikoCrud){
+
+		Boolean updateNiko = true;
+
+		Long idMaxNiko = userCrud.getLastNikoNikoUser(idUser);
+
+		if (idMaxNiko == null) {
+
+			updateNiko = false;
+		}
+
+		else {
+
+			NikoNiko lastNiko = nikoCrud.findOne(idMaxNiko);
+
+			Date entryDate = lastNiko.getEntryDate();
+			LocalDate dateEntry = new LocalDate(entryDate);
+
+			if (entryDate == null || (TODAY_DATE.isAfter(dateEntry))) {
+				updateNiko = false;
+			}
+		}
+
+		return updateNiko;
+	}
+
+	/**
+	 * GET LAST NIKONIKO ENTER BY USER
+	 * @param idUser
+	 * @return
+	 */
+	public static int getUserLastMood(Long idUser, IUserCrudRepository userCrud, INikoNikoCrudRepository nikoCrud){
+
+		int mood = 0;
+
+		Long idMax = userCrud.getLastNikoNikoUser(idUser);
+
+		if (idMax == null) {
+			return mood;
+		}
+
+		else {
+			mood = nikoCrud.findOne(idMax).getMood();
+			return mood;
+		}
+	}
+
+	/**
+	 * GET LAST-1 NIKONIKO USER AND CHECK IF THE MOOD IS NULL OR NOT
+	 * RETURN FALSE CAN'T UPDATE, TRUE UPDATE SECOND LAST
+	 * @param idUser
+	 * @param userCrud2 
+	 * @return
+	 */
+	public static Boolean getLastLastNikoNikoMood(Long idUser, IUserCrudRepository userCrud, INikoNikoCrudRepository nikoCrud){
+		
+		LocalDate lastDay = TODAY_DATE.minusDays(1);
+
+		NikoNiko niko = nikoCrud.getNikoDate(lastDay, idUser);
+		
+		if (niko == null) {
+			
+			return false;
+		}
+		
+		else{
+			
+			if (niko.getMood() != 0) {
+				
+				return false;
+			}
+			
+			else {
+				
+				return true;
+			}
+		}
+	}
+	
+	/**
+	 * GET SECOND TO LAST NIKONIKO
+	 * @param idUser
+	 * @param userCrud
+	 * @param nikoCrud
+	 * @return
+	 */
+	public static NikoNiko getLastLastNikoNiko(Long idUser, IUserCrudRepository userCrud, INikoNikoCrudRepository nikoCrud){
+		
+		if (UtilsFunctions.getLastLastNikoNikoMood(idUser, userCrud, nikoCrud) == true) {
+			
+			LocalDate lastDay = TODAY_DATE.minusDays(1);
+			
+			NikoNiko niko = nikoCrud.getNikoDate(lastDay, idUser);
+			
+			return niko;	
+		}
+		
+		return null;	
+	}
+	
+	/**
+	 * RETURN USER FROM AUTHENTIFICATION
+	 * @return
+	 */
+	public static User getUserInformations(IUserCrudRepository userCrud){
+
+		String login = "";
+		User user = new User();
+
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+		login = auth.getName();
+		user = userCrud.findByLogin(login);
+
+		return user;
+	}
+
+	
+/////////////////// UTILS TO SEARCH /////////////////////////////////
+	
+	
+	/**
+	 * FIND A SPECIFIC USER
+	 * @param name
+	 * @return
+	 */
+	public static ArrayList<User> searchUser(String name, IUserCrudRepository userCrud){
+
+		ArrayList<User> userList = new ArrayList<User>();
+		userList = userCrud.getUsers(name);
+
+		return userList;
+
+	}
+	
+	/**
+	 * FIND A SPECIFIC TEAM
+	 * @param name
+	 * @return
+	 */
+	public static ArrayList<Team> searchTeam(String name, ITeamCrudRepository teamCrud){
+
+		ArrayList<Team> teamList = new ArrayList<Team>();
+		teamList = teamCrud.getTeams(name);
+
+		return teamList;
+
+	}
+	
+
+}

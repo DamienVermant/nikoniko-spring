@@ -8,7 +8,7 @@ hr {
 	background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(245, 0, 0, 0.75), rgba(0, 0, 0, 0));
 }
 
-/* LOGO CGI*/
+/* LOGO CGI */
 
 .logo{
 	margin-top: 20px;
@@ -16,7 +16,7 @@ hr {
 	float: left;
 }
 
-/* TITLE NIKO NIKO*/
+/* TITLE NIKO NIKO */
 
 .title{
 	font-family: 'Gloria Hallelujah', cursive;
@@ -30,25 +30,28 @@ hr {
 /* BUTTONS HEAD */
 
 .logout{
+	height: 30px;
+	width: 100px;
+	font-size: 10px;
 	margin-top: 30px;
-	height: 30px;
-	width: 100px;
-	font-size: 10px;
 }
 
-.password{
-	margin-bottom: 5px;
+.return{
 	height: 30px;
-	font-size: 10px;
 	width: 100px;
+	font-size: 10px;
+	margin-top: 10px;
 }
 
-.vote{
-	margin-top: 5px;
+.home{
 	height: 30px;
-	font-size: 10px;
-	margin-bottom: 5px;
 	width: 100px;
+	font-size: 10px;
+	margin-top: 10px;
+}
+
+.align{
+	text-align: right;
 }
 
 /* WELCOME */
@@ -59,8 +62,10 @@ hr {
 
 }
 
-.align{
-	text-align: right;
+/* BUTTONS BODY */
+
+.buttons{
+	margin-top: 10px;
 }
 
 /* FOOTER */
@@ -78,57 +83,23 @@ hr {
 	margin-top: 10px;
 	margin-bottom: 10px;
 	text-decoration: underline;
-	text-align: center;
-	font-weight: bold;
-	font-size: 20px;
 }
 
-/* GRAPH */
+/* "COMMENT" FOR DESCRIPTION */
 
-.piechart{
-    margin: 0 auto;
-    display: block;
+.comment{
+	margin-top: 20px;
 }
 
-/* BUTTON GRAPHS */
+/* BUTTON SEARCH */
 
-.alignleft{
-    text-align: left;
+.search{
+  background-position: 10px 12px;
+  background-repeat: no-repeat;
+  /*width: 100%;*/
+  font-size: 12px;
+  padding: 12px 20px 12px 10px;
+  border: 1px solid #ddd;
+  margin-bottom: 5px;
 }
 
-.myresults{
-    height: 30px;
-    width: 100px;
-    font-size: 10px;
-}
-
-.allresults{
-    height: 30px;
-    width: 100px;
-    font-size: 10px;
-}
-
-.resultsverticale{
-    height: 30px;
-    width: 100px;
-    font-size: 10px;
-}
-
-.resultsteam{
-    height: 30px;
-    width: 100px;
-    font-size: 10px;
-}
-
-.dropdown {
-    position: relative;
-    display: inline-block;
-}
-
-.dropdown-content {
-    display: none;
-}
-
-.dropdown:hover .dropdown-content {
-    display: block;
-}

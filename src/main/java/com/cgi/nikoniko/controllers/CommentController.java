@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.cgi.nikoniko.controllers.PathClass.PathFinder;
 import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
 import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
 import com.cgi.nikoniko.dao.IRoleCrudRepository;
@@ -30,26 +31,16 @@ import com.cgi.nikoniko.models.tables.User;
 @RequestMapping(CommentController.BASE_URL)
 public class CommentController extends ViewBaseController<User>{
 
-	public CommentController(Class<User> clazz, String baseURL) {
-		super(clazz, baseURL);
-	}
+	public final static String BASE_COMMENT = "comment";
+	public final static String BASE_URL = PathFinder.PATH + BASE_COMMENT;
 
 	public CommentController() {
 		super(User.class,BASE_URL);
 	}
 
-	public final static String MENU_PATH = "menu";
-
-	public final static String SHOW_COMMENT = "showComment";
-	public final static String SHOW_GRAPH_MONTH = "showGraphMonth";
-	public final static String SHOW_GRAPH_WEEK = "showGraphWeek";
-	public final static String SHOW_GRAPH_DATE = "showDate";
-	public final static String SHOW_GRAPH_ALL = "showGraphAll";
-	public final static String SHOW_GRAPH_VERTICALE = "showGraphVerticale";
-	public final static String SHOW_GRAPH_TEAM = "showGraphTeam";
-
-	public final static String BASE_COMMENT = "comment";
-	public final static String BASE_URL = PATH + BASE_COMMENT;
+	public CommentController(Class<User> clazz, String baseURL) {
+		super(clazz, baseURL);
+	}
 
 	@Autowired
 	IUserCrudRepository userCrud;
@@ -108,7 +99,7 @@ public class CommentController extends ViewBaseController<User>{
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
-	@RequestMapping(path = PATH + SHOW_COMMENT, method = RequestMethod.GET)
+	@RequestMapping(path = PathFinder.PATH + PathFinder.SHOW_COMMENT, method = RequestMethod.GET)
 	public String showComment(Model model) {
 
 		Long idUser = this.getUserInformations().getId();
@@ -121,8 +112,8 @@ public class CommentController extends ViewBaseController<User>{
 
 		model.addAttribute("title", "Mes commentaires !" );
 
-		model.addAttribute("back", PATH + MENU_PATH);
-		return "graphs" + PATH + "pie";
+		model.addAttribute("back", PathFinder.PATH + PathFinder.MENU_PATH);
+		return "graphs" + PathFinder.PATH + "pie";
 	}
 
 	/**

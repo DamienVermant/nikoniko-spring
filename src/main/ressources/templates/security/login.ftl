@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
 	<!-- Encodage -->
@@ -6,21 +7,18 @@
 	<!-- Bootstrap -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
-
-
 	<!-- Fonts -->
 	<link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
+
+    <!-- css -->
+	<link href="css/login.css"  rel="stylesheet">
 
 	<!-- Title -->
 	<title>Se connecter</title>
 
 </head>
 <body>
-<style>
-<#include "login.css">
-</style>
-
 <!-- HEAD -->
 <div class="container-fluid">
 	<div class="row-fluid">
@@ -50,7 +48,7 @@
 				<#include "../includable/security/securityToken.ftl">
 				<input type="texte" name="login" placeholder="Votre login"> <br>
 				<div class="text"> Mot de passe :</div>
-					<input type="texte" name="password" placeholder="Votre mot de passe"> <br>
+					<input type="password" name="password" placeholder="Votre mot de passe"> <br>
 					<input class="buttons" type="submit" value="Se connecter"><br>
 					<button class="buttons" onclick="affichage()" class="password"> Mot de passe oublié ?</button>
 				</div>

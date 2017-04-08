@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.cgi.nikoniko.controllers.PathClass.PathFinder;
 import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
 import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
 import com.cgi.nikoniko.dao.IRoleCrudRepository;
@@ -41,19 +42,8 @@ import com.cgi.nikoniko.models.tables.User;
 @RequestMapping(GraphController.BASE_URL)
 public class GraphController extends ViewBaseController<User>{
 
-	public final static String MENU_PATH = "menu";
-
-	public final static String SHOW_GRAPH = "showgraph";
-	public final static String SHOW_GRAPH_MONTH = "showgraphmonth";
-	public final static String SHOW_GRAPH_WEEK = "showgraphweek";
-	public final static String SHOW_GRAPH_DATE = "showdate";
-	public final static String SHOW_GRAPH_ALL = "showgraphall";
-	public final static String SHOW_GRAPH_VERTICALE = "showgraphverticale";
-	public final static String SHOW_GRAPH_TEAM = "showgraphteam";
-
 	public final static String BASE_GRAPH = "graph";
-	public final static String BASE_URL = PATH + BASE_GRAPH;
-
+	public final static String BASE_URL = PathFinder.PATH + BASE_GRAPH;
 
 	@Autowired
 	IUserCrudRepository userCrud;
@@ -76,13 +66,12 @@ public class GraphController extends ViewBaseController<User>{
 	@Autowired
 	IUserHasTeamCrudRepository userTeamCrud;
 
-	public GraphController(Class<User> clazz, String baseURL) {
-		super(clazz, baseURL);
-		// TODO Auto-generated constructor stub
-	}
-
 	public GraphController() {
 		super(User.class,BASE_URL);
+	}
+
+	public GraphController(Class<User> clazz, String baseURL) {
+		super(clazz, baseURL);
 	}
 
 	/**
@@ -175,7 +164,7 @@ public class GraphController extends ViewBaseController<User>{
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
-	@RequestMapping(path = PATH + SHOW_GRAPH, method = RequestMethod.GET)
+	@RequestMapping(path = PathFinder.PATH + PathFinder.SHOW_GRAPH, method = RequestMethod.GET)
 	public String showPie(Model model) {
 
 		Long idUser = this.getUserInformations().getId();
@@ -205,14 +194,14 @@ public class GraphController extends ViewBaseController<User>{
 			}
 		}
 
-		model.addAttribute("title", "Mes votes !" );
+		model.addAttribute("title", "Mes votes d'aujourd'hui" );
 		model.addAttribute("role", role);
 		model.addAttribute("mood", this.getUserLastMood(userCrud.findByLogin(super.checkSession().getName()).getId()));
 		model.addAttribute("good", good);
 		model.addAttribute("medium", medium);
 		model.addAttribute("bad", bad);
-		model.addAttribute("back", PATH + MENU_PATH);
-		return "graphs" + PATH + "pie";
+		model.addAttribute("back", PathFinder.PATH + PathFinder.MENU_PATH);
+		return "graphs" + PathFinder.PATH + "pie";
 	}
 
 	/**
@@ -224,7 +213,8 @@ public class GraphController extends ViewBaseController<User>{
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
-	@RequestMapping(path = SHOW_GRAPH + PATH + "{year}" + PATH + "{month}" + PATH + "{day}", method = RequestMethod.GET)
+	@RequestMapping(path = PathFinder.SHOW_GRAPH + PathFinder.PATH + "{year}" +
+					PathFinder.PATH + "{month}" + PathFinder.PATH + "{day}", method = RequestMethod.GET)
 	public String showPieWithDate(Model model, @PathVariable int year,
 								@PathVariable int month, @PathVariable int day) {
 
@@ -254,7 +244,7 @@ public class GraphController extends ViewBaseController<User>{
 			}
 		}
 
-		model.addAttribute("title", "Mes votes !" );
+		model.addAttribute("title", "Mes votes de la journée du : " + day + " " + getMonthLetter(month) + " " + year );
 		model.addAttribute("role", role);
 		model.addAttribute("mood", this.getUserLastMood(userCrud.findByLogin(super.checkSession().getName()).getId()));
 		model.addAttribute("good", good);
@@ -263,8 +253,8 @@ public class GraphController extends ViewBaseController<User>{
 		model.addAttribute("year", year);
 		model.addAttribute("month", month);
 		model.addAttribute("day", day);
-		model.addAttribute("back", PATH + MENU_PATH);
-		return "graphs" + PATH + "piedate";
+		model.addAttribute("back", PathFinder.PATH + PathFinder.MENU_PATH);
+		return "graphs" + PathFinder.PATH + "piedate";
 	}
 
 	/**
@@ -274,7 +264,7 @@ public class GraphController extends ViewBaseController<User>{
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_VP"})
-	@RequestMapping(path = SHOW_GRAPH_ALL, method = RequestMethod.GET)
+	@RequestMapping(path = PathFinder.SHOW_GRAPH_ALL, method = RequestMethod.GET)
 	public String showAllPie(Model model) {
 
 		Long idUser = this.getUserInformations().getId();
@@ -307,14 +297,14 @@ public class GraphController extends ViewBaseController<User>{
 			}
 		}
 
-		model.addAttribute("title", "Tous les votes");
+		model.addAttribute("title", "Tous les votes d'aujourd'hui");
 		model.addAttribute("role", role);
 		model.addAttribute("mood", nbMood);
 		model.addAttribute("good", good);
 		model.addAttribute("medium", medium);
 		model.addAttribute("bad", bad);
-		model.addAttribute("back", PATH + MENU_PATH);
-		return "graphs" + PATH + "pie";
+		model.addAttribute("back", PathFinder.PATH + PathFinder.MENU_PATH);
+		return "graphs" + PathFinder.PATH + "pie";
 	}
 
 	/**
@@ -326,7 +316,7 @@ public class GraphController extends ViewBaseController<User>{
 	 * @return
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_VP"})
-	@RequestMapping(path = SHOW_GRAPH_ALL + PATH + "{year}" + PATH + "{month}" + PATH + "{day}", method = RequestMethod.GET)
+	@RequestMapping(path = PathFinder.SHOW_GRAPH_ALL + PathFinder.PATH + "{year}" + PathFinder.PATH + "{month}" + PathFinder.PATH + "{day}", method = RequestMethod.GET)
 	public String showAllPieWithDate(Model model, @PathVariable int year,
 			@PathVariable int month, @PathVariable int day) {
 
@@ -360,7 +350,7 @@ public class GraphController extends ViewBaseController<User>{
 			}
 		}
 
-		model.addAttribute("title", "Tous les votes");
+		model.addAttribute("title", "Tous les votes de la journée du : " + day + " " + getMonthLetter(month) + " " + year);
 		model.addAttribute("role", role);
 		model.addAttribute("mood", nbMood);
 		model.addAttribute("good", good);
@@ -369,8 +359,8 @@ public class GraphController extends ViewBaseController<User>{
 		model.addAttribute("year", year);
 		model.addAttribute("month", month);
 		model.addAttribute("day", day);
-		model.addAttribute("back", PATH + MENU_PATH);
-		return "graphs" + PATH + "piedate";
+		model.addAttribute("back", PathFinder.PATH + PathFinder.MENU_PATH);
+		return "graphs" + PathFinder.PATH + "piedate";
 	}
 
 	/**
@@ -379,7 +369,7 @@ public class GraphController extends ViewBaseController<User>{
 	 * @param userId
 	 * @return
 	 */
-	@RequestMapping(path = SHOW_GRAPH_VERTICALE, method = RequestMethod.GET)
+	@RequestMapping(path = PathFinder.SHOW_GRAPH_VERTICALE, method = RequestMethod.GET)
 	public String getNikoFromVerticale(Model model){
 
 		Long userId = this.getUserInformations().getId();
@@ -413,14 +403,14 @@ public class GraphController extends ViewBaseController<User>{
 			}
 		}
 
-		model.addAttribute("title", verticaleCrud.findOne(verticaleId).getName());
+		model.addAttribute("title", "Tous les votes d'aujourd'hui pour la verticale : " + verticaleCrud.findOne(verticaleId).getName());
 		model.addAttribute("role", role);
 		model.addAttribute("mood", nbMood);
 		model.addAttribute("good", good);
 		model.addAttribute("medium", medium);
 		model.addAttribute("bad", bad);
-		model.addAttribute("back", PATH + MENU_PATH);
-		return "graphs" + PATH + "pie";
+		model.addAttribute("back", PathFinder.PATH + PathFinder.MENU_PATH);
+		return "graphs" + PathFinder.PATH + "pie";
 	}
 
 	/**
@@ -431,7 +421,7 @@ public class GraphController extends ViewBaseController<User>{
 	 * @param day
 	 * @return
 	 */
-	@RequestMapping(path = SHOW_GRAPH_VERTICALE + PATH + "{year}" + PATH + "{month}" + PATH + "{day}", method = RequestMethod.GET)
+	@RequestMapping(path = PathFinder.SHOW_GRAPH_VERTICALE + PathFinder.PATH + "{year}" + PathFinder.PATH + "{month}" + PathFinder.PATH + "{day}", method = RequestMethod.GET)
 	public String getNikoFromVerticaleWithDate(Model model, @PathVariable int year,
 			@PathVariable int month, @PathVariable int day){
 
@@ -466,7 +456,7 @@ public class GraphController extends ViewBaseController<User>{
 			}
 		}
 
-		model.addAttribute("title", verticaleCrud.findOne(verticaleId).getName());
+		model.addAttribute("title", "Tous les votes du : " + day + " " + getMonthLetter(month) + " " + year + ", pour la verticale : " + verticaleCrud.findOne(verticaleId).getName());
 		model.addAttribute("role", role);
 		model.addAttribute("mood", nbMood);
 		model.addAttribute("good", good);
@@ -475,8 +465,8 @@ public class GraphController extends ViewBaseController<User>{
 		model.addAttribute("year", year);
 		model.addAttribute("month", month);
 		model.addAttribute("day", day);
-		model.addAttribute("back", PATH + MENU_PATH);
-		return "graphs" + PATH + "piedate";
+		model.addAttribute("back", PathFinder.PATH + PathFinder.MENU_PATH);
+		return "graphs" + PathFinder.PATH + "piedate";
 	}
 
 	/**
@@ -485,7 +475,7 @@ public class GraphController extends ViewBaseController<User>{
 	 * @param nbTable
 	 * @return
 	 */
-	@RequestMapping(path = SHOW_GRAPH_TEAM + PATH + "{nbTable}", method = RequestMethod.GET)
+	@RequestMapping(path = PathFinder.SHOW_GRAPH_TEAM + PathFinder.PATH + "{nbTable}", method = RequestMethod.GET)
 	public String getNikoFromTeam(Model model, @PathVariable int nbTable){
 
 		ArrayList<Team> teamList = new ArrayList<Team>();
@@ -534,7 +524,7 @@ public class GraphController extends ViewBaseController<User>{
 			}
 		}
 
-		model.addAttribute("title", teamCrud.findOne(teamId).getName());
+		model.addAttribute("title", "Tous les votes d'aujourd'hui pour l'equipe : " + teamCrud.findOne(teamId).getName());
 		model.addAttribute("role", role);
 		model.addAttribute("nameteam", teamName);
 		model.addAttribute("name", teamName);
@@ -542,9 +532,9 @@ public class GraphController extends ViewBaseController<User>{
 		model.addAttribute("good", good);
 		model.addAttribute("medium", medium);
 		model.addAttribute("bad", bad);
-		model.addAttribute("back", PATH + MENU_PATH);
+		model.addAttribute("back", PathFinder.PATH + PathFinder.MENU_PATH);
 
-		return "graphs" + PATH + "pieTeam";
+		return "graphs" + PathFinder.PATH + "pieTeam";
 	}
 
 	/**
@@ -556,7 +546,7 @@ public class GraphController extends ViewBaseController<User>{
 	 * @param day
 	 * @return
 	 */
-	@RequestMapping(path = SHOW_GRAPH_TEAM + PATH + "{nbTable}" + PATH + "{year}" + PATH + "{month}" + PATH + "{day}", method = RequestMethod.GET)
+	@RequestMapping(path = PathFinder.SHOW_GRAPH_TEAM + PathFinder.PATH + "{nbTable}" + PathFinder.PATH + "{year}" + PathFinder.PATH + "{month}" + PathFinder.PATH + "{day}", method = RequestMethod.GET)
 	public String getNikoFromTeamWithDate(Model model, @PathVariable int nbTable, @PathVariable int year,
 			@PathVariable int month, @PathVariable int day){
 
@@ -606,7 +596,7 @@ public class GraphController extends ViewBaseController<User>{
 			}
 		}
 
-		model.addAttribute("title", teamCrud.findOne(teamId).getName());
+		model.addAttribute("title", "Tous les votes du : " + day + " " + getMonthLetter(month) + " " + year + " pour l'equipe : " + teamCrud.findOne(teamId).getName());
 		model.addAttribute("role", role);
 		model.addAttribute("nameteam", teamName);
 		model.addAttribute("mood", nbMood);
@@ -616,9 +606,9 @@ public class GraphController extends ViewBaseController<User>{
 		model.addAttribute("year", year);
 		model.addAttribute("month", month);
 		model.addAttribute("day", day);
-		model.addAttribute("back", PATH + MENU_PATH);
+		model.addAttribute("back", PathFinder.PATH + PathFinder.MENU_PATH);
 
-		return "graphs" + PATH + "pieTeamdate";
+		return "graphs" + PathFinder.PATH + "pieTeamdate";
 	}
 
 	/**
@@ -669,6 +659,13 @@ public class GraphController extends ViewBaseController<User>{
 	return niko;
 	}
 
+	public String getMonthLetter (int month){
+
+		String monthNames[] = {"Janvier","Fevrier","Mars","Avril","Mai","Juin","Juillet","Aout","Septembre","Octobre","Novembre","Decembre"};
+		String monthName = monthNames[month-1];
+
+		return monthName;
+	}
 	/**
 	 * Recupère les nikonikos par rapport à une verticale
 	 * @param idVert
@@ -732,10 +729,6 @@ public class GraphController extends ViewBaseController<User>{
 	}
 
 	/**
-	 * ERWAN CHANGES
-	 */
-
-	/**
 	 *
 	 * @param model	:
 	 * @param month	: Month number
@@ -744,7 +737,8 @@ public class GraphController extends ViewBaseController<User>{
 	 * @return 		: Calendar view of all nikonikos of a team shown per day for a given month
 	 * @throws IOException
 	 */
-	@RequestMapping(path = "nikoniko"+ PATH + "month", method = RequestMethod.GET)
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
+	@RequestMapping(path = "nikoniko"+ PathFinder.PATH + "month", method = RequestMethod.GET)
 	public String nikoNikoCalendar(Model model,
 			@RequestParam(defaultValue = "null") String month,
 			@RequestParam(defaultValue = "null") String year,
@@ -948,13 +942,10 @@ public class GraphController extends ViewBaseController<User>{
 		model.addAttribute("monthToUse",monthToUse);
 		model.addAttribute("monthName",moisAnnee[monthToUse-1]);
 		model.addAttribute("nbweeks",nbWeeks);
-		model.addAttribute("back", PATH + MENU_PATH);
+		model.addAttribute("back", PathFinder.PATH + PathFinder.MENU_PATH);
 
 		return "nikoniko/userCalendarView";
 	}
-	/**
-	 * END OF ERWAN CHANGES
-	 */
 
 	/**
 	 *
@@ -966,7 +957,8 @@ public class GraphController extends ViewBaseController<User>{
 	 * @return 		: Calendar view of all nikonikos of a team shown per day for a given month
 	 * @throws IOException
 	 */
-	@RequestMapping(path = "nikonikoteam" + PATH + "{idTeam}"+ PATH + "month", method = RequestMethod.GET)
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
+	@RequestMapping(path = "nikonikoteam" + PathFinder.PATH + "{idTeam}"+ PathFinder.PATH + "month", method = RequestMethod.GET)
 	public String nikoNikoCalendarTeam(Model model, @PathVariable Long idTeam,
 			@RequestParam(defaultValue = "null") String month,
 			@RequestParam(defaultValue = "null") String year,
@@ -1182,7 +1174,7 @@ public class GraphController extends ViewBaseController<User>{
 		model.addAttribute("monthName",moisAnnee[monthToUse-1]);
 		model.addAttribute("nbweeks",nbWeeks);
 		model.addAttribute("teamName",teamCrud.findOne(idTeam).getName());
-		model.addAttribute("back", PATH + MENU_PATH);
+		model.addAttribute("back", PathFinder.PATH + PathFinder.MENU_PATH);
 
 		return "nikoniko/teamCalendarView";
 	}
@@ -1192,6 +1184,7 @@ public class GraphController extends ViewBaseController<User>{
 	 */
 
 	public ArrayList<NikoNiko> findNikoNikosOfAVerticale(Long idVert){
+		ArrayList<NikoNiko> tempVertNikonikos = new ArrayList<NikoNiko>();
 		ArrayList<NikoNiko> vertNikonikos = new ArrayList<NikoNiko>();
 
 		ArrayList<Team> vertTeams = new ArrayList<Team>();
@@ -1200,7 +1193,12 @@ public class GraphController extends ViewBaseController<User>{
 			vertTeams.addAll(verticaleCrud.findOne(idVert).getTeams());
 
 			for (Team team : vertTeams) {
-				vertNikonikos.addAll(findNikoNikosOfATeam(team.getId()));
+				tempVertNikonikos.addAll(findNikoNikosOfATeam(team.getId()));
+			}
+		}
+		for (NikoNiko niko : tempVertNikonikos) {
+			if (!vertNikonikos.contains(niko)) {
+				vertNikonikos.add(niko);
 			}
 		}
 		return vertNikonikos;
@@ -1248,7 +1246,8 @@ public class GraphController extends ViewBaseController<User>{
 	 * @param action: Used to select the month to show from the current one (previous or next)
 	 * @return 		: Calendar view of all nikonikos of a team shown per day for a given month
 	 */
-	@RequestMapping(path = "nikonikovert" + PATH + "{idVert}"+ PATH + "month", method = RequestMethod.GET)
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
+	@RequestMapping(path = "nikonikovert" + PathFinder.PATH + "{idVert}"+ PathFinder.PATH + "month", method = RequestMethod.GET)
 	public String nikoNikoCalendar(Model model, @PathVariable Long idVert,
 			@RequestParam(defaultValue = "null") String month,
 			@RequestParam(defaultValue = "null") String year,
@@ -1463,7 +1462,7 @@ public class GraphController extends ViewBaseController<User>{
 		model.addAttribute("monthName",moisAnnee[monthToUse-1]);
 		model.addAttribute("nbweeks",nbWeeks);
 		model.addAttribute("verticaleName",verticaleCrud.findOne(idVert).getName());
-		model.addAttribute("back", PATH + MENU_PATH);
+		model.addAttribute("back", PathFinder.PATH + PathFinder.MENU_PATH);
 
 		return "nikoniko/verticaleCalendarView";
 	}
