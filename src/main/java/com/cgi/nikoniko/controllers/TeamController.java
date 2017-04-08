@@ -71,7 +71,7 @@ public class TeamController extends ViewBaseController<Team> {
     public String showTeams(Model model,String name){
 
         model.addAttribute("model", "team");
-        model.addAttribute("page",this.baseName + " " + PathFinder.LIST_ACTION.toUpperCase());
+        model.addAttribute("page",this.baseName);
         model.addAttribute("sortedFields",Team.FIELDS);
         model.addAttribute("items",DumpFields.listFielder(teamCrud.getTeams(name)));
         model.addAttribute("go_show", PathFinder.SHOW_ACTION);
@@ -126,7 +126,7 @@ public class TeamController extends ViewBaseController<Team> {
 
 
 	/**
-	 * RELATIONS (TEAM HAS USER)
+	 * SHOW ALL USERS RELATED TO TEAM
 	 * @param model
 	 * @param id
 	 * @return
@@ -138,8 +138,13 @@ public class TeamController extends ViewBaseController<Team> {
 		Team teamBuffer = new Team();
 		teamBuffer = teamCrud.findOne(idTeam);
 
-		//model.addAttribute("items", DumpFields.listFielder(this.setUsersForTeamGet(id)));
-		model.addAttribute("items",this.UserInTeam(idTeam));
+		if (this.UserInTeam(idTeam).size() < LENGHT_VIEW) {
+			model.addAttribute("items",this.UserInTeam(idTeam));
+		}else{
+			model.addAttribute("items",this.UserInTeam(idTeam).subList(0, LENGHT_VIEW));
+		}
+		
+		//model.addAttribute("items",this.UserInTeam(idTeam));
 		model.addAttribute("sortedFields",User.FIELDS);
 		model.addAttribute("page", ((Team) teamBuffer).getName());
 		model.addAttribute("go_show", PathFinder.SHOW_ACTION);

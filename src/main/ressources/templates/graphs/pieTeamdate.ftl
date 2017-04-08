@@ -92,7 +92,7 @@
                     <#list nameteam>
                         <table>
                             <div class="dropdown">
-                                <span>Affihe les équipes</span>
+                                <span>Choisir une équipe ?</span>
                                 <div>
                                     <#items as nameteam>
                                         <button onclick="location.href='/graph/showgraphteam/${nameteam?counter-1}/${year?c}/${month}/${day}'" class="dropdown-content"> ${nameteam} </button>
