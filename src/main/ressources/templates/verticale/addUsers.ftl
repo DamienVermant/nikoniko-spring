@@ -24,10 +24,10 @@
         <div class="col-lg-2">
             <div class="row-fluid">
                 <div class="col-lg-12">
-                    <div class="align">
-                        <button onclick="location.href='/menu'" class="vote"> Home </button>
+                    <div class="align">                       
                         <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
-                        <button onclick="location.href='${back}'" class="vote"> Retour </button>
+                        <button onclick="location.href='/menu'" class="home"> Menu </button>
+                        <button onclick="location.href='${back}'" class="return"> Retour </button>
                     </div>
                 </div>
             </div>
@@ -35,11 +35,11 @@
     </div>
 </div>
 
-	<h1>USERS TO ADD FOR VERTICAL : ${page}  </h1>
+	<h1> Ajouter des utilisateurs pour la verticale : ${page}  </h1>
 	<form action = "" method = "POST">
 		<#include "../includable/security/securityToken.ftl">
 			<input type="text" class="search" onkeyup="myFunction()" name="name" placeholder="Search for registration" title="Type in a name">
-		<input type="submit" value="Search">
+		<input type="submit" value="Rechercher">
 	</form>
 		<table class="table table-bordered table-hover">
 			<tr>
@@ -72,7 +72,7 @@
 					<td>
 						<form action = "" method = "POST">
 							<input type="hidden" name = "idUser" value = "${item["id"]}">
-							<input type="submit" value="add"><br>
+							<input type="submit" value="Ajouter"><br>
 							<#include "../includable/security/securityToken.ftl">
 						</form>
 					</td>

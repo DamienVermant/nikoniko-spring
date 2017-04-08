@@ -29,6 +29,7 @@ import com.cgi.nikoniko.models.tables.User;
 import com.cgi.nikoniko.models.tables.Verticale;
 import com.cgi.nikoniko.models.association.base.AssociationItemId;
 import com.cgi.nikoniko.utils.DumpFields;
+import com.cgi.nikoniko.utils.UtilsFunctions;
 
 @Controller
 @RequestMapping(TeamController.BASE_URL)
@@ -38,7 +39,7 @@ public class TeamController extends ViewBaseController<Team> {
 
 	public final static String BASE_TEAM = "team";
 	public final static String BASE_URL = PathFinder.PATH + BASE_TEAM;
-
+	
 /////////////////// ALL CRUD /////////////////////////////////
 
 	@Autowired
@@ -227,27 +228,13 @@ public class TeamController extends ViewBaseController<Team> {
 		model.addAttribute("model", "team");
 		model.addAttribute("page", teamBuffer.getName());
 		model.addAttribute("sortedFields",User.FIELDS);
-		model.addAttribute("items",DumpFields.listFielder(this.searchUser(name)));
+		model.addAttribute("items",DumpFields.listFielder(UtilsFunctions.searchUser(name, userCrud)));
 		model.addAttribute("go_show", PathFinder.SHOW_ACTION);
 		model.addAttribute("go_create", PathFinder.CREATE_ACTION);
 		model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
 		model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_USERS);
 
 		return BASE_TEAM + PathFinder.PATH + PathFinder.ADD_USER;
-
-	}
-
-	/**
-	 * FIND A SPECIFIC USER
-	 * @param name
-	 * @return
-	 */
-	public ArrayList<User> searchUser(String name){
-
-		ArrayList<User> userList = new ArrayList<User>();
-		userList = userCrud.getUsers(name);
-
-		return userList;
 
 	}
 

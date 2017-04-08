@@ -26,7 +26,7 @@
                 <div class="col-lg-12">
                     <div class="align">
                         <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
-                        <button onclick="location.href='/menu'" class="home"> Home </button>
+                        <button onclick="location.href='/menu'" class="home"> Menu </button>
                         <button onclick="location.href='${back}'" class="return"> Retour </button>
                     </div>
                 </div>
@@ -34,11 +34,11 @@
         </div>
     </div>
 </div>
-	<h1>ADD USERS TO : ${page}  </h1>
+	<h1> Ajout(s) d'utilisateur pour le rôle : ${page}  </h1>
 		<form action = "" method = "POST">
 			<#include "../includable/security/securityToken.ftl">
 			<input type="text" class="search" onkeyup="myFunction()" name="name" placeholder="Search for registration" title="Type in a name">
-			<input type="submit" value="Search">
+			<input type="submit" value="Rechercher">
 		</form>
 		<table class="table table-bordered table-hover">
 			<tr>
@@ -72,7 +72,7 @@
 						<form action = "" method = "POST">
 						<#include "../includable/security/securityToken.ftl">
 							<input type="hidden" name = "idUser" value = "${item["id"]}">
-							<input type="submit" value="add"><br>
+							<input type="submit" value="Ajouter"><br>
 						</form>
 					</td>
 				</tr>

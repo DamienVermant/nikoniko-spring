@@ -54,11 +54,11 @@
 						<#list item?keys as key>
 							<#if key == field>
 								<#if item[key]?is_boolean>
-									<td>${item[key]?c}</td>
+									<td onclick="window.location='/verticale/${item["id"]}/show'">${item[key]?c}</td>
 								<#elseif item[key]?is_date_like>
-									<td>${item[key]?string("yyyy:MM:dd HH:mm:ss")}</td>
+									<td onclick="window.location='/verticale/${item["id"]}/show'">${item[key]?string("yyyy:MM:dd HH:mm:ss")}</td>
 								<#else>
-									<td>${item[key]}</td>
+									<td onclick="window.location='/verticale/${item["id"]}/show'">${item[key]}</td>
 								</#if>
 							</#if>
 						</#list>

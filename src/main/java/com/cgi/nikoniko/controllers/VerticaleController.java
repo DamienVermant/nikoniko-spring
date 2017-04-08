@@ -93,7 +93,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	public String showVerticalesPOST(Model model,String name){
 
 		model.addAttribute("model", "verticale");
-		model.addAttribute("page",this.baseName + " " + PathFinder.LIST_ACTION.toUpperCase());
+		model.addAttribute("page",this.baseName);
 		model.addAttribute("sortedFields",Verticale.FIELDS);
 		model.addAttribute("items",this.searchVerticales(name));
 		model.addAttribute("go_show", PathFinder.SHOW_ACTION);
@@ -238,21 +238,26 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	@RequestMapping(path = "{idVerticale}" + PathFinder.PATH + PathFinder.ADD_USER , method = RequestMethod.GET)
 	public String addVerticalForUserGET(Model model, @PathVariable Long idVerticale) {
 
-	ArrayList<User> userList = new ArrayList<User>();
-
-	Object verticaleBuffer = new Object();
-	verticaleBuffer = verticaleCrud.findOne(idVerticale);
-
-	model.addAttribute("items", DumpFields.listFielder(userList));
-	model.addAttribute("sortedFields",User.FIELDS);
-	model.addAttribute("page", ((Verticale) verticaleBuffer).getName());
-	model.addAttribute("go_show", PathFinder.SHOW_ACTION);
-	model.addAttribute("go_create", PathFinder.CREATE_ACTION);
-	model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
-	model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_USERS);
-	model.addAttribute("add", PathFinder.ADD_USER);
-
-	return PathFinder.BASE_VERTICALE + PathFinder.PATH + PathFinder.ADD_USER;
+		ArrayList<User> userList = (ArrayList<User>) userCrud.findAll();
+	
+		Object verticaleBuffer = new Object();
+		verticaleBuffer = verticaleCrud.findOne(idVerticale);
+		
+		if (userList.size() < LENGHT_VIEW) {
+			model.addAttribute("items",DumpFields.listFielder(userList));
+		}else{
+			model.addAttribute("items",DumpFields.listFielder(userList.subList(0, LENGHT_VIEW)));
+		}
+	
+		model.addAttribute("sortedFields",User.FIELDS);
+		model.addAttribute("page", ((Verticale) verticaleBuffer).getName());
+		model.addAttribute("go_show", PathFinder.SHOW_ACTION);
+		model.addAttribute("go_create", PathFinder.CREATE_ACTION);
+		model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
+		model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_USERS);
+		model.addAttribute("add", PathFinder.ADD_USER);
+	
+		return PathFinder.BASE_VERTICALE + PathFinder.PATH + PathFinder.ADD_USER;
 	}
 
 	/**
@@ -265,6 +270,10 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 	@RequestMapping(path = "{idVerticale}" + PathFinder.PATH + PathFinder.ADD_USER, params = "name", method = RequestMethod.POST)
 	public String addVerticalForUserPOST(Model model,@RequestParam String name){
+		
+		if (name == "") {
+			return PathFinder.REDIRECT + PathFinder.ADD_USER;
+			}
 
 		model.addAttribute("model", "user");
 		model.addAttribute("page",this.baseName + " " + PathFinder.LIST_ACTION.toUpperCase());
@@ -476,7 +485,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	}
 
 	/**
-	 * SHOW USERS TO ADD ON VERTICALE
+	 * SHOW TEAMS TO ADD ON VERTICALE
 	 * @param model
 	 * @param idUser
 	 * @return
@@ -486,10 +495,17 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 
 	public String addVerticalForTeamGET(Model model, @PathVariable Long idVerticale) {
 
-	ArrayList<Team> teamList = new ArrayList<Team>();
-
+	ArrayList<Team> teamList = (ArrayList<Team>) teamCrud.findAll(); 
+			
 	Object verticaleBuffer = new Object();
 	verticaleBuffer = verticaleCrud.findOne(idVerticale);
+	
+	if (teamList.size() < LENGHT_VIEW) {
+		model.addAttribute("items",DumpFields.listFielder(teamList));
+	}else{
+		model.addAttribute("items",DumpFields.listFielder(teamList.subList(0, LENGHT_VIEW)));
+	}
+	
 	model.addAttribute("items", DumpFields.listFielder(teamList));
 	model.addAttribute("sortedFields",Team.FIELDS);
 	model.addAttribute("page", ((Verticale) verticaleBuffer).getName());
@@ -512,8 +528,12 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 	@RequestMapping(path = "{idVerticale}" + PathFinder.PATH + PathFinder.ADD_TEAM, params = "name", method = RequestMethod.POST)
 	public String addVerticalForTeamPOST(Model model,@RequestParam String name){
+		
+		if (name == "") {
+			return PathFinder.REDIRECT + PathFinder.ADD_TEAM;
+			}
 
-		model.addAttribute("model", "user");
+		model.addAttribute("model", "team");
 		model.addAttribute("page",this.baseName + " " + PathFinder.LIST_ACTION.toUpperCase());
 		model.addAttribute("sortedFields",Team.FIELDS);
 		model.addAttribute("items",DumpFields.listFielder(this.searchTeam(name)));

@@ -34,7 +34,7 @@
     </div>
 </div>
 
-	<h1>Liste des ${page}s</h1>
+	<h1>Liste des ${page}</h1>
 	<form action = "" method = "POST">
 		<#include "../includable/security/securityToken.ftl">
 		<#if model = "user">
