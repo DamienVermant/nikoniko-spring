@@ -677,8 +677,6 @@ public class GraphController extends ViewBaseController<User>{
 
 		List<Team> vertTeams = new ArrayList<Team>();
 
-		int nbMood = 0;
-
 		if (!verticaleCrud.findOne(idVert).getTeams().isEmpty()) {
 			vertTeams.addAll(verticaleCrud.findOne(idVert).getTeams());
 

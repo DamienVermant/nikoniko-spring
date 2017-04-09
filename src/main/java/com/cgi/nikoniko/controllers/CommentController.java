@@ -3,7 +3,7 @@ package com.cgi.nikoniko.controllers;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
+//import java.util.Set;
 
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,9 +105,9 @@ public class CommentController extends ViewBaseController<User>{
 		Long idUser = this.getUserInformations().getId();
 		User user = super.getItem(idUser);
 		user.getRoles();
-		Set<NikoNiko> niko =  user.getNikoNikos();
-		List<NikoNiko> listOfNiko = new ArrayList<NikoNiko>(niko);
-		List<NikoNiko> nikotoday = getNikoToday(listOfNiko);
+//		Set<NikoNiko> niko =  user.getNikoNikos();
+//		List<NikoNiko> listOfNiko = new ArrayList<NikoNiko>(niko);
+//		List<NikoNiko> nikotoday = getNikoToday(listOfNiko);
 
 
 		model.addAttribute("title", "Mes commentaires !" );

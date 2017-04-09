@@ -89,7 +89,7 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 	@RequestMapping(path = PathFinder.ROUTE_CREATE, method = RequestMethod.GET)
 	public String createItemGet(Model model) {
-		model.addAttribute("page",this.baseName + " " + PathFinder.CREATE_ACTION.toUpperCase());
+		model.addAttribute("page",this.baseName);
 		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
 		model.addAttribute("item",DumpFields.createContentsEmpty(super.getClazz()));
 		model.addAttribute("go_index", PathFinder.LIST_ACTION);
