@@ -51,13 +51,11 @@ public class UserController extends ViewBaseController<User> {
 
 	public final static String BASE_USER = "user";
 	public final static String BASE_URL = PathFinder.PATH + BASE_USER;
-	public final static double TIME = 0.999999;//can't use 1 due to double type
+	public final static double TIME = 0.999999;
 
-	//TODO : ce n'est pas une variable statique!!!!
-	public final static LocalDate TODAY_DATE = new LocalDate();
+	public LocalDate TODAY_DATE = new LocalDate();
 
-
-
+	
 /////////////////// NECESSARY CRUD /////////////////////////////////
 
 
@@ -440,6 +438,7 @@ public class UserController extends ViewBaseController<User> {
 
 		Object userBuffer = new Object();
 		userBuffer = userCrud.findOne(idUser);
+		
 		model.addAttribute("items", DumpFields.listFielder((ArrayList<Team>) teamCrud.findAll()));
 		model.addAttribute("sortedFields",Team.FIELDS);
 		model.addAttribute("page", ((User) userBuffer).getRegistrationcgi());

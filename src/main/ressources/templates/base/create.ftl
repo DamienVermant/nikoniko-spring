@@ -52,7 +52,7 @@
 				</#if>
 			</#list>
 		</table>
-		<input href="#" type="submit" value="Créer" onclick="verify()"><br>
+		<input type="submit" value="Créer" onclick="verify()"><br>
 	</form>
 <#if model == "user">
 	<script src = "/js/create_user.js">

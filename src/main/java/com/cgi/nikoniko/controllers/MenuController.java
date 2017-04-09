@@ -1,9 +1,6 @@
 package com.cgi.nikoniko.controllers;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.List;
-
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -26,10 +23,8 @@ import com.cgi.nikoniko.utils.UtilsFunctions;
 @Controller
 public class MenuController  {
 
-	public final static LocalDate TODAY_DATE = new LocalDate();
-	
+	public LocalDate TODAY_DATE = new LocalDate();
 	public final static String BASE_URL = PathFinder.PATH + PathFinder.MENU_PATH;
-
 	public final static double TIME = 0.9999999999;
 
 	@Autowired
@@ -83,8 +78,6 @@ public class MenuController  {
 
 		model.addAttribute("add_last", PathFinder.PATH + "user" + PathFinder.PATH + idUser + PathFinder.PATH + "addLast");
 
-		// TEST FOR SECURED REDIRECTION
-
 		model.addAttribute("id",idUser);
 
 
@@ -107,7 +100,7 @@ public class MenuController  {
 
 		login = auth.getName();
 		user = userCrud.findByLogin(login);
-		roleList = this.setRolesForUserGet(user.getId());
+		roleList = UtilsFunctions.setRolesForUserGet(user.getId(), userRoleCrud, roleCrud);
 		roleNames = this.convertObjectToString(roleList);
 
 		if (roleNames.contains("ROLE_ADMIN")) {
@@ -127,30 +120,6 @@ public class MenuController  {
 		}
 
 		return role;
-	}
-
-
-	/**
-	 * HAVE ALL ROLES ASSOCIATED TO A USER
-	 * @param idUser
-	 * @return
-	 */
-	public ArrayList<RoleCGI> setRolesForUserGet(Long idUser) {
-
-		List<Long> ids = new ArrayList<Long>();
-		ArrayList<RoleCGI> roleList = new ArrayList<RoleCGI>();
-
-		List<BigInteger> idsBig = userRoleCrud.findAssociatedRole(idUser);
-
-		if (!idsBig.isEmpty()) {
-			for (BigInteger id : idsBig) {
-				ids.add(id.longValue());
-
-			}
-			roleList = (ArrayList<RoleCGI>) roleCrud.findAll(ids);
-		}
-
-		return roleList;
 	}
 
 	/**

@@ -1,9 +1,6 @@
 package com.cgi.nikoniko.service.security;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +17,7 @@ import com.cgi.nikoniko.dao.IUserCrudRepository;
 import com.cgi.nikoniko.dao.IUserHasRoleCrudRepository;
 import com.cgi.nikoniko.models.tables.RoleCGI;
 import com.cgi.nikoniko.models.tables.User;
+import com.cgi.nikoniko.utils.UtilsFunctions;
 
 @Service
 public class UserDetailsServiceImp implements UserDetailsService {
@@ -46,7 +44,7 @@ public class UserDetailsServiceImp implements UserDetailsService {
 		Set<GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
 
 		if (user.getEnable()) {
-			for (RoleCGI role : this.setRolesForUserGet(user.getId())) {
+			for (RoleCGI role : UtilsFunctions.setRolesForUserGet(user.getId(), userRoleCrud, roleCrud)) {
 				grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
 			}
 		}
@@ -54,27 +52,5 @@ public class UserDetailsServiceImp implements UserDetailsService {
 					.User(user.getLogin(),user.getPassword(),grantedAuthorities);
 	}
 
-	/**
-	 * RECUPERATION DE TOUS LES ROLES ASSOCIES A UN USER
-	 * @param idUser
-	 * @return
-	 */
-	public ArrayList<RoleCGI> setRolesForUserGet(Long idUser) {
-
-		List<Long> ids = new ArrayList<Long>();
-		ArrayList<RoleCGI> roleList = new ArrayList<RoleCGI>();
-
-		List<BigInteger> idsBig = userRoleCrud.findAssociatedRole(idUser);
-
-		if (!idsBig.isEmpty()) {
-			for (BigInteger id : idsBig) {
-				ids.add(id.longValue());
-
-			}
-			roleList = (ArrayList<RoleCGI>) roleCrud.findAll(ids);
-		}
-
-		return roleList;
-	}
 
 }

@@ -1,7 +1,9 @@
 package com.cgi.nikoniko.utils;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.joda.time.LocalDate;
 import org.springframework.security.core.Authentication;
@@ -9,16 +11,19 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.cgi.nikoniko.controllers.PathClass.PathFinder;
 import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
+import com.cgi.nikoniko.dao.IRoleCrudRepository;
 import com.cgi.nikoniko.dao.ITeamCrudRepository;
 import com.cgi.nikoniko.dao.IUserCrudRepository;
+import com.cgi.nikoniko.dao.IUserHasRoleCrudRepository;
 import com.cgi.nikoniko.models.tables.NikoNiko;
+import com.cgi.nikoniko.models.tables.RoleCGI;
 import com.cgi.nikoniko.models.tables.Team;
 import com.cgi.nikoniko.models.tables.User;
 
 public abstract class UtilsFunctions {
 	
 	
-public final static LocalDate TODAY_DATE = new LocalDate();
+public static LocalDate TODAY_DATE = new LocalDate();
 	
 	
 /////////////////// UTILS FOR THE VOTE /////////////////////////////////
@@ -161,23 +166,6 @@ public final static LocalDate TODAY_DATE = new LocalDate();
 		return null;	
 	}
 	
-	/**
-	 * RETURN USER FROM AUTHENTIFICATION
-	 * @return
-	 */
-	public static User getUserInformations(IUserCrudRepository userCrud){
-
-		String login = "";
-		User user = new User();
-
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-		login = auth.getName();
-		user = userCrud.findByLogin(login);
-
-		return user;
-	}
-
 	
 /////////////////// UTILS TO SEARCH /////////////////////////////////
 	
@@ -210,5 +198,51 @@ public final static LocalDate TODAY_DATE = new LocalDate();
 
 	}
 	
+	
+/////////////////// UTILS TO GET ROLES /////////////////////////////////
 
+	
+	/**
+	 * HAVE ALL ROLES ASSOCIATED TO A USER
+	 * @param idUser
+	 * @return
+	 */
+	public static ArrayList<RoleCGI> setRolesForUserGet(Long idUser, IUserHasRoleCrudRepository userRoleCrud, IRoleCrudRepository roleCrud) {
+
+		List<Long> ids = new ArrayList<Long>();
+		ArrayList<RoleCGI> roleList = new ArrayList<RoleCGI>();
+
+		List<BigInteger> idsBig = userRoleCrud.findAssociatedRole(idUser);
+
+		if (!idsBig.isEmpty()) {
+			for (BigInteger id : idsBig) {
+				ids.add(id.longValue());
+
+			}
+			roleList = (ArrayList<RoleCGI>) roleCrud.findAll(ids);
+		}
+
+		return roleList;
+	}
+	
+	
+/////////////////// UTILS TO GET USER'S INFORMATION /////////////////////////////////
+
+	
+	/**
+	 * RETURN USER FROM AUTHENTIFICATION
+	 * @return
+	 */
+	public static User getUserInformations(IUserCrudRepository userCrud){
+
+		String login = "";
+		User user = new User();
+
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+		login = auth.getName();
+		user = userCrud.findByLogin(login);
+
+		return user;
+	}
 }

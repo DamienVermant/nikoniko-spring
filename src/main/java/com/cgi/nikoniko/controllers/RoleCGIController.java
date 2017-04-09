@@ -195,7 +195,7 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 		return setUsersForRolePost(idRole, idUser);
 	}
 
-	/*
+	/**
 	 * FUNCTION THAT SET NEW USER IN ROLE (JUST AFFECT A USER ALREADY CREATE)
 	 * @param idTeam
 	 * @param idUser
