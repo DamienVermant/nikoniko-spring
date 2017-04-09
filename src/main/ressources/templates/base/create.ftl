@@ -34,7 +34,7 @@
 </div>
 	<h1>Création</h1>
 
-	<form action = "${create_item}" method = "POST">
+	<form name="form" action = "${create_item}" method = "POST">
 		<#include "../includable/security/securityToken.ftl">
 		<table class="table table-bordered table-hover">
 			<#list sortedFields as field>
@@ -44,7 +44,7 @@
 							<tr>
 								<th>${key}</th>
 								<td>
-									<input type="text" name = "${key}">
+									<input id="test" type="text" name = "${key}">
 								</td>
 							</tr>
 						</#if>
@@ -52,7 +52,14 @@
 				</#if>
 			</#list>
 		</table>
-		<input type="submit" value="Créer"><br>
+		<input href="#" type="submit" value="Créer" onclick="verify()"><br>
 	</form>
+<#if model == "user">
+	<script src = "/js/create_user.js">
+	</script>
+<#else>
+</#if>
+ 
+ 
 </body>
 </html>
