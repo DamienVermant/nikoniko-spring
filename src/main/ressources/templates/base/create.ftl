@@ -49,7 +49,7 @@
 				</#if>
 			</#list>
 		</table>
-		<input type="submit" value="Créer"><br>
+		<input type="submit" value="Créer" class="logout"><br>
 	</form>
 </body>
 </html>

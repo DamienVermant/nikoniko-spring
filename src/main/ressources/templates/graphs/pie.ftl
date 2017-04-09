@@ -110,7 +110,7 @@
                 <div class="alignleft">
                 <#if role != "admin">
 	                <button onclick="location.href='/graph/nikoniko/month'" class="resultsteam"> Calendrier </button>
-	                <button onclick="location.href='/graph/nikonikovert/1/month'" class="resultsteam"> Calendrier verticale </button>
+	                <button onclick="location.href='/graph/nikonikovert/${idVert}/month'" class="resultsteam"> Calendrier verticale </button>
                 </#if>
                 </div>
             </div>

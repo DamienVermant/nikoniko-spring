@@ -158,7 +158,7 @@ public class UserController extends ViewBaseController<User> {
 			 idverticale = userBuffer.getVerticale().getId();
 		}
 
-		model.addAttribute("page",  "USER : " + userBuffer.getRegistrationcgi());
+		model.addAttribute("page",  "User : " + userBuffer.getRegistrationcgi());
 		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
 		model.addAttribute("item",DumpFields.fielder(super.getItem(idUser)));
 		model.addAttribute("show_nikonikos", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_NIKONIKO);

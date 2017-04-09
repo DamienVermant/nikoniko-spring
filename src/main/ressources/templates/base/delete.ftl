@@ -10,27 +10,27 @@
 </head>
 
 <body>
-<div class="container-fluid">
-    <div class="row-fluid">
-        <div class="col-lg-2">
-            <img class="logo" src="https://upload.wikimedia.org/wikipedia/fr/5/51/LOGO-CGI-1993-1998.svg">
-        </div>
-        <div class="col-lg-8">
-            <div class="title">Niko-Niko</div>
-        </div>
-        <div class="col-lg-2">
-            <div class="row-fluid">
-                <div class="col-lg-12">
-                    <div class="align">
-                        <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
-                        <button onclick="location.href='${go_index}'" class="logout"> Retour </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-	<h1>${page}</h1>
+	<div class="container-fluid">
+	    <div class="row-fluid">
+	        <div class="col-lg-2">
+	            <img class="logo" src="https://upload.wikimedia.org/wikipedia/fr/5/51/LOGO-CGI-1993-1998.svg">
+	        </div>
+	        <div class="col-lg-8">
+	            <div class="title">Niko-Niko</div>
+	        </div>
+	        <div class="col-lg-2">
+	            <div class="row-fluid">
+	                <div class="col-lg-12">
+	                    <div class="align">
+	                        <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
+	                        <button onclick="location.href='${go_index}'" class="logout"> Retour </button>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	<h1>Elément à supprimer :</h1>
 	<table class="table table-bordered table-hover">
 		<#list sortedFields as field>
 			<#if field != "id">
@@ -54,20 +54,17 @@
 		</#list>
 	</table>
 	<form action = "${go_delete}" method = "POST">
-	<#include "../includable/security/securityToken.ftl">
+		<#include "../includable/security/securityToken.ftl">
 		<#if item["id"]??>
 			<input type="hidden" name = "id" value = "${item["id"]}">
-			<input type="submit" value="Delete"><br>
+			<span class = "confirmation_message">Êtes-vous vraiment sûr de vouloir supprimer cet élément? </span>
+			<input type="submit" value="Supprimer" class="logout">
 		<#else>
 			<input type="hidden" name = "idl" value = "${item["idLeft"]}">
 			<input type="hidden" name = "idr" value = "${item["idRight"]}">
-			<input type="submit" value="Delete"><br>
+			<span class = "confirmation_message">Êtes-vous vraiment sûr de vouloir supprimer cet élément? </span>
+			<input type="submit" value="Supprimer" class="logout"><br>
 		</#if>
 	</form>
-	<#if item["id"]??>
-		<a href="../">Back</a>
-	<#else>
-		<a href="../..">Back</a>
-	</#if>
 </body>
 </html>

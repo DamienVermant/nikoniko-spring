@@ -38,7 +38,7 @@
 			<a href="?month=${monthToUse}&year=${yearToUse?c}&action=previous">Mois précédent</a>
 		</span>
 		<span class = "month_year">
-			Résultats pour ${monthName} ${yearToUse}
+			Résultats verticale "${verticaleName}" pour ${monthName} ${yearToUse}
 		</span>
 		<span class = "next_button">
 			<a href="?month=${monthToUse}&year=${yearToUse?c}&action=next">Mois suivant</a>

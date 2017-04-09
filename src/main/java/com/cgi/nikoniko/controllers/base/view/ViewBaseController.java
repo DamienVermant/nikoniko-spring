@@ -13,6 +13,8 @@ import com.cgi.nikoniko.controllers.base.BaseController;
 import com.cgi.nikoniko.models.tables.modelbase.DatabaseItem;
 import com.cgi.nikoniko.utils.DumpFields;
 
+import freemarker.template.utility.StringUtil;
+
 
 public abstract class ViewBaseController<T extends DatabaseItem> extends BaseController<T> {
 
@@ -128,7 +130,7 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 		model.addAttribute("page",this.baseName + " " + PathFinder.DELETE_ACTION.toUpperCase());
 		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
 		model.addAttribute("item",DumpFields.fielder(super.getItem(id)));
-		model.addAttribute("go_index", PathFinder.LIST_ACTION);
+		model.addAttribute("go_index", PathFinder.PATH + this.baseName + PathFinder.PATH);
 		model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
 		return deleteView;
 	}
@@ -156,7 +158,7 @@ public abstract class ViewBaseController<T extends DatabaseItem> extends BaseCon
 	@RequestMapping(path = PathFinder.ROUTE_UPDATE, method = RequestMethod.GET)
 	public String updateItemGet(Model model,@PathVariable Long id) {
 
-		model.addAttribute("page",this.baseName + " " + PathFinder.UPDATE_ACTION.toUpperCase());
+		model.addAttribute("page", StringUtil.capitalize(this.baseName)  + " à " + PathFinder.UPDATE_ACTION);
 		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
 		model.addAttribute("items",DumpFields.fielder(super.getItem(id)));
 		model.addAttribute("go_index",PathFinder. LIST_ACTION);

@@ -27,7 +27,7 @@ import com.cgi.nikoniko.utils.UtilsFunctions;
 public class MenuController  {
 
 	public final static LocalDate TODAY_DATE = new LocalDate();
-	
+
 	public final static String BASE_URL = PathFinder.PATH + PathFinder.MENU_PATH;
 
 	public final static double TIME = 0.9999999999;
@@ -53,7 +53,7 @@ public class MenuController  {
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
 	@RequestMapping(path = PathFinder.PATH + PathFinder.MENU_PATH, method = RequestMethod.GET)
 	public String index(Model model, String login) {
-		
+
 		Long idUser = UtilsFunctions.getUserInformations(userCrud).getId();
 
 		model.addAttribute("page","MENU");
@@ -75,7 +75,10 @@ public class MenuController  {
 		model.addAttribute("go_functions", PathFinder.GO_FUNCTIONS);
 		model.addAttribute("go_verticales", PathFinder.GO_VERTICALE);
 		model.addAttribute("go_graphes", PathFinder.GO_GRAPHE);
-		model.addAttribute("calendar", PathFinder.GO_CALENDAR);
+		model.addAttribute("myCalendar", PathFinder.GO_CALENDAR);
+		model.addAttribute(	"myVertCalendar", "/graph/nikonikovert/"
+							+ UtilsFunctions.getUserInformations(userCrud).getVerticale().getId()
+							+ "/month");
 
 		model.addAttribute("go_user_has_team", PathFinder.GO_USERTEAM);
 		model.addAttribute("go_user_has_role", PathFinder.GO_USERROLE);

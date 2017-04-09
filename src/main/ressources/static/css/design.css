@@ -1,5 +1,5 @@
 body{
-	background-image: url(http://eskipaper.com/images/cloud-background-7.jpg);
+	background-image: url('http://eskipaper.com/images/cloud-background-7.jpg');
 }
 
 hr {
@@ -32,7 +32,7 @@ hr {
 .logout{
 	height: 30px;
 	width: 100px;
-	font-size: 10px;
+	font-size: 12px;
 	margin-top: 10px;
 }
 
@@ -85,7 +85,12 @@ hr {
   /*width: 100%;*/
   font-size: 16px;
   padding: 12px 20px 12px 40px;
-  border: 1px solid #ddd;
+  border: 1px solid #dddddd;
   margin-bottom: 12px;
 }
 
+.confirmation_message {
+	font-weight : bold;
+	color : red;
+	font-size : 18px;
+}
