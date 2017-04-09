@@ -36,7 +36,7 @@
 					<div class="align">
 					<button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
 					<#if mood != 0 && status == true>
-						<button onclick="location.href='/menu'" class="vote"> Retour </button>
+						<button onclick="location.href='/menu'" class="logout"> Retour </button>
 					<#else>
 					</#if>
 					</div>

@@ -264,6 +264,7 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("mood" , UtilsFunctions.getUserLastMood(userBuffer, userCrud, nikonikoCrud));
 		model.addAttribute("page",user.getFirstname() + " " + PathFinder.CREATE_ACTION.toUpperCase());
 		model.addAttribute("sortedFields",NikoNiko.FIELDS);
+		model.addAttribute("textAreaOption","");
 		model.addAttribute("item",DumpFields.createContentsEmpty(niko.getClass()));
 		model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_PATH);
 		model.addAttribute("create_item", PathFinder.CREATE_ACTION);

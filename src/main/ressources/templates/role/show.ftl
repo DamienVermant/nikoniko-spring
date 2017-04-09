@@ -24,9 +24,9 @@
                     <div class="align">
                         <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
                         <#if item["id"]??>
-                            <button onclick="location.href='../'" class="vote"> Retour </button>
+                            <button onclick="location.href='../'" class="logout"> Retour </button>
                         <#else>
-                            <button onclick="location.href='../..'" class="vote"> Retour </button>
+                            <button onclick="location.href='../..'" class="logout"> Retour </button>
                         </#if>
                     </div>
                 </div>
