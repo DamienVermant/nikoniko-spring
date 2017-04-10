@@ -101,7 +101,7 @@ public class TeamController extends ViewBaseController<Team> {
 			teamCrud.save(teamBuffer);
 			}
 
-		model.addAttribute("page","TEAM : " + teamBuffer.getName());
+		model.addAttribute("page","Equipe : " + teamBuffer.getName());
 		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
 		model.addAttribute("item",DumpFields.fielder(super.getItem(id)));
 		model.addAttribute("show_users", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_USERS);

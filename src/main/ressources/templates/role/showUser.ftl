@@ -13,33 +13,34 @@
 </head>
 
 <body>
-<div class="container-fluid">
-    <div class="row-fluid">
-        <div class="col-lg-2">
-            <img class="logo" src="https://upload.wikimedia.org/wikipedia/fr/5/51/LOGO-CGI-1993-1998.svg">
-        </div>
-        <div class="col-lg-8">
-            <div class="title">Niko-Niko</div>
-        </div>
-        <div class="col-lg-2">
-            <div class="row-fluid">
-                <div class="col-lg-12">
-                    <div class="align">
-                        <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
-                            <button onclick="location.href='${back}'" class="return"> Retour </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+	<div class="container-fluid">
+	    <div class="row-fluid">
+	        <div class="col-lg-2">
+	            <img class="logo" src="https://upload.wikimedia.org/wikipedia/fr/5/51/LOGO-CGI-1993-1998.svg">
+	        </div>
+	        <div class="col-lg-8">
+	            <div class="title">Niko-Niko</div>
+	        </div>
+	        <div class="col-lg-2">
+	            <div class="row-fluid">
+	                <div class="col-lg-12">
+	                    <div class="align">
+	                        <button onclick="location.href='/menu'" class="logout"> Menu </button>
+	                        <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
+	                        <button onclick="location.href='${back}'" class="logout"> Retour </button>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
 	<h1> Utilisateurs ayant le rôle : ${page}  </h1>
 		<table class="table table-bordered table-hover">
 			<tr>
 				<#list items as item>
 					<#list sortedFields as field>
 						<#list item?keys as key>
-							<#if key == field>
+							<#if key == field && key != "id" && key!= "password">
 								<th>${key}</th>
 							</#if>
 						</#list>
@@ -51,7 +52,7 @@
 				<tr>
 					<#list sortedFields as field>
 						<#list item?keys as key>
-							<#if key == field>
+							<#if key == field && key != "id" && key!= "password">
 								<#if item[key]?is_boolean>
 									<td onclick="window.location='/user/${item["id"]}/show'">${item[key]?c}</td>
 								<#elseif item[key]?is_date_like>

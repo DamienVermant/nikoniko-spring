@@ -216,7 +216,7 @@ public class GraphController extends ViewBaseController<User>{
 
 		Long idUser = UtilsFunctions.getUserInformations(userCrud).getId();
 		User user = super.getItem(idUser);
-		user.getRoles();
+//		user.getRoles();
 		Set<NikoNiko> niko =  user.getNikoNikos();
 		List<NikoNiko> listOfNiko = new ArrayList<NikoNiko>(niko);
 		List<NikoNiko> nikotoday = getNikoToday(listOfNiko);
@@ -241,6 +241,7 @@ public class GraphController extends ViewBaseController<User>{
 			}
 		}
 
+		model.addAttribute("idVert",user.getVerticale().getId());
 		model.addAttribute("title", "Mes votes d'aujourd'hui" );
 		model.addAttribute("role", role);
 		model.addAttribute("mood", UtilsFunctions.getUserLastMood(userCrud.findByLogin(super.checkSession().getName()).getId(), userCrud, nikonikoCrud));
@@ -291,6 +292,7 @@ public class GraphController extends ViewBaseController<User>{
 			}
 		}
 
+		model.addAttribute("idVert",user.getVerticale().getId());
 		model.addAttribute("title", "Mes votes de la journée du : " + day + " " + getMonthLetter(month) + " " + year );
 		model.addAttribute("role", role);
 		model.addAttribute("mood", UtilsFunctions.getUserLastMood(userCrud.findByLogin(super.checkSession().getName()).getId(), userCrud, nikonikoCrud));
@@ -344,6 +346,7 @@ public class GraphController extends ViewBaseController<User>{
 			}
 		}
 
+		model.addAttribute("idVert",UtilsFunctions.getUserInformations(userCrud).getVerticale().getId());
 		model.addAttribute("title", "Tous les votes d'aujourd'hui");
 		model.addAttribute("role", role);
 		model.addAttribute("mood", nbMood);
@@ -397,6 +400,7 @@ public class GraphController extends ViewBaseController<User>{
 			}
 		}
 
+		model.addAttribute("idVert",UtilsFunctions.getUserInformations(userCrud).getVerticale().getId());
 		model.addAttribute("title", "Tous les votes de la journée du : " + day + " " + getMonthLetter(month) + " " + year);
 		model.addAttribute("role", role);
 		model.addAttribute("mood", nbMood);
@@ -450,6 +454,7 @@ public class GraphController extends ViewBaseController<User>{
 			}
 		}
 
+		model.addAttribute("idVert",user.getVerticale().getId());
 		model.addAttribute("title", "Tous les votes d'aujourd'hui pour la verticale : " + verticaleCrud.findOne(verticaleId).getName());
 		model.addAttribute("role", role);
 		model.addAttribute("mood", nbMood);
@@ -503,6 +508,7 @@ public class GraphController extends ViewBaseController<User>{
 			}
 		}
 
+		model.addAttribute("idVert",user.getVerticale().getId());
 		model.addAttribute("title", "Tous les votes du : " + day + " " + getMonthLetter(month) + " " + year + ", pour la verticale : " + verticaleCrud.findOne(verticaleId).getName());
 		model.addAttribute("role", role);
 		model.addAttribute("mood", nbMood);
@@ -571,6 +577,7 @@ public class GraphController extends ViewBaseController<User>{
 			}
 		}
 
+		model.addAttribute("idVert",UtilsFunctions.getUserInformations(userCrud).getVerticale().getId());
 		model.addAttribute("title", "Tous les votes d'aujourd'hui pour l'equipe : " + teamCrud.findOne(teamId).getName());
 		model.addAttribute("role", role);
 		model.addAttribute("nameteam", teamName);
@@ -643,6 +650,7 @@ public class GraphController extends ViewBaseController<User>{
 			}
 		}
 
+		model.addAttribute("idVert",UtilsFunctions.getUserInformations(userCrud).getVerticale().getId());
 		model.addAttribute("title", "Tous les votes du : " + day + " " + getMonthLetter(month) + " " + year + " pour l'equipe : " + teamCrud.findOne(teamId).getName());
 		model.addAttribute("role", role);
 		model.addAttribute("nameteam", teamName);
@@ -729,8 +737,6 @@ public class GraphController extends ViewBaseController<User>{
 		List<NikoNiko> vertNikonikos = new ArrayList<NikoNiko>();
 
 		List<Team> vertTeams = new ArrayList<Team>();
-
-		int nbMood = 0;
 
 		if (!verticaleCrud.findOne(idVert).getTeams().isEmpty()) {
 			vertTeams.addAll(verticaleCrud.findOne(idVert).getTeams());

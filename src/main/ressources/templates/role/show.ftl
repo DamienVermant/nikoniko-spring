@@ -13,30 +13,30 @@
 </head>
 
 <body>
-<div class="container-fluid">
-    <div class="row-fluid">
-        <div class="col-lg-2">
-            <img class="logo" src="https://upload.wikimedia.org/wikipedia/fr/5/51/LOGO-CGI-1993-1998.svg">
-        </div>
-        <div class="col-lg-8">
-            <div class="title">Niko-Niko</div>
-        </div>
-        <div class="col-lg-2">
-            <div class="row-fluid">
-                <div class="col-lg-12">
-                    <div class="align">
-                        <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
-                        <#if item["id"]??>
-                            <button onclick="location.href='../'" class="return"> Retour </button>
-                        <#else>
-                            <button onclick="location.href='../..'" class="vote"> Retour </button>
-                        </#if>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+	<div class="container-fluid">
+	    <div class="row-fluid">
+	        <div class="col-lg-2">
+	            <img class="logo" src="https://upload.wikimedia.org/wikipedia/fr/5/51/LOGO-CGI-1993-1998.svg">
+	        </div>
+	        <div class="col-lg-8">
+	            <div class="title">Niko-Niko</div>
+	        </div>
+	        <div class="col-lg-2">
+	            <div class="row-fluid">
+	                <div class="col-lg-12">
+	                    <div class="align">
+	                        <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
+	                        <#if item["id"]??>
+	                            <button onclick="location.href='../'" class="logout"> Retour </button>
+	                        <#else>
+	                            <button onclick="location.href='../..'" class="logout"> Retour </button>
+	                        </#if>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
 	<h1>${page}</h1>
 	<table class="table table-bordered table-hover">
 		<#list sortedFields as field>
@@ -60,8 +60,8 @@
 			</#if>
 		</#list>
 	</table>
-	<a href="${show_users}"> Show users </a> <br>
-	<a href="${go_update}">Update</a> <br>
-	<a href="${go_delete}">Delete</a> <br>
+	<a href="${show_users}"> Voir utilisateurs </a> <br>
+	<a href="${go_update}">Modifier</a> <br>
+	<a href="${go_delete}">Supprimer</a> <br>
 </body>
 </html>

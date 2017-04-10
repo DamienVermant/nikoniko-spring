@@ -269,14 +269,14 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 	@RequestMapping(path = "{idVerticale}" + PathFinder.PATH + PathFinder.ADD_USER, params = "name", method = RequestMethod.POST)
-	public String addVerticalForUserPOST(Model model,@RequestParam String name){
-		
+	public String addVerticalForUserSearchPOST(Model model,@RequestParam String name, @PathVariable Long idVerticale){
+
 		if (name == "") {
 			return PathFinder.REDIRECT + PathFinder.ADD_USER;
 			}
 
 		model.addAttribute("model", "user");
-		model.addAttribute("page",this.baseName + " " + PathFinder.LIST_ACTION.toUpperCase());
+		model.addAttribute("page",verticaleCrud.findOne(idVerticale).getName());
 		model.addAttribute("sortedFields",User.FIELDS);
 		model.addAttribute("items",DumpFields.listFielder(this.searchUser(name)));
 		model.addAttribute("go_show", PathFinder.SHOW_ACTION);
@@ -408,7 +408,7 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 		model.addAttribute("go_create", PathFinder.CREATE_ACTION);
 		model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
 		model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_PATH);
-		model.addAttribute("add", PathFinder.DOT + PathFinder.PATH + PathFinder.ADD_USER);
+		model.addAttribute("add", PathFinder.DOT + PathFinder.PATH + PathFinder.ADD_TEAM);
 
 		if (name != "") {
 			model.addAttribute("items",DumpFields.listFielder(this.searchAssociatedTeams(verticaleId, name)));
@@ -492,7 +492,6 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 	@RequestMapping(path = "{idVerticale}" + PathFinder.PATH + PathFinder.ADD_TEAM, method = RequestMethod.GET)
-
 	public String addVerticalForTeamGET(Model model, @PathVariable Long idVerticale) {
 
 	ArrayList<Team> teamList = (ArrayList<Team>) teamCrud.findAll(); 
@@ -527,14 +526,14 @@ public class VerticaleController  extends ViewBaseController<Verticale> {
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
 	@RequestMapping(path = "{idVerticale}" + PathFinder.PATH + PathFinder.ADD_TEAM, params = "name", method = RequestMethod.POST)
-	public String addVerticalForTeamPOST(Model model,@RequestParam String name){
-		
+	public String addVerticalForTeamSearchPOST(Model model,@RequestParam String name, @PathVariable Long idVerticale){
+
 		if (name == "") {
 			return PathFinder.REDIRECT + PathFinder.ADD_TEAM;
-			}
-
+		}
+	
 		model.addAttribute("model", "team");
-		model.addAttribute("page",this.baseName + " " + PathFinder.LIST_ACTION.toUpperCase());
+		model.addAttribute("page",verticaleCrud.findOne(idVerticale).getName());
 		model.addAttribute("sortedFields",Team.FIELDS);
 		model.addAttribute("items",DumpFields.listFielder(this.searchTeam(name)));
 		model.addAttribute("go_show", PathFinder.SHOW_ACTION);

@@ -13,31 +13,31 @@
 </head>
 
 <body>
-<div class="container-fluid">
-    <div class="row-fluid">
-        <div class="col-lg-2">
-            <img class="logo" src="https://upload.wikimedia.org/wikipedia/fr/5/51/LOGO-CGI-1993-1998.svg">
-        </div>
-        <div class="col-lg-8">
-            <div class="title">Niko-Niko</div>
-        </div>
-        <div class="col-lg-2">
-            <div class="row-fluid">
-                <div class="col-lg-12">
-                    <div class="align">
-                        <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
-                         <button onclick="location.href='/menu'" class="home"> Menu </button>
-                        <#if item["id"]??>
-                            <button onclick="location.href='../'" class="return"> Retour </button>
-                        <#else>
-                            <button onclick="location.href='../..'" class="return"> Retour </button>
-                        </#if>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+	<div class="container-fluid">
+	    <div class="row-fluid">
+	        <div class="col-lg-2">
+	            <img class="logo" src="https://upload.wikimedia.org/wikipedia/fr/5/51/LOGO-CGI-1993-1998.svg">
+	        </div>
+	        <div class="col-lg-8">
+	            <div class="title">Niko-Niko</div>
+	        </div>
+	        <div class="col-lg-2">
+	            <div class="row-fluid">
+	                <div class="col-lg-12">
+	                    <div class="align">
+	                        <button onclick="location.href='/menu'" class="logout"> Menu </button>
+	                        <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
+	                        <#if item["id"]??>
+	                            <button onclick="location.href='../'" class="logout"> Retour </button>
+	                        <#else>
+	                            <button onclick="location.href='../..'" class="logout"> Retour </button>
+	                        </#if>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
 	<h1>${page}</h1>
 	<table class="table table-bordered table-hover">
 		<#list sortedFields as field>
@@ -64,10 +64,10 @@
 			</#if>
 		</#list>
 	</table>
-    <a href="${show_verticale}"> Voir verticale </a> <br>
-	<a href="${show_roles}"> Voir rôles </a> <br>
-	<a href="${show_teams}"> Voir équipes </a> <br>
-	<a href="${go_update}">Modifier</a> <br>
-	<a href="${go_delete}">Supprimer</a> <br>
+    <a class ="btn btn-default" href="${show_verticale}"> Afficher la verticale </a> <br>
+	<a class ="btn btn-default" href="${show_roles}"> Afficher les rôles </a> <br>
+	<a class ="btn btn-default" href="${show_teams}"> Afficher les équipes </a> <br>
+	<a class ="btn btn-default" href="${go_update}"> Update </a> <br>
+	<a class ="btn btn-default" href="${go_delete}"> Supprimer </a> <br>
 </body>
 </html>

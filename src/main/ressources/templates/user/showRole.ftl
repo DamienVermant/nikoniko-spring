@@ -13,34 +13,34 @@
 </head>
 
 <body>
-<div class="container-fluid">
-    <div class="row-fluid">
-        <div class="col-lg-2">
-            <img class="logo" src="https://upload.wikimedia.org/wikipedia/fr/5/51/LOGO-CGI-1993-1998.svg">
-        </div>
-        <div class="col-lg-8">
-            <div class="title">Niko-Niko</div>
-        </div>
-        <div class="col-lg-2">
-            <div class="row-fluid">
-                <div class="col-lg-12">
-                    <div class="align">
-                        <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
-                        <button onclick="location.href='/menu'" class="home"> Menu </button>
-                        <button onclick="location.href='${back}'" class="return"> Retour </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-	<h1>Rôle(s) de l'utilisateur : ${page}  </h1>
+	<div class="container-fluid">
+	    <div class="row-fluid">
+	        <div class="col-lg-2">
+	            <img class="logo" src="https://upload.wikimedia.org/wikipedia/fr/5/51/LOGO-CGI-1993-1998.svg">
+	        </div>
+	        <div class="col-lg-8">
+	            <div class="title">Niko-Niko</div>
+	        </div>
+	        <div class="col-lg-2">
+	            <div class="row-fluid">
+	                <div class="col-lg-12">
+	                    <div class="align">
+	                        <button onclick="location.href='/menu'" class="logout"> Menu </button>
+	                        <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
+	                        <button onclick="location.href='${back}'" class="logout"> Retour </button>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	<h1>Role(s) de ${page}  </h1>
 		<table class="table table-bordered table-hover">
 			<tr>
 				<#list items as item>
 					<#list sortedFields as field>
 						<#list item?keys as key>
-							<#if key == field>
+							<#if key == field && key != "id">
 								<th>${key}</th>
 							</#if>
 						</#list>
@@ -52,7 +52,7 @@
 				<tr>
 					<#list sortedFields as field>
 						<#list item?keys as key>
-							<#if key == field>
+							<#if key == field && key != "id">
 								<#if item[key]?is_boolean>
 									<td>${item[key]?c}</td>
 								<#elseif item[key]?is_date_like>
@@ -74,6 +74,6 @@
 				</tr>
 			</#list>
 		</table>
-	<a href = "${add}"> Ajouter un rôle </a> <br>
+	<a class ="btn btn-default" href = "${add}"> Ajouter un role </a> <br>
 </body>
 </html>

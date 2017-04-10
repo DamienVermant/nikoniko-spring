@@ -154,7 +154,7 @@ public class UserController extends ViewBaseController<User> {
 			 idverticale = userBuffer.getVerticale().getId();
 		}
 
-		model.addAttribute("page",  "USER : " + userBuffer.getRegistrationcgi());
+		model.addAttribute("page",  "User : " + userBuffer.getRegistrationcgi());
 		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
 		model.addAttribute("item",DumpFields.fielder(super.getItem(idUser)));
 		model.addAttribute("show_nikonikos", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_NIKONIKO);
@@ -260,6 +260,7 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("mood" , UtilsFunctions.getUserLastMood(userBuffer, userCrud, nikonikoCrud));
 		model.addAttribute("page",user.getFirstname() + " " + PathFinder.CREATE_ACTION.toUpperCase());
 		model.addAttribute("sortedFields",NikoNiko.FIELDS);
+		model.addAttribute("textAreaOption","");
 		model.addAttribute("item",DumpFields.createContentsEmpty(niko.getClass()));
 		model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_PATH);
 		//model.addAttribute("textAreaOption","");

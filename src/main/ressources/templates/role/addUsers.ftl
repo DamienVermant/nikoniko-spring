@@ -13,6 +13,7 @@
 </head>
 
 <body>
+<<<<<<< HEAD
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="col-lg-2">
@@ -34,7 +35,7 @@
         </div>
     </div>
 </div>
-	<h1> Ajout(s) d'utilisateur pour le rôle : ${page}  </h1>
+	<h1> Utilisateurs à ajouter au role : ${page}  </h1>
 		<form action = "" method = "POST">
 			<#include "../includable/security/securityToken.ftl">
 			<input type="text" class="search" onkeyup="myFunction()" name="name" placeholder="Search for registration" title="Type in a name">
@@ -45,7 +46,7 @@
 				<#list items as item>
 					<#list sortedFields as field>
 						<#list item?keys as key>
-							<#if key == field>
+							<#if key == field && key != "id" && key!= "password">
 								<th>${key}</th>
 							</#if>
 						</#list>
@@ -57,7 +58,7 @@
 				<tr>
 					<#list sortedFields as field>
 						<#list item?keys as key>
-							<#if key == field>
+							<#if key == field && key != "id" && key!= "password">
 								<#if item[key]?is_boolean>
 									<td>${item[key]?c}</td>
 								<#elseif item[key]?is_date_like>
