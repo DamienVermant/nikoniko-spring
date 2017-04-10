@@ -42,7 +42,7 @@
 				<#list items as item>
 					<#list sortedFields as field>
 						<#list item?keys as key>
-							<#if key == field>
+							<#if key == field && key != "id">
 								<#if key == "login" || key == "password" || key== "id">
 								<#else>
 								<th>${key}</th>
@@ -57,7 +57,7 @@
 				<tr>
 					<#list sortedFields as field>
 						<#list item?keys as key>
-							<#if key == field>
+							<#if key == field && key != "id">
 								<#if key == "login" || key == "password" || key== "id">
 								<#else>
 									<#if item[key]?is_boolean>

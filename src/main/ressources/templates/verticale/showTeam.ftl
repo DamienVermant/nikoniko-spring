@@ -42,7 +42,7 @@
 				<#list items as item>
 					<#list sortedFields as field>
 						<#list item?keys as key>
-							<#if key == field>
+							<#if key == field && key != "id">
 								<th>${key}</th>
 							</#if>
 						</#list>
@@ -54,7 +54,7 @@
 				<tr>
 					<#list sortedFields as field>
 						<#list item?keys as key>
-							<#if key == field>
+							<#if key == field && key != "id">
 								<#if item[key]?is_boolean>
 									<td>${item[key]?c}</td>
 								<#elseif item[key]?is_date_like>
