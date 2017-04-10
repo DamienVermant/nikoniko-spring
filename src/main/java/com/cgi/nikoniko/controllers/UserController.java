@@ -54,7 +54,7 @@ public class UserController extends ViewBaseController<User> {
 
 	public LocalDate TODAY_DATE = new LocalDate();
 
-	
+
 /////////////////// NECESSARY CRUD /////////////////////////////////
 
 
@@ -260,10 +260,8 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("mood" , UtilsFunctions.getUserLastMood(userBuffer, userCrud, nikonikoCrud));
 		model.addAttribute("page",user.getFirstname() + " " + PathFinder.CREATE_ACTION.toUpperCase());
 		model.addAttribute("sortedFields",NikoNiko.FIELDS);
-		model.addAttribute("textAreaOption","");
 		model.addAttribute("item",DumpFields.createContentsEmpty(niko.getClass()));
 		model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_PATH);
-		//model.addAttribute("textAreaOption","");
 		model.addAttribute("create_item", PathFinder.CREATE_ACTION);
 
 		return "nikoniko/addNikoNiko";
@@ -438,7 +436,7 @@ public class UserController extends ViewBaseController<User> {
 
 		Object userBuffer = new Object();
 		userBuffer = userCrud.findOne(idUser);
-		
+
 		model.addAttribute("items", DumpFields.listFielder((ArrayList<Team>) teamCrud.findAll()));
 		model.addAttribute("sortedFields",Team.FIELDS);
 		model.addAttribute("page", ((User) userBuffer).getRegistrationcgi());
