@@ -117,20 +117,21 @@
 						</td>
 						<td>
 
-							<#if item["id"]??>
+							<#if item["id"]?? && item["id"]!=1>
 								<form action = "${item["id"]}/${go_delete}" method = "POST">
 								<#include "../includable/security/securityToken.ftl">
 									<input type="hidden" name = "id" value = "${item["id"]}">
 									<input type="submit" value="Delete">
 								</form>
 
-							<#else>
+							<#elseif item["id"]!=1>
 								<form action = "${item["idLeft"]}/${item["idRight"]}/${go_delete}" method = "POST">
 								<#include "../includable/security/securityToken.ftl">
 									<input type="hidden" name = "idl" value = "${item["idLeft"]}">
 									<input type="hidden" name = "idr" value = "${item["idRight"]}">
 									<input type="submit" value="Delete">
 								</form>
+
 							</#if>
 						</td>
 					</#if>
