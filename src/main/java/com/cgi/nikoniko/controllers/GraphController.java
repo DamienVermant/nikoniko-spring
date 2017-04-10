@@ -76,9 +76,9 @@ public class GraphController extends ViewBaseController<User>{
 	}
 
 
-////////////////////////////FIND USER'S ROLES //////////////////////////////////////////////	
-	
-	
+////////////////////////////FIND USER'S ROLES //////////////////////////////////////////////
+
+
 	/**
 	 * FIND USER'S ROLES
 	 * @param idUser
@@ -116,12 +116,12 @@ public class GraphController extends ViewBaseController<User>{
 			role = "employee";
 		}
 		return role;
-	}	
-	
+	}
+
 
 //////////////////////////// FIND USERS AND TEAM //////////////////////////////////////////////
-	
-	
+
+
 	/**
 	 * FIND ALL TEAMS OF USER
 	 * @param idValue
@@ -164,12 +164,12 @@ public class GraphController extends ViewBaseController<User>{
 		return userList;
 	}
 
-	
+
 //////////////////////////// FIND NIKONIKOS //////////////////////////////////////////////
-	
+
 
 	/**
-	 * FIND ALL NIKONIKO OF A TEAM (BY ALL USER'S TEAM) 
+	 * FIND ALL NIKONIKO OF A TEAM (BY ALL USER'S TEAM)
 	 * @param idTeam
 	 * @return
 	 */
@@ -191,7 +191,7 @@ public class GraphController extends ViewBaseController<User>{
 		return nikonikos;
 	}
 
-	
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
@@ -726,14 +726,14 @@ public class GraphController extends ViewBaseController<User>{
 
 		return monthName;
 	}
-	
+
 	/**
 	 * Recupère les nikonikos par rapport à une verticale
 	 * @param idVert
 	 * @return
 	 */
 	public List<NikoNiko> findNikoNikosOfAVerticaleList(Long idVert){
-
+		List<NikoNiko> tempVertNikonikos = new ArrayList<NikoNiko>();
 		List<NikoNiko> vertNikonikos = new ArrayList<NikoNiko>();
 
 		List<Team> vertTeams = new ArrayList<Team>();
@@ -742,7 +742,12 @@ public class GraphController extends ViewBaseController<User>{
 			vertTeams.addAll(verticaleCrud.findOne(idVert).getTeams());
 
 			for (Team team : vertTeams) {
-				vertNikonikos.addAll(findNikoNikosOfATeam(team.getId()));
+				tempVertNikonikos.addAll(findNikoNikosOfATeam(team.getId()));
+			}
+		}
+		for (NikoNiko niko : tempVertNikonikos) {
+			if (!vertNikonikos.contains(niko)) {
+				vertNikonikos.add(niko);
 			}
 		}
 		return vertNikonikos;
@@ -771,7 +776,7 @@ public class GraphController extends ViewBaseController<User>{
 		}
 		return vertNikonikos;
 	}
-	
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
@@ -782,8 +787,8 @@ public class GraphController extends ViewBaseController<User>{
 */
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	
+
+
 	/**
 	 * CALENDAR OF A VERTICALE
 	 * @param model	:
@@ -1245,7 +1250,7 @@ public class GraphController extends ViewBaseController<User>{
 
 		return "nikoniko/teamCalendarView";
 	}
-	
+
 	/**
 	 * CALENDAR OF USER
 	 * @param model	:
@@ -1465,5 +1470,5 @@ public class GraphController extends ViewBaseController<User>{
 		return "nikoniko/userCalendarView";
 	}
 
-	
+
 }
