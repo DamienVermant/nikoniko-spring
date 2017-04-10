@@ -733,6 +733,8 @@ public class GraphController extends ViewBaseController<User>{
 	 * @return
 	 */
 	public List<NikoNiko> findNikoNikosOfAVerticaleList(Long idVert){
+		
+		ArrayList<NikoNiko> tempVertNikonikos = new ArrayList<NikoNiko>();
 
 		List<NikoNiko> vertNikonikos = new ArrayList<NikoNiko>();
 
@@ -742,9 +744,15 @@ public class GraphController extends ViewBaseController<User>{
 			vertTeams.addAll(verticaleCrud.findOne(idVert).getTeams());
 
 			for (Team team : vertTeams) {
-				vertNikonikos.addAll(findNikoNikosOfATeam(team.getId()));
+				tempVertNikonikos.addAll(findNikoNikosOfATeam(team.getId()));
 			}
 		}
+		for (NikoNiko niko : tempVertNikonikos) {
+			if (!vertNikonikos.contains(niko)) {
+				vertNikonikos.add(niko);
+			}
+		}
+		
 		return vertNikonikos;
 	}
 

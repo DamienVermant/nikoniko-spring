@@ -25,12 +25,12 @@
 	            <div class="row-fluid">
 	                <div class="col-lg-12">
 	                    <div class="align">
-	                        <button onclick="location.href='/menu'" class="logout"> Menu </button>
 	                        <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
+	                        <button onclick="location.href='/menu'" class="home"> Menu </button>
 	                        <#if item["id"]??>
-	                            <button onclick="location.href='../'" class="logout"> Retour </button>
+	                            <button onclick="location.href='../'" class="return"> Retour </button>
 	                        <#else>
-	                            <button onclick="location.href='../..'" class="logout"> Retour </button>
+	                            <button onclick="location.href='../..'" class="return"> Retour </button>
 	                        </#if>
 	                    </div>
 	                </div>
