@@ -13,7 +13,6 @@
 </head>
 
 <body>
-<<<<<<< HEAD
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="col-lg-2">

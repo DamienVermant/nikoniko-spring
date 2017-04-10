@@ -750,6 +750,7 @@ public class GraphController extends ViewBaseController<User>{
 				vertNikonikos.add(niko);
 			}
 		}
+
 		return vertNikonikos;
 	}
 

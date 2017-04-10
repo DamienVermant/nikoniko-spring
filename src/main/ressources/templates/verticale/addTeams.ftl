@@ -25,9 +25,9 @@
 	            <div class="row-fluid">
 	                <div class="col-lg-12">
 	                    <div class="align">
-	                        <button onclick="location.href='/menu'" class="logout"> Home </button>
 	                        <button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
-	                        <button onclick="location.href='${back}'" class="logout"> Retour </button>
+	                        <button onclick="location.href='/menu'" class="home"> Menu </button>
+	                        <button onclick="location.href='${back}'" class="return"> Retour </button>
 	                    </div>
 	                </div>
 	            </div>
