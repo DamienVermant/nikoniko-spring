@@ -24,25 +24,25 @@
 
 
 <!-- HEAD -->
-<div class="container-fluid">
-	<div class="row-fluid">
-		<div class="col-lg-2">
-			<img class="logo" src="https://upload.wikimedia.org/wikipedia/fr/5/51/LOGO-CGI-1993-1998.svg">
-		</div>
-		<div class="col-lg-8">
-			<div class="title">Niko-Niko</div>
-		</div>
-		<div class="col-lg-2">
-			<div class="row-fluid">
-				<div class="col-lg-12">
-					<div class="align">
-						<button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="col-lg-2">
+				<img class="logo" src="https://upload.wikimedia.org/wikipedia/fr/5/51/LOGO-CGI-1993-1998.svg">
+			</div>
+			<div class="col-lg-8">
+				<div class="title">Niko-Niko</div>
+			</div>
+			<div class="col-lg-2">
+				<div class="row-fluid">
+					<div class="col-lg-12">
+						<div class="align">
+							<button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
 
 <hr>
 

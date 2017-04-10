@@ -2,6 +2,7 @@ package com.cgi.nikoniko.controllers;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +12,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.cgi.nikoniko.controllers.PathClass.PathFinder;
 import com.cgi.nikoniko.controllers.base.view.ViewBaseController;
 import com.cgi.nikoniko.models.tables.RoleCGI;
+import com.cgi.nikoniko.models.tables.Team;
 import com.cgi.nikoniko.models.tables.User;
 import com.cgi.nikoniko.dao.IFunctionCGICrudRepository;
 import com.cgi.nikoniko.dao.IRoleCrudRepository;
@@ -22,7 +25,9 @@ import com.cgi.nikoniko.dao.IRoleHasFunctionCrudRepository;
 import com.cgi.nikoniko.dao.IUserCrudRepository;
 import com.cgi.nikoniko.dao.IUserHasRoleCrudRepository;
 import com.cgi.nikoniko.models.association.UserHasRole;
+import com.cgi.nikoniko.models.association.UserHasTeam;
 import com.cgi.nikoniko.utils.DumpFields;
+import com.cgi.nikoniko.utils.UtilsFunctions;
 
 @Controller
 @RequestMapping(RoleCGIController.BASE_URL)
@@ -85,8 +90,14 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 
 		RoleCGI roleBuffer = new RoleCGI();
 		roleBuffer= roleCrud.findOne(idRole);
+		
+		if ((this.setUsersForRoleGet(idRole)).size() < LENGHT_VIEW) {
+			model.addAttribute("items",(DumpFields.listFielder(this.setUsersForRoleGet(idRole))));
+		}else{
+			model.addAttribute("items",DumpFields.listFielder((this.setUsersForRoleGet(idRole)).subList(0, LENGHT_VIEW)));
+		}
 
-		model.addAttribute("items", DumpFields.listFielder(this.setUsersForRoleGet(idRole)));
+		//model.addAttribute("items", DumpFields.listFielder(this.setUsersForRoleGet(idRole)));
 		model.addAttribute("sortedFields",User.FIELDS);
 		model.addAttribute("page", ((RoleCGI) roleBuffer).getName());
 		model.addAttribute("show_users", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_USERS);
@@ -123,12 +134,18 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 	 */
 	@Secured({"ROLE_ADMIN"})
 	@RequestMapping(path = "{idRole}" + PathFinder.PATH + PathFinder.ADD_USER, method = RequestMethod.GET)
-	public <T> String addUsersGet(Model model, @PathVariable Long idRole) {
+	public String addUsersGet(Model model, @PathVariable Long idRole) {
 
 		Object roleBuffer = new Object();
 		roleBuffer = roleCrud.findOne(idRole);
+		
+		if (((ArrayList<User>) userCrud.findAll()).size() < LENGHT_VIEW) {
+			model.addAttribute("items",DumpFields.listFielder(DumpFields.listFielder((ArrayList<User>) userCrud.findAll())));
+		}else{
+			model.addAttribute("items",DumpFields.listFielder(((ArrayList<User>) userCrud.findAll()).subList(0, LENGHT_VIEW)));
+		}
 
-		model.addAttribute("items", DumpFields.listFielder((ArrayList<User>) userCrud.findAll()));
+		//model.addAttribute("items", DumpFields.listFielder((ArrayList<User>) userCrud.findAll()));
 		model.addAttribute("sortedFields",User.FIELDS);
 		model.addAttribute("page", ((RoleCGI) roleBuffer).getName());
 		model.addAttribute("go_show", PathFinder.SHOW_ACTION);
@@ -162,5 +179,74 @@ public class RoleCGIController extends ViewBaseController<RoleCGI> {
 
 		return userList;
 	}
+
+	
+	/**
+	 *
+	 * ADD USER FOR CURRENT TEAM
+	 * @param model
+	 * @param idTeam
+	 * @param idUser
+	 * @return
+	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP"})
+	@RequestMapping(path = "{idRole}" + PathFinder.PATH + PathFinder.ADD_USER, params = "idUser", method = RequestMethod.POST)
+	public String addUsersPost(Model model, @PathVariable Long idRole, @RequestParam Long idUser) {
+		return setUsersForRolePost(idRole, idUser);
+	}
+
+	/**
+	 * FUNCTION THAT SET NEW USER IN ROLE (JUST AFFECT A USER ALREADY CREATE)
+	 * @param idTeam
+	 * @param idUser
+	 * @return
+	 */
+	public String setUsersForRolePost(Long idRole,Long idUser){
+
+		String redirect = PathFinder.REDIRECT + PathFinder.PATH + BASE_ROLE + PathFinder.PATH + idRole + PathFinder.PATH + PathFinder.SHOW_USERS;
+
+		RoleCGI role = new RoleCGI();
+		role = roleCrud.findOne(idRole);
+
+		User user = new User();
+		user = userCrud.findOne(idUser);
+		
+		
+		UserHasRole userHasRoleBuffer = new UserHasRole(user, role);
+		userRoleCrud.save(userHasRoleBuffer);
+
+		return redirect;
+
+	}
+
+	
+	/**
+	 * LIST USER METHOD POST
+	 * @param model
+	 * @param name
+	 * @return
+	 */
+	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE"})
+	@RequestMapping(path = "{idRole}" + PathFinder.PATH + PathFinder.ADD_USER, params = "name", method = RequestMethod.POST)
+	public String showUsers(Model model,@RequestParam String name){
+
+		if (name == "") {
+			return PathFinder.REDIRECT + PathFinder.ADD_USER;
+			}
+
+		model.addAttribute("model", "user");
+		model.addAttribute("page",this.baseName);
+		model.addAttribute("sortedFields",User.FIELDS);
+		model.addAttribute("items",UtilsFunctions.searchUser(name, userCrud));
+		model.addAttribute("go_show", PathFinder.SHOW_ACTION);
+		model.addAttribute("go_create", PathFinder.CREATE_ACTION);
+		model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
+		model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_USERS);
+
+		return BASE_ROLE + PathFinder.PATH + PathFinder.ADD_USER;
+
+	}
+
+
 
 }

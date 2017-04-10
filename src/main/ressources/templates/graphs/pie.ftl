@@ -7,11 +7,6 @@
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
-
-
-    <!-- Redirection ???? -->
-    <link rel="stylesheet" href="menu/">
-
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
@@ -110,7 +105,7 @@
                 <div class="alignleft">
                 <#if role != "admin">
 	                <button onclick="location.href='/graph/nikoniko/month'" class="resultsteam"> Calendrier </button>
-	                <button onclick="location.href='/graph/nikonikovert/1/month'" class="resultsteam"> Calendrier verticale </button>
+	                <button onclick="location.href='/graph/nikonikovert/${idVert}/month'" class="resultsteam"> Calendrier verticale </button>
                 </#if>
                 </div>
             </div>

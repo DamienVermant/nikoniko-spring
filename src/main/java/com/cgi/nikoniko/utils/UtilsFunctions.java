@@ -1,7 +1,9 @@
 package com.cgi.nikoniko.utils;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.joda.time.LocalDate;
 import org.springframework.security.core.Authentication;
@@ -9,16 +11,19 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.cgi.nikoniko.controllers.PathClass.PathFinder;
 import com.cgi.nikoniko.dao.INikoNikoCrudRepository;
+import com.cgi.nikoniko.dao.IRoleCrudRepository;
 import com.cgi.nikoniko.dao.ITeamCrudRepository;
 import com.cgi.nikoniko.dao.IUserCrudRepository;
+import com.cgi.nikoniko.dao.IUserHasRoleCrudRepository;
 import com.cgi.nikoniko.models.tables.NikoNiko;
+import com.cgi.nikoniko.models.tables.RoleCGI;
 import com.cgi.nikoniko.models.tables.Team;
 import com.cgi.nikoniko.models.tables.User;
 
 public abstract class UtilsFunctions {
 	
 	
-	public final static LocalDate TODAY_DATE = new LocalDate();
+public static LocalDate TODAY_DATE = new LocalDate();
 	
 	
 /////////////////// UTILS FOR THE VOTE /////////////////////////////////
@@ -58,7 +63,7 @@ public abstract class UtilsFunctions {
 	}
 	
 	/**
-	 * FUNCTION THAT CHECK NIKONIKO DATE FOR UPDATE OR NEW
+	 * FUNCTION THAT CHECK NIKONIKO DATE FOR UPDATE OR NEW. TRUE : UPDATE NIKONIKO, FALSE : NEW NIKONIKO
 	 * @param idUser
 	 * @return
 	 */
@@ -89,7 +94,7 @@ public abstract class UtilsFunctions {
 	}
 
 	/**
-	 * GET LAST NIKONIKO ENTER BY USER
+	 * GET LAST MOOD ENTER BY USER
 	 * @param idUser
 	 * @return
 	 */
@@ -110,10 +115,9 @@ public abstract class UtilsFunctions {
 	}
 
 	/**
-	 * GET LAST-1 NIKONIKO USER AND CHECK IF THE MOOD IS NULL OR NOT
-	 * RETURN FALSE CAN'T UPDATE, TRUE UPDATE SECOND LAST
+	 * GET SECOND TO LAST NIKONIKO USER AND CHECK IF THE MOOD IS NULL OR NOT.FALSE : CAN'T UPDATE, TRUE : UPDATE SECOND LAST
 	 * @param idUser
-	 * @param userCrud2 
+	 * @param userCrud
 	 * @return
 	 */
 	public static Boolean getLastLastNikoNikoMood(Long idUser, IUserCrudRepository userCrud, INikoNikoCrudRepository nikoCrud){
@@ -142,7 +146,7 @@ public abstract class UtilsFunctions {
 	}
 	
 	/**
-	 * GET SECOND TO LAST NIKONIKO
+	 * GET SECOND TO LAST NIKONIKO IF EXIST AND MOOD != 0
 	 * @param idUser
 	 * @param userCrud
 	 * @param nikoCrud
@@ -162,23 +166,6 @@ public abstract class UtilsFunctions {
 		return null;	
 	}
 	
-	/**
-	 * RETURN USER FROM AUTHENTIFICATION
-	 * @return
-	 */
-	public static User getUserInformations(IUserCrudRepository userCrud){
-
-		String login = "";
-		User user = new User();
-
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-		login = auth.getName();
-		user = userCrud.findByLogin(login);
-
-		return user;
-	}
-
 	
 /////////////////// UTILS TO SEARCH /////////////////////////////////
 	
@@ -211,5 +198,51 @@ public abstract class UtilsFunctions {
 
 	}
 	
+	
+/////////////////// UTILS TO GET ROLES /////////////////////////////////
 
+	
+	/**
+	 * HAVE ALL ROLES ASSOCIATED TO A USER
+	 * @param idUser
+	 * @return
+	 */
+	public static ArrayList<RoleCGI> setRolesForUserGet(Long idUser, IUserHasRoleCrudRepository userRoleCrud, IRoleCrudRepository roleCrud) {
+
+		List<Long> ids = new ArrayList<Long>();
+		ArrayList<RoleCGI> roleList = new ArrayList<RoleCGI>();
+
+		List<BigInteger> idsBig = userRoleCrud.findAssociatedRole(idUser);
+
+		if (!idsBig.isEmpty()) {
+			for (BigInteger id : idsBig) {
+				ids.add(id.longValue());
+
+			}
+			roleList = (ArrayList<RoleCGI>) roleCrud.findAll(ids);
+		}
+
+		return roleList;
+	}
+	
+	
+/////////////////// UTILS TO GET USER'S INFORMATION /////////////////////////////////
+
+	
+	/**
+	 * RETURN USER FROM AUTHENTIFICATION
+	 * @return
+	 */
+	public static User getUserInformations(IUserCrudRepository userCrud){
+
+		String login = "";
+		User user = new User();
+
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+		login = auth.getName();
+		user = userCrud.findByLogin(login);
+
+		return user;
+	}
 }

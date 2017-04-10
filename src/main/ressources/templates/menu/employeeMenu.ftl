@@ -24,35 +24,33 @@
 
 </head>
 <body>
-
-<!-- HEAD -->
-<div class="container-fluid">
-	<div class="row-fluid">
-		<div class="col-lg-2">
-			<img class="logo" src="https://upload.wikimedia.org/wikipedia/fr/5/51/LOGO-CGI-1993-1998.svg">
-		</div>
-		<div class="col-lg-8">
-			<div class="title">Niko-Niko</div>
-		</div>
-		<div class="col-lg-2">
-			<div class="row-fluid">
-				<div class="col-lg-12">
-					<div class="align">
-					<button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
-					<#if roles == "chefProjet" >
-						<button onclick="location.href=''" class="password"> Préférences </button>
-					<#else>
-					</#if>
-					<#if mood != 0 && status == true>
-						<button onclick="location.href='${add_nikoniko}'" class="vote"> Modifier vote </button>
-					<#else>
-					</#if>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="col-lg-2">
+				<img class="logo" src="https://upload.wikimedia.org/wikipedia/fr/5/51/LOGO-CGI-1993-1998.svg">
+			</div>
+			<div class="col-lg-8">
+				<div class="title">Niko-Niko</div>
+			</div>
+			<div class="col-lg-2">
+				<div class="row-fluid">
+					<div class="col-lg-12">
+						<div class="align">
+						<button onclick="location.href='/logout' " class="logout"> Déconnexion </button>
+						<#if roles == "chefProjet" >
+							<button onclick="location.href=''" class="password"> Préférences </button>
+						<#else>
+						</#if>
+						<#if mood != 0 && status == true>
+							<button onclick="location.href='${add_nikoniko}'" class="vote"> Modifier vote </button>
+						<#else>
+						</#if>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
 
 <hr>
 
@@ -77,19 +75,15 @@
 			</#if>
 
 			<h2> Niko Niko </h2>
-			<a class = "btn btn-default" href="${calendar}"> Voir calendrier <a> <br>
+			<a class = "btn btn-default" href="${myCalendar}"> Voir calendrier personnel <a> <br>
+			<a class = "btn btn-default" href="${myVertCalendar}"> Voir calendrier verticale <a> <br>
 			<a class = "btn btn-default"href="${pie_chart}"> Voir vos résultats <a> <br>
 			<#if mood == 0 || status == false>
-					<a class = "btn btn-default" href="${add_nikoniko}"> Pas de vote enregistré... On vote ? </a>
-				<#if lastNiko == true>
-					Attention : Si vous votez pour ajourd'hui, vous ne pourrez plus voter pour la veille <br>
-				<#else>
-					<br>
-				</#if>
+					<a class = "btn btn-default" href="${add_nikoniko}"> Pas de vote enregistré... On vote ? </a> <br>
 			<#else>
 			</#if>
 			<#if lastNiko == true>
-			 	- <a href="${add_last}"> Voter pour la vielle ? </a>
+			 	<a class ="btn btn-default" href="${add_last}"> Voter pour la veille ? </a>
 
 			<#else>
 			</#if>

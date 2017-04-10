@@ -51,13 +51,10 @@ public class UserController extends ViewBaseController<User> {
 
 	public final static String BASE_USER = "user";
 	public final static String BASE_URL = PathFinder.PATH + BASE_USER;
-	public final static double TIME = 0.999999;//can't use 1 due to double type
 
-	//TODO : ce n'est pas une variable statique!!!!
-	public final static LocalDate TODAY_DATE = new LocalDate();
+	public LocalDate TODAY_DATE = new LocalDate();
 
-
-
+	
 /////////////////// NECESSARY CRUD /////////////////////////////////
 
 
@@ -91,7 +88,6 @@ public class UserController extends ViewBaseController<User> {
 	*/
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 	/**
 	 * LIST USER METHOD POST
@@ -158,7 +154,7 @@ public class UserController extends ViewBaseController<User> {
 			 idverticale = userBuffer.getVerticale().getId();
 		}
 
-		model.addAttribute("page",  "USER : " + userBuffer.getRegistrationcgi());
+		model.addAttribute("page",  "User : " + userBuffer.getRegistrationcgi());
 		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
 		model.addAttribute("item",DumpFields.fielder(super.getItem(idUser)));
 		model.addAttribute("show_nikonikos", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_NIKONIKO);
@@ -267,6 +263,7 @@ public class UserController extends ViewBaseController<User> {
 		model.addAttribute("textAreaOption","");
 		model.addAttribute("item",DumpFields.createContentsEmpty(niko.getClass()));
 		model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_PATH);
+		//model.addAttribute("textAreaOption","");
 		model.addAttribute("create_item", PathFinder.CREATE_ACTION);
 
 		return "nikoniko/addNikoNiko";
@@ -441,6 +438,7 @@ public class UserController extends ViewBaseController<User> {
 
 		Object userBuffer = new Object();
 		userBuffer = userCrud.findOne(idUser);
+		
 		model.addAttribute("items", DumpFields.listFielder((ArrayList<Team>) teamCrud.findAll()));
 		model.addAttribute("sortedFields",Team.FIELDS);
 		model.addAttribute("page", ((User) userBuffer).getRegistrationcgi());

@@ -29,6 +29,7 @@ import com.cgi.nikoniko.models.tables.User;
 import com.cgi.nikoniko.models.tables.Verticale;
 import com.cgi.nikoniko.models.association.base.AssociationItemId;
 import com.cgi.nikoniko.utils.DumpFields;
+import com.cgi.nikoniko.utils.UtilsFunctions;
 
 @Controller
 @RequestMapping(TeamController.BASE_URL)
@@ -38,7 +39,7 @@ public class TeamController extends ViewBaseController<Team> {
 
 	public final static String BASE_TEAM = "team";
 	public final static String BASE_URL = PathFinder.PATH + BASE_TEAM;
-
+	
 /////////////////// ALL CRUD /////////////////////////////////
 
 	@Autowired
@@ -70,7 +71,7 @@ public class TeamController extends ViewBaseController<Team> {
     public String showTeams(Model model,String name){
 
         model.addAttribute("model", "team");
-        model.addAttribute("page",this.baseName + " " + PathFinder.LIST_ACTION.toUpperCase());
+        model.addAttribute("page",this.baseName);
         model.addAttribute("sortedFields",Team.FIELDS);
         model.addAttribute("items",DumpFields.listFielder(teamCrud.getTeams(name)));
         model.addAttribute("go_show", PathFinder.SHOW_ACTION);
@@ -100,7 +101,7 @@ public class TeamController extends ViewBaseController<Team> {
 			teamCrud.save(teamBuffer);
 			}
 
-		model.addAttribute("page","TEAM : " + teamBuffer.getName());
+		model.addAttribute("page","Equipe : " + teamBuffer.getName());
 		model.addAttribute("sortedFields",DumpFields.createContentsEmpty(super.getClazz()).fields);
 		model.addAttribute("item",DumpFields.fielder(super.getItem(id)));
 		model.addAttribute("show_users", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_USERS);
@@ -125,7 +126,7 @@ public class TeamController extends ViewBaseController<Team> {
 
 
 	/**
-	 * RELATIONS (TEAM HAS USER)
+	 * SHOW ALL USERS RELATED TO TEAM
 	 * @param model
 	 * @param id
 	 * @return
@@ -137,8 +138,13 @@ public class TeamController extends ViewBaseController<Team> {
 		Team teamBuffer = new Team();
 		teamBuffer = teamCrud.findOne(idTeam);
 
-		//model.addAttribute("items", DumpFields.listFielder(this.setUsersForTeamGet(id)));
-		model.addAttribute("items",this.UserInTeam(idTeam));
+		if (this.UserInTeam(idTeam).size() < LENGHT_VIEW) {
+			model.addAttribute("items",this.UserInTeam(idTeam));
+		}else{
+			model.addAttribute("items",this.UserInTeam(idTeam).subList(0, LENGHT_VIEW));
+		}
+		
+		//model.addAttribute("items",this.UserInTeam(idTeam));
 		model.addAttribute("sortedFields",User.FIELDS);
 		model.addAttribute("page", ((Team) teamBuffer).getName());
 		model.addAttribute("go_show", PathFinder.SHOW_ACTION);
@@ -173,10 +179,16 @@ public class TeamController extends ViewBaseController<Team> {
 
 		Object teamBuffer = new Object();
 		teamBuffer = teamCrud.findOne(idTeam);
+		
+		ArrayList<User> userList = userCrud.getAssociatedUsersForTeam(idTeam);
+		
+		if (userList.size() < LENGHT_VIEW) {
+			model.addAttribute("items",(DumpFields.listFielder(userList)));
+		}else{
+			model.addAttribute("items",DumpFields.listFielder(userList.subList(0, LENGHT_VIEW)));
+		}
 
-		ArrayList<User> userList = new ArrayList<User>();
-
-		model.addAttribute("items", DumpFields.listFielder(userList));
+		//model.addAttribute("items", DumpFields.listFielder(userList));
 		model.addAttribute("sortedFields",User.FIELDS);
 		model.addAttribute("page", ((Team) teamBuffer).getName());
 		model.addAttribute("go_show", PathFinder.SHOW_ACTION);
@@ -213,31 +225,21 @@ public class TeamController extends ViewBaseController<Team> {
 	public String addVerticalForTeamPOST(Model model,@RequestParam String name , @PathVariable Long idTeam){
 
 		Team teamBuffer = teamCrud.findOne(idTeam);
+		
+		if (name == "") {
+			return PathFinder.REDIRECT + PathFinder.ADD_USER;
+			}
 
 		model.addAttribute("model", "team");
 		model.addAttribute("page", teamBuffer.getName());
 		model.addAttribute("sortedFields",User.FIELDS);
-		model.addAttribute("items",DumpFields.listFielder(this.searchUser(name)));
+		model.addAttribute("items",DumpFields.listFielder(UtilsFunctions.searchUser(name, userCrud)));
 		model.addAttribute("go_show", PathFinder.SHOW_ACTION);
 		model.addAttribute("go_create", PathFinder.CREATE_ACTION);
 		model.addAttribute("go_delete", PathFinder.DELETE_ACTION);
 		model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_USERS);
 
 		return BASE_TEAM + PathFinder.PATH + PathFinder.ADD_USER;
-
-	}
-
-	/**
-	 * FIND A SPECIFIC USER
-	 * @param name
-	 * @return
-	 */
-	public ArrayList<User> searchUser(String name){
-
-		ArrayList<User> userList = new ArrayList<User>();
-		userList = userCrud.getUsers(name);
-
-		return userList;
 
 	}
 
@@ -384,12 +386,12 @@ public class TeamController extends ViewBaseController<Team> {
 
 		model.addAttribute("page", teamBuffer.getName());
 		model.addAttribute("sortedFields", Verticale.FIELDS);
-		model.addAttribute("items", this.getVerticalForUser(idTeam));
+		model.addAttribute("items", this.getVerticalForTeam(idTeam));
 		model.addAttribute("show_verticale", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_VERTICAL);
 		model.addAttribute("back", PathFinder.DOT + PathFinder.PATH + PathFinder.SHOW_PATH);
 		model.addAttribute("add", "addVerticale");
 
-		return BASE_TEAM + PathFinder.PATH + PathFinder.SHOW_VERTICAL;
+		return BASE_TEAM + PathFinder.PATH + "showVerticale";
 
 	}
 
@@ -398,7 +400,7 @@ public class TeamController extends ViewBaseController<Team> {
 	 * @param idTeam
 	 * @return
 	 */
-	public ArrayList<Verticale> getVerticalForUser(Long idTeam) {
+	public ArrayList<Verticale> getVerticalForTeam(Long idTeam) {
 		ArrayList<Verticale> verticaleList = new ArrayList<Verticale>();
 		Long idVerticale = teamCrud.getTeamVertical(idTeam);
 		verticaleList.add(verticaleCrud.findOne(idVerticale));

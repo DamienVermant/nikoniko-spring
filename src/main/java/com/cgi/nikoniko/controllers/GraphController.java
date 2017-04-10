@@ -37,6 +37,7 @@ import com.cgi.nikoniko.models.tables.NikoNiko;
 import com.cgi.nikoniko.models.tables.RoleCGI;
 import com.cgi.nikoniko.models.tables.Team;
 import com.cgi.nikoniko.models.tables.User;
+import com.cgi.nikoniko.utils.UtilsFunctions;
 
 @Controller
 @RequestMapping(GraphController.BASE_URL)
@@ -74,8 +75,55 @@ public class GraphController extends ViewBaseController<User>{
 		super(clazz, baseURL);
 	}
 
+
+////////////////////////////FIND USER'S ROLES //////////////////////////////////////////////	
+	
+	
 	/**
-	 * Récupère toutes les teams d'un utilisateur
+	 * FIND USER'S ROLES
+	 * @param idUser
+	 * @return
+	 */
+	public String testRole(Long idUser){
+
+		String role;
+
+		List<Long> ids = new ArrayList<Long>();
+		ArrayList<RoleCGI> roleList = new ArrayList<RoleCGI>();
+
+		List<BigInteger> idsBig = userRoleCrud.findAssociatedRole(idUser);
+
+		if (!idsBig.isEmpty()) {
+			for (BigInteger id : idsBig) {
+				ids.add(id.longValue());
+
+			}
+			roleList = (ArrayList<RoleCGI>) roleCrud.findAll(ids);
+		}
+
+		ArrayList<String> roleNames = new ArrayList<String>();
+		for (int i = 0; i <roleList.size(); i++) {
+			roleNames.add(roleList.get(i).getName());
+		}
+
+		if (roleNames.contains("ROLE_ADMIN")) {
+			role = "admin";
+		}
+		else if (roleNames.contains("ROLE_VP")) {
+			role = "vp";
+		}
+		else {
+			role = "employee";
+		}
+		return role;
+	}	
+	
+
+//////////////////////////// FIND USERS AND TEAM //////////////////////////////////////////////
+	
+	
+	/**
+	 * FIND ALL TEAMS OF USER
 	 * @param idValue
 	 * @return
 	 */
@@ -97,44 +145,53 @@ public class GraphController extends ViewBaseController<User>{
 	}
 
 	/**
-	 * recupère le dernier nikoniko d'un utilisateur
-	 * @param idUser
+	 * FIND ALL USERS OF A TEAM
+	 * @param idValue
 	 * @return
 	 */
-	public int getUserLastMood(Long idUser){
+	public ArrayList<User> findUsersOfATeam(Long idValue) {
 
-		int mood = 0;
+		List<Long> ids = new ArrayList<Long>();
+		ArrayList<User> userList = new ArrayList<User>();
+		List<BigInteger> idsBig = userTeamCrud.findAssociatedUser(idValue);
 
-		Long idMax = userCrud.getLastNikoNikoUser(idUser);
-
-		if (idMax == null) {
-			return mood;
+		if (!idsBig.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
+			for (BigInteger id : idsBig) {
+				ids.add(id.longValue());
+			}
+			userList = (ArrayList<User>) userCrud.findAll(ids);
 		}
-
-		else {
-			mood = nikonikoCrud.findOne(idMax).getMood();
-			return mood;
-		}
-
+		return userList;
 	}
+
+	
+//////////////////////////// FIND NIKONIKOS //////////////////////////////////////////////
+	
 
 	/**
-	 * RETURN USER FROM AUTHENTIFICATION
+	 * FIND ALL NIKONIKO OF A TEAM (BY ALL USER'S TEAM) 
+	 * @param idTeam
 	 * @return
 	 */
-	public User getUserInformations(){
+	public ArrayList<NikoNiko> findNikoNikosOfATeam(Long idTeam){
 
-		String login = "";
-		User user = new User();
+		ArrayList<User> usersOfTeam = findUsersOfATeam(idTeam);
 
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		ArrayList<NikoNiko> nikonikos = new ArrayList<NikoNiko>();
+		//Partie a externaliser en fonction findAllNikoNikoForAUser(idUser) => probablement deja existante
+		if (!usersOfTeam.isEmpty()) {
+			for (User user : usersOfTeam) {
+				if (!user.getNikoNikos().isEmpty()) {
+					nikonikos.addAll(user.getNikoNikos());
+				}
+			}
+		}
+		//fin de partie a externaliser
 
-		login = auth.getName();
-		user = userCrud.findByLogin(login);
-
-		return user;
+		return nikonikos;
 	}
 
+	
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
@@ -146,16 +203,6 @@ public class GraphController extends ViewBaseController<User>{
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/**
-*
-* GRAPH JUST ONE DAY
-*
-*
-*/
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * ALL NIKONIKO GRAPH FOR AN USER FROM TODAY
@@ -167,9 +214,9 @@ public class GraphController extends ViewBaseController<User>{
 	@RequestMapping(path = PathFinder.PATH + PathFinder.SHOW_GRAPH, method = RequestMethod.GET)
 	public String showPie(Model model) {
 
-		Long idUser = this.getUserInformations().getId();
+		Long idUser = UtilsFunctions.getUserInformations(userCrud).getId();
 		User user = super.getItem(idUser);
-		user.getRoles();
+//		user.getRoles();
 		Set<NikoNiko> niko =  user.getNikoNikos();
 		List<NikoNiko> listOfNiko = new ArrayList<NikoNiko>(niko);
 		List<NikoNiko> nikotoday = getNikoToday(listOfNiko);
@@ -194,9 +241,10 @@ public class GraphController extends ViewBaseController<User>{
 			}
 		}
 
+		model.addAttribute("idVert",user.getVerticale().getId());
 		model.addAttribute("title", "Mes votes d'aujourd'hui" );
 		model.addAttribute("role", role);
-		model.addAttribute("mood", this.getUserLastMood(userCrud.findByLogin(super.checkSession().getName()).getId()));
+		model.addAttribute("mood", UtilsFunctions.getUserLastMood(userCrud.findByLogin(super.checkSession().getName()).getId(), userCrud, nikonikoCrud));
 		model.addAttribute("good", good);
 		model.addAttribute("medium", medium);
 		model.addAttribute("bad", bad);
@@ -218,7 +266,7 @@ public class GraphController extends ViewBaseController<User>{
 	public String showPieWithDate(Model model, @PathVariable int year,
 								@PathVariable int month, @PathVariable int day) {
 
-		Long idUser = this.getUserInformations().getId();
+		Long idUser = UtilsFunctions.getUserInformations(userCrud).getId();
 		User user = super.getItem(idUser);
 		Set<NikoNiko> niko =  user.getNikoNikos();
 		List<NikoNiko> listOfNiko = new ArrayList<NikoNiko>(niko);
@@ -244,9 +292,10 @@ public class GraphController extends ViewBaseController<User>{
 			}
 		}
 
+		model.addAttribute("idVert",user.getVerticale().getId());
 		model.addAttribute("title", "Mes votes de la journée du : " + day + " " + getMonthLetter(month) + " " + year );
 		model.addAttribute("role", role);
-		model.addAttribute("mood", this.getUserLastMood(userCrud.findByLogin(super.checkSession().getName()).getId()));
+		model.addAttribute("mood", UtilsFunctions.getUserLastMood(userCrud.findByLogin(super.checkSession().getName()).getId(), userCrud, nikonikoCrud));
 		model.addAttribute("good", good);
 		model.addAttribute("medium", medium);
 		model.addAttribute("bad", bad);
@@ -267,7 +316,7 @@ public class GraphController extends ViewBaseController<User>{
 	@RequestMapping(path = PathFinder.SHOW_GRAPH_ALL, method = RequestMethod.GET)
 	public String showAllPie(Model model) {
 
-		Long idUser = this.getUserInformations().getId();
+		Long idUser = UtilsFunctions.getUserInformations(userCrud).getId();
 
 		List<NikoNiko> listOfNikoall = (List<NikoNiko>) nikonikoCrud.findAll();
 		List<NikoNiko> listOfNiko = getNikoToday(listOfNikoall);
@@ -297,6 +346,7 @@ public class GraphController extends ViewBaseController<User>{
 			}
 		}
 
+		model.addAttribute("idVert",UtilsFunctions.getUserInformations(userCrud).getVerticale().getId());
 		model.addAttribute("title", "Tous les votes d'aujourd'hui");
 		model.addAttribute("role", role);
 		model.addAttribute("mood", nbMood);
@@ -320,7 +370,7 @@ public class GraphController extends ViewBaseController<User>{
 	public String showAllPieWithDate(Model model, @PathVariable int year,
 			@PathVariable int month, @PathVariable int day) {
 
-		Long idUser = this.getUserInformations().getId();
+		Long idUser = UtilsFunctions.getUserInformations(userCrud).getId();
 
 		List<NikoNiko> listOfNikoall = (List<NikoNiko>) nikonikoCrud.findAll();
 		List<NikoNiko> listOfNiko = getNikoPreciseDate(listOfNikoall, year, month, day);
@@ -350,6 +400,7 @@ public class GraphController extends ViewBaseController<User>{
 			}
 		}
 
+		model.addAttribute("idVert",UtilsFunctions.getUserInformations(userCrud).getVerticale().getId());
 		model.addAttribute("title", "Tous les votes de la journée du : " + day + " " + getMonthLetter(month) + " " + year);
 		model.addAttribute("role", role);
 		model.addAttribute("mood", nbMood);
@@ -372,7 +423,7 @@ public class GraphController extends ViewBaseController<User>{
 	@RequestMapping(path = PathFinder.SHOW_GRAPH_VERTICALE, method = RequestMethod.GET)
 	public String getNikoFromVerticale(Model model){
 
-		Long userId = this.getUserInformations().getId();
+		Long userId = UtilsFunctions.getUserInformations(userCrud).getId();
 		int nbMood = 0;
 		User user = super.getItem(userId);
 		Long verticaleId = user.getVerticale().getId();
@@ -403,6 +454,7 @@ public class GraphController extends ViewBaseController<User>{
 			}
 		}
 
+		model.addAttribute("idVert",user.getVerticale().getId());
 		model.addAttribute("title", "Tous les votes d'aujourd'hui pour la verticale : " + verticaleCrud.findOne(verticaleId).getName());
 		model.addAttribute("role", role);
 		model.addAttribute("mood", nbMood);
@@ -425,7 +477,7 @@ public class GraphController extends ViewBaseController<User>{
 	public String getNikoFromVerticaleWithDate(Model model, @PathVariable int year,
 			@PathVariable int month, @PathVariable int day){
 
-		Long userId = this.getUserInformations().getId();
+		Long userId = UtilsFunctions.getUserInformations(userCrud).getId();
 		int nbMood = 0;
 		User user = super.getItem(userId);
 		Long verticaleId = user.getVerticale().getId();
@@ -456,6 +508,7 @@ public class GraphController extends ViewBaseController<User>{
 			}
 		}
 
+		model.addAttribute("idVert",user.getVerticale().getId());
 		model.addAttribute("title", "Tous les votes du : " + day + " " + getMonthLetter(month) + " " + year + ", pour la verticale : " + verticaleCrud.findOne(verticaleId).getName());
 		model.addAttribute("role", role);
 		model.addAttribute("mood", nbMood);
@@ -481,7 +534,7 @@ public class GraphController extends ViewBaseController<User>{
 		ArrayList<Team> teamList = new ArrayList<Team>();
 		ArrayList<String> teamName = new ArrayList<String>();
 
-		Long userId = this.getUserInformations().getId();
+		Long userId = UtilsFunctions.getUserInformations(userCrud).getId();
 		teamList = findAllTeamsForUser(userId);
 		String role = testRole(userId);
 
@@ -524,6 +577,7 @@ public class GraphController extends ViewBaseController<User>{
 			}
 		}
 
+		model.addAttribute("idVert",UtilsFunctions.getUserInformations(userCrud).getVerticale().getId());
 		model.addAttribute("title", "Tous les votes d'aujourd'hui pour l'equipe : " + teamCrud.findOne(teamId).getName());
 		model.addAttribute("role", role);
 		model.addAttribute("nameteam", teamName);
@@ -553,7 +607,7 @@ public class GraphController extends ViewBaseController<User>{
 		ArrayList<Team> teamList = new ArrayList<Team>();
 		ArrayList<String> teamName = new ArrayList<String>();
 
-		Long userId = this.getUserInformations().getId();
+		Long userId = UtilsFunctions.getUserInformations(userCrud).getId();
 		teamList = findAllTeamsForUser(userId);
 		String role = testRole(userId);
 
@@ -596,6 +650,7 @@ public class GraphController extends ViewBaseController<User>{
 			}
 		}
 
+		model.addAttribute("idVert",UtilsFunctions.getUserInformations(userCrud).getVerticale().getId());
 		model.addAttribute("title", "Tous les votes du : " + day + " " + getMonthLetter(month) + " " + year + " pour l'equipe : " + teamCrud.findOne(teamId).getName());
 		model.addAttribute("role", role);
 		model.addAttribute("nameteam", teamName);
@@ -659,6 +714,11 @@ public class GraphController extends ViewBaseController<User>{
 	return niko;
 	}
 
+	/**
+	 * GET MONTH NAME
+	 * @param month
+	 * @return
+	 */
 	public String getMonthLetter (int month){
 
 		String monthNames[] = {"Janvier","Fevrier","Mars","Avril","Mai","Juin","Juillet","Aout","Septembre","Octobre","Novembre","Decembre"};
@@ -666,6 +726,7 @@ public class GraphController extends ViewBaseController<User>{
 
 		return monthName;
 	}
+	
 	/**
 	 * Recupère les nikonikos par rapport à une verticale
 	 * @param idVert
@@ -676,8 +737,6 @@ public class GraphController extends ViewBaseController<User>{
 		List<NikoNiko> vertNikonikos = new ArrayList<NikoNiko>();
 
 		List<Team> vertTeams = new ArrayList<Team>();
-
-		int nbMood = 0;
 
 		if (!verticaleCrud.findOne(idVert).getTeams().isEmpty()) {
 			vertTeams.addAll(verticaleCrud.findOne(idVert).getTeams());
@@ -690,71 +749,66 @@ public class GraphController extends ViewBaseController<User>{
 	}
 
 	/**
-	 * Recupère les roles d'un utilisateur
-	 * @param idUser
-	 * @return
+	 * SELECTION NIKONIKO PAR RAPPORT A UN ENSEMBLE (TEAM, VERTICALE, ETC...)
 	 */
-	public String testRole(Long idUser){
+	public ArrayList<NikoNiko> findNikoNikosOfAVerticale(Long idVert){
+		ArrayList<NikoNiko> tempVertNikonikos = new ArrayList<NikoNiko>();
+		ArrayList<NikoNiko> vertNikonikos = new ArrayList<NikoNiko>();
 
-		String role;
+		ArrayList<Team> vertTeams = new ArrayList<Team>();
 
-		List<Long> ids = new ArrayList<Long>();
-		ArrayList<RoleCGI> roleList = new ArrayList<RoleCGI>();
+		if (!verticaleCrud.findOne(idVert).getTeams().isEmpty()) {
+			vertTeams.addAll(verticaleCrud.findOne(idVert).getTeams());
 
-		List<BigInteger> idsBig = userRoleCrud.findAssociatedRole(idUser);
-
-		if (!idsBig.isEmpty()) {
-			for (BigInteger id : idsBig) {
-				ids.add(id.longValue());
-
+			for (Team team : vertTeams) {
+				tempVertNikonikos.addAll(findNikoNikosOfATeam(team.getId()));
 			}
-			roleList = (ArrayList<RoleCGI>) roleCrud.findAll(ids);
 		}
-
-		ArrayList<String> roleNames = new ArrayList<String>();
-		for (int i = 0; i <roleList.size(); i++) {
-			roleNames.add(roleList.get(i).getName());
+		for (NikoNiko niko : tempVertNikonikos) {
+			if (!vertNikonikos.contains(niko)) {
+				vertNikonikos.add(niko);
+			}
 		}
-
-		if (roleNames.contains("ROLE_ADMIN")) {
-			role = "admin";
-		}
-		else if (roleNames.contains("ROLE_VP")) {
-			role = "vp";
-		}
-		else {
-			role = "employee";
-		}
-		return role;
+		return vertNikonikos;
 	}
+	
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+/**
+*
+* CALENDAR GESTION
+*
+*
+*/
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	
 	/**
-	 *
+	 * CALENDAR OF A VERTICALE
 	 * @param model	:
+	 * @param idTeam: Id of the verticale
 	 * @param month	: Month number
 	 * @param year	: Year number
 	 * @param action: Used to select the month to show from the current one (previous or next)
 	 * @return 		: Calendar view of all nikonikos of a team shown per day for a given month
-	 * @throws IOException
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
-	@RequestMapping(path = "nikoniko"+ PathFinder.PATH + "month", method = RequestMethod.GET)
-	public String nikoNikoCalendar(Model model,
+	@RequestMapping(path = "nikonikovert" + PathFinder.PATH + "{idVert}"+ PathFinder.PATH + "month", method = RequestMethod.GET)
+	public String nikoNikoCalendar(Model model, @PathVariable Long idVert,
 			@RequestParam(defaultValue = "null") String month,
 			@RequestParam(defaultValue = "null") String year,
 			@RequestParam(defaultValue = "") String action,
 			HttpServletResponse response) throws IOException {
 
-		//TODO : Check if the calendar for this idUser can be see by the user of the current session
-		Long idUser = userCrud.findByLogin(super.checkSession().getName()).getId();
-
+		//TODO : Check if one or more team in this verticale have their visibility set to "off"
+		//		 if privacy "off", don't show these team in the view (do this in get niko for team)
 		try {
-			userCrud.findOne(idUser).getLogin();
+			verticaleCrud.findOne(idVert).getUsers();
 		} catch (Exception e) {
-			response.sendError(HttpStatus.BAD_REQUEST.value(),("This user doesn't exist!").toUpperCase());
+			response.sendError(HttpStatus.BAD_REQUEST.value(),("This verticale doesn't exist!").toUpperCase());
 			return "";
 		}
-
 		//##################################################################
 		//Initialisation
 		//##################################################################
@@ -780,9 +834,8 @@ public class GraphController extends ViewBaseController<User>{
 		nbWeeks.add(numberOfWeekInMonth);
 
 		ArrayList<Map<String,Object>> days = new ArrayList<Map<String,Object>>();
-		ArrayList<NikoNiko> nikos = new ArrayList<NikoNiko>();
 
-		nikos.addAll(userCrud.findOne(idUser).getNikoNikos());
+		ArrayList<NikoNiko> nikos = findNikoNikosOfAVerticale(idVert);
 
 		//###################################################################
 		//#Check if given requestPAram values of month and year are integers#
@@ -880,13 +933,26 @@ public class GraphController extends ViewBaseController<User>{
 			//fonction a importer
 			List<NikoNiko> nikostemp = getNikoPreciseDate((List<NikoNiko>)nikos,dateLocale.getYear(),dateLocale.getMonthOfYear(),i);
 
-			int nikoMood = 0;
+			int countNikosBad = 0;
+			int countNikosNeut = 0;
+			int countNikosGood = 0;
 
 			for (NikoNiko nikotemp : nikostemp) {
-				nikoMood = nikotemp.getMood();
+				if (nikotemp.getMood()==1) {
+					countNikosBad = countNikosBad+1;
+				}
+				if (nikotemp.getMood()==2) {
+					countNikosNeut = countNikosNeut+1;
+				}
+				if (nikotemp.getMood()==3) {
+					countNikosGood = countNikosGood+1;
+				}
 			}
 
-			days.get(i-1).put("nikoOfDay", nikoMood);
+			//Put niko stats here
+			days.get(i-1).put("nikoBad", countNikosBad);
+			days.get(i-1).put("nikoNeutral", countNikosNeut);
+			days.get(i-1).put("nikoGood", countNikosGood);
 
 			if (dateLocale.withDayOfMonth(i).getDayOfWeek()==1) {//if Monday
 				numberOfWeekInMonth++;
@@ -942,13 +1008,14 @@ public class GraphController extends ViewBaseController<User>{
 		model.addAttribute("monthToUse",monthToUse);
 		model.addAttribute("monthName",moisAnnee[monthToUse-1]);
 		model.addAttribute("nbweeks",nbWeeks);
+		model.addAttribute("verticaleName",verticaleCrud.findOne(idVert).getName());
 		model.addAttribute("back", PathFinder.PATH + PathFinder.MENU_PATH);
 
-		return "nikoniko/userCalendarView";
+		return "nikoniko/verticaleCalendarView";
 	}
 
 	/**
-	 *
+	 * CALENDAR OF A TEAM
 	 * @param model	:
 	 * @param idTeam: Id of the team
 	 * @param month	: Month number
@@ -1178,90 +1245,34 @@ public class GraphController extends ViewBaseController<User>{
 
 		return "nikoniko/teamCalendarView";
 	}
-
+	
 	/**
-	 * SELECTION NIKONIKO PAR RAPPORT A UN ENSEMBLE (TEAM, VERTICALE, ETC...)
-	 */
-
-	public ArrayList<NikoNiko> findNikoNikosOfAVerticale(Long idVert){
-		ArrayList<NikoNiko> tempVertNikonikos = new ArrayList<NikoNiko>();
-		ArrayList<NikoNiko> vertNikonikos = new ArrayList<NikoNiko>();
-
-		ArrayList<Team> vertTeams = new ArrayList<Team>();
-
-		if (!verticaleCrud.findOne(idVert).getTeams().isEmpty()) {
-			vertTeams.addAll(verticaleCrud.findOne(idVert).getTeams());
-
-			for (Team team : vertTeams) {
-				tempVertNikonikos.addAll(findNikoNikosOfATeam(team.getId()));
-			}
-		}
-		for (NikoNiko niko : tempVertNikonikos) {
-			if (!vertNikonikos.contains(niko)) {
-				vertNikonikos.add(niko);
-			}
-		}
-		return vertNikonikos;
-	}
-
-	public ArrayList<NikoNiko> findNikoNikosOfATeam(Long idTeam){
-
-		ArrayList<User> usersOfTeam = findUsersOfATeam(idTeam);
-
-		ArrayList<NikoNiko> nikonikos = new ArrayList<NikoNiko>();
-		//Partie a externaliser en fonction findAllNikoNikoForAUser(idUser) => probablement deja existante
-		if (!usersOfTeam.isEmpty()) {
-			for (User user : usersOfTeam) {
-				if (!user.getNikoNikos().isEmpty()) {
-					nikonikos.addAll(user.getNikoNikos());
-				}
-			}
-		}
-		//fin de partie a externaliser
-
-		return nikonikos;
-	}
-
-	public ArrayList<User> findUsersOfATeam(Long idValue) {
-
-		List<Long> ids = new ArrayList<Long>();
-		ArrayList<User> userList = new ArrayList<User>();
-		List<BigInteger> idsBig = userTeamCrud.findAssociatedUser(idValue);
-
-		if (!idsBig.isEmpty()) {//if no association => return empty list which can't be use with findAll(ids)
-			for (BigInteger id : idsBig) {
-				ids.add(id.longValue());
-			}
-			userList = (ArrayList<User>) userCrud.findAll(ids);
-		}
-		return userList;
-	}
-
-	/**
-	 *
+	 * CALENDAR OF USER
 	 * @param model	:
-	 * @param idTeam: Id of the verticale
 	 * @param month	: Month number
 	 * @param year	: Year number
 	 * @param action: Used to select the month to show from the current one (previous or next)
 	 * @return 		: Calendar view of all nikonikos of a team shown per day for a given month
+	 * @throws IOException
 	 */
 	@Secured({"ROLE_ADMIN","ROLE_GESTIONNAIRE","ROLE_VP","ROLE_USER"})
-	@RequestMapping(path = "nikonikovert" + PathFinder.PATH + "{idVert}"+ PathFinder.PATH + "month", method = RequestMethod.GET)
-	public String nikoNikoCalendar(Model model, @PathVariable Long idVert,
+	@RequestMapping(path = "nikoniko"+ PathFinder.PATH + "month", method = RequestMethod.GET)
+	public String nikoNikoCalendar(Model model,
 			@RequestParam(defaultValue = "null") String month,
 			@RequestParam(defaultValue = "null") String year,
 			@RequestParam(defaultValue = "") String action,
 			HttpServletResponse response) throws IOException {
 
-		//TODO : Check if one or more team in this verticale have their visibility set to "off"
-		//		 if privacy "off", don't show these team in the view (do this in get niko for team)
+		//TODO : Check if the calendar for this idUser can be see by the user of the current session
+		Long idUser = userCrud.findByLogin(super.checkSession().getName()).getId();
+
 		try {
-			verticaleCrud.findOne(idVert).getUsers();
+			userCrud.findOne(idUser).getLogin();
 		} catch (Exception e) {
-			response.sendError(HttpStatus.BAD_REQUEST.value(),("This verticale doesn't exist!").toUpperCase());
+			response.sendError(HttpStatus.BAD_REQUEST.value(),("This user doesn't exist!").toUpperCase());
 			return "";
 		}
+
 		//##################################################################
 		//Initialisation
 		//##################################################################
@@ -1287,8 +1298,9 @@ public class GraphController extends ViewBaseController<User>{
 		nbWeeks.add(numberOfWeekInMonth);
 
 		ArrayList<Map<String,Object>> days = new ArrayList<Map<String,Object>>();
+		ArrayList<NikoNiko> nikos = new ArrayList<NikoNiko>();
 
-		ArrayList<NikoNiko> nikos = findNikoNikosOfAVerticale(idVert);
+		nikos.addAll(userCrud.findOne(idUser).getNikoNikos());
 
 		//###################################################################
 		//#Check if given requestPAram values of month and year are integers#
@@ -1386,26 +1398,13 @@ public class GraphController extends ViewBaseController<User>{
 			//fonction a importer
 			List<NikoNiko> nikostemp = getNikoPreciseDate((List<NikoNiko>)nikos,dateLocale.getYear(),dateLocale.getMonthOfYear(),i);
 
-			int countNikosBad = 0;
-			int countNikosNeut = 0;
-			int countNikosGood = 0;
+			int nikoMood = 0;
 
 			for (NikoNiko nikotemp : nikostemp) {
-				if (nikotemp.getMood()==1) {
-					countNikosBad = countNikosBad+1;
-				}
-				if (nikotemp.getMood()==2) {
-					countNikosNeut = countNikosNeut+1;
-				}
-				if (nikotemp.getMood()==3) {
-					countNikosGood = countNikosGood+1;
-				}
+				nikoMood = nikotemp.getMood();
 			}
 
-			//Put niko stats here
-			days.get(i-1).put("nikoBad", countNikosBad);
-			days.get(i-1).put("nikoNeutral", countNikosNeut);
-			days.get(i-1).put("nikoGood", countNikosGood);
+			days.get(i-1).put("nikoOfDay", nikoMood);
 
 			if (dateLocale.withDayOfMonth(i).getDayOfWeek()==1) {//if Monday
 				numberOfWeekInMonth++;
@@ -1461,10 +1460,10 @@ public class GraphController extends ViewBaseController<User>{
 		model.addAttribute("monthToUse",monthToUse);
 		model.addAttribute("monthName",moisAnnee[monthToUse-1]);
 		model.addAttribute("nbweeks",nbWeeks);
-		model.addAttribute("verticaleName",verticaleCrud.findOne(idVert).getName());
 		model.addAttribute("back", PathFinder.PATH + PathFinder.MENU_PATH);
 
-		return "nikoniko/verticaleCalendarView";
+		return "nikoniko/userCalendarView";
 	}
 
+	
 }
