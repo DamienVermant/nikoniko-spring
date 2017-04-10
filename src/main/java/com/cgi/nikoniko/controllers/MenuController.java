@@ -25,7 +25,6 @@ public class MenuController  {
 
 	public LocalDate TODAY_DATE = new LocalDate();
 	public final static String BASE_URL = PathFinder.PATH + PathFinder.MENU_PATH;
-	public final static double TIME = 0.9999999999;
 
 	@Autowired
 	IUserCrudRepository userCrud;

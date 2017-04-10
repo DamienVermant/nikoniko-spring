@@ -51,7 +51,6 @@ public class UserController extends ViewBaseController<User> {
 
 	public final static String BASE_USER = "user";
 	public final static String BASE_URL = PathFinder.PATH + BASE_USER;
-	public final static double TIME = 0.999999;
 
 	public LocalDate TODAY_DATE = new LocalDate();
 

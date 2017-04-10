@@ -84,7 +84,7 @@
 			<#else>
 			</#if>
 			<#if lastNiko == true>
-			 	<a class ="btn btn-default" href="${add_last}"> Voter pour la vielle ? </a>
+			 	<a class ="btn btn-default" href="${add_last}"> Voter pour la veille ? </a>
 
 			<#else>
 			</#if>
